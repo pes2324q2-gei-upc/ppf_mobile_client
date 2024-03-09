@@ -44,9 +44,19 @@ class _RegistrationScreenState extends State<RegisterScreen> {
         body: SingleChildScrollView(
           padding: const EdgeInsets.all(16.0),
           child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
+              Row(
+                children: [
+                  IconButton(
+                    icon: const Icon(Icons.arrow_back),
+                    onPressed: () {
+                      Navigator.pop(context);
+                    },
+                  ),
+                ],
+              ),
+              const SizedBox(height: 16.0),
               GestureDetector(
                 onTap: () async {
                   XFile? image = await ImagePicker().pickImage(source: ImageSource.gallery);
