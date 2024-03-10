@@ -21,4 +21,34 @@ class RemoteService {
       return null;
     }
   }
+
+  Future<bool> registerUser(String userName, String firstName, String lastName, String mail, String pwrd, String pwrd2, DateTime ?birthDate) async {
+    RemoteService().getUsers();
+    try {
+      Dio dio = Dio();
+      //to parse a date:
+      Response response = await dio.post(
+        '127.0.0.1:8081/create-user/',
+        data: {
+          {
+            "username": userName,
+            "first_name": firstName,
+            "last_name": lastName,
+            "email": mail,
+            "birth_date": birthDate, //formattedDate
+            "password": pwrd,
+            "password2": pwrd2
+          }
+        },
+      );
+      // Handle response
+      print(response.data);
+      return true;
+      // You can add further logic here based on the response
+    } catch (e) {
+      print('Error registering user: $e');
+      return false;
+      // Handle error
+    }
+  }
 }
