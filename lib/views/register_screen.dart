@@ -2,6 +2,7 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 
+//Inicialización de la pantalla de Registro
 class RegisterScreen extends StatefulWidget {
   const RegisterScreen ({super.key});
 
@@ -10,6 +11,7 @@ class RegisterScreen extends StatefulWidget {
   _RegistrationScreenState createState() => _RegistrationScreenState();
 }
 
+//Pantalla de registro
 class _RegistrationScreenState extends State<RegisterScreen> {
   final TextEditingController _usernameController = TextEditingController();
   final TextEditingController _emailController = TextEditingController();
@@ -21,6 +23,7 @@ class _RegistrationScreenState extends State<RegisterScreen> {
   XFile? _profileImage;
   bool _isDriver = false;
   
+  //Selección de fecha
   Future<void> _selectDate(BuildContext context) async {
     DateTime? picked = await showDatePicker(
       context: context,
@@ -36,43 +39,56 @@ class _RegistrationScreenState extends State<RegisterScreen> {
     }
   }
 
+  //Componentes de la página de Registro
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       resizeToAvoidBottomInset: true,
       backgroundColor: const Color.fromARGB(255, 211, 211, 211),
+      //SingleChildScrollView para gestionar el overflow vertical haciendo que se pueda escrollear
       body: SingleChildScrollView(
         padding: const EdgeInsets.all(16.0),
+        //Column para que se añadan los componentes de arriba a bajo
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
+            //Botón de Back, para volver a la pantalla de Login
             Row(
               children: [
+                //Botón de back
                 IconButton(
                   icon: const Icon(Icons.arrow_back),
+                  //Lógica de click
                   onPressed: () {
                     Navigator.pop(context);
                   },
                 ),
               ],
             ),
+            //Caja para dejar espacio entre los campos
             const SizedBox(height: 16.0),
+            //Campo de imagen de Usuario
             GestureDetector(
+              //Logica de detección de imagen
               onTap: () async {
                 XFile? image = await ImagePicker().pickImage(source: ImageSource.gallery);
                 setState(() {
                   _profileImage = image;
                 });
               },
+              //Campo donde se muestra la imagen de perfil
               child: CircleAvatar(
                 radius: 75.0,
                 backgroundColor: Colors.purple,
+                //Setear imagen de perfil
                 child: _profileImage == null
+                    //Mostrar icono si no se ha seleccionado una foto de perfil
                     ? const Icon(
                         Icons.person,
                         size: 150.0,
                         color: Colors.white,
                       )
+                    //Mostrar foto seleccionada en caso de que se haya seleccionado una
                     : ClipOval(
                         child: Image.file(
                           File(_profileImage!.path),
@@ -83,7 +99,9 @@ class _RegistrationScreenState extends State<RegisterScreen> {
                       ),
               ),
             ),
+            //Caja para dejar espacio entre los campos
             const SizedBox(height: 10.0),
+            //Campo de texto de email
             TextField(
               controller: _emailController,
               autofocus: false,
@@ -105,7 +123,9 @@ class _RegistrationScreenState extends State<RegisterScreen> {
                 ),
               ),
             ),
+            //Caja para dejar espacio entre los campos
             const SizedBox(height: 10.0),
+            //Campo de texto de Nombre Completo
             TextField(
               controller: _usernameController,
               autofocus: false,
@@ -127,7 +147,9 @@ class _RegistrationScreenState extends State<RegisterScreen> {
                 ),
               ),
             ),
+            //Caja para dejar espacio entre los campos
             const SizedBox(height: 10.0),
+            //Campo de selección de fecha
             InkWell(
               onTap: () => _selectDate(context),
               child: InputDecorator(
@@ -154,7 +176,9 @@ class _RegistrationScreenState extends State<RegisterScreen> {
                       ),
               ),
             ),
+            //Caja para dejar espacio entre los campos
             const SizedBox(height: 10.0),
+            //Campo de texto de contraseña
             TextField(
               controller: _passwordController,
               autofocus: false,
@@ -177,7 +201,9 @@ class _RegistrationScreenState extends State<RegisterScreen> {
                 ),
               ),
             ),
+            //Caja para dejar espacio entre los campos
             const SizedBox(height: 10.0),
+            //Campo de texto de Confirmar contraseña
             TextField(
               controller: _confirmPasswordController,
               autofocus: false,
@@ -200,13 +226,17 @@ class _RegistrationScreenState extends State<RegisterScreen> {
                 ),
               ),
             ),
+            //Caja para dejar espacio entre los campos
             const SizedBox(height: 2.0),
+            //Selección de si quieres ser conductor
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
+                //Texto de si quieres ser conductor
                 const Text.rich(
                   TextSpan(text:'Quieres ser conductor?', style: TextStyle(fontSize: 18.0,color: Colors.black, fontWeight: FontWeight.bold),)
                 ),
+                //Seleccionador de si quieres ser conductor
                 Switch(
                   activeColor: Colors.white,
                   activeTrackColor: Colors.green,
@@ -221,11 +251,14 @@ class _RegistrationScreenState extends State<RegisterScreen> {
                 ),
               ],
             ),
+            //Campos de Conductor, solo se muestran quando _isDriver es true
             Visibility(
               visible: _isDriver, // Controla la visibilidad basándote en el valor de _isDriver
               child: Column(
                 children: [
+                  //Caja para dejar espacio entre los campos
                   const SizedBox(height: 10.0),
+                  //Campo de texto del DNI
                   TextField(
                     controller: _DNIController,
                     autofocus: false,
@@ -246,7 +279,9 @@ class _RegistrationScreenState extends State<RegisterScreen> {
                       ),
                     ),
                   ),
+                  //Caja para dejar espacio entre los campos
                   const SizedBox(height: 10.0),
+                  //Campo de texto de la Capacidad máxima del vehículo
                   TextField(
                     controller: _capacidadMaximaDelVehiculoController,
                     autofocus: false,
@@ -270,39 +305,16 @@ class _RegistrationScreenState extends State<RegisterScreen> {
                 ],
               ),
             ),
+            //Caja para dejar espacio entre los campos
             const SizedBox(height: 20.0),
-            /*
+            //Boton de registro
             ElevatedButton(
+              //Formato basico
               style: ElevatedButton.styleFrom(
                 backgroundColor: Colors.green,
                 padding: const EdgeInsets.symmetric(horizontal: 50, vertical: 20),
               ),
-              onPressed: () {
-                // Lógica de registro
-                String username = _usernameController.text;
-                String email = _emailController.text;
-                String password = _passwordController.text;
-                String DNI = _DNIController.text;
-                String capacidadMaximaDelVehiculo = _capacidadMaximaDelVehiculoController.text;
-
-                // Puedes imprimir los valores
-                print('Nombre de usuario: $username');
-                print('Fecha de nacimiento: $_selectedDate');
-                print('Correo electrónico: $email');
-                print('Contraseña: $password');
-                print('DNI: $DNI');
-                print('capacidadMaximaDelVehiculo: $capacidadMaximaDelVehiculo');
-              },
-              child: const Text.rich(
-                TextSpan(text:'Registrarse', style: TextStyle(fontSize: 18.0,color: Colors.white, fontWeight: FontWeight.normal),)
-              ),
-            ),
-            */
-            ElevatedButton(
-              style: ElevatedButton.styleFrom(
-                backgroundColor: Colors.green,
-                padding: const EdgeInsets.symmetric(horizontal: 50, vertical: 20),
-              ),
+              //Acciones al apretarlo
               onPressed: () {
                 // Lógica de registro
                 String username = _usernameController.text;
@@ -418,6 +430,7 @@ class _RegistrationScreenState extends State<RegisterScreen> {
                   }
                 }
               },
+              //Texto del boton de registro
               child: const Text.rich(
                 TextSpan(text: 'Registrarse', style: TextStyle(fontSize: 18.0, color: Colors.white, fontWeight: FontWeight.normal)),
               ),
