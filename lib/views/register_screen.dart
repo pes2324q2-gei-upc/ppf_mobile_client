@@ -271,6 +271,7 @@ class _RegistrationScreenState extends State<RegisterScreen> {
                 ),
               ),
               const SizedBox(height: 20.0),
+              /*
               ElevatedButton(
                 style: ElevatedButton.styleFrom(
                   backgroundColor: Colors.green,
@@ -294,6 +295,131 @@ class _RegistrationScreenState extends State<RegisterScreen> {
                 },
                 child: const Text.rich(
                   TextSpan(text:'Registrarse', style: TextStyle(fontSize: 18.0,color: Colors.white, fontWeight: FontWeight.normal),)
+                ),
+              ),
+              */
+              ElevatedButton(
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: Colors.green,
+                  padding: const EdgeInsets.symmetric(horizontal: 50, vertical: 20),
+                ),
+                onPressed: () {
+                  // Lógica de registro
+                  String username = _usernameController.text;
+                  String email = _emailController.text;
+                  String password = _passwordController.text;
+                  String password2 = _confirmPasswordController.text;
+                  String DNI = _DNIController.text;
+                  String capacidad = _capacidadMaximaDelVehiculoController.text;
+
+                  //contraseñas diferentes
+                  if (password != password2) {
+                    showDialog(
+                      context: context,
+                      builder: (BuildContext context) {
+                        return AlertDialog(
+                          title: const Text('Error'),
+                          content: const Text('Por favor, asegúrese de que repetir la contraseña correctamente'),
+                          actions: [
+                            TextButton(
+                              onPressed: () {
+                                Navigator.of(context).pop();
+                              },
+                              child: const Text('OK'),
+                            ),
+                          ],
+                        );
+                      },
+                    );
+                  }
+                  //contraseñas iguales
+                  else {
+                    // Validación de campos si es conductor
+                    if (_isDriver) {
+                      if (
+                          username.isEmpty || 
+                          email.isEmpty || 
+                          _selectedDate == null ||
+                          password.isEmpty || 
+                          password2.isEmpty || 
+                          DNI.isEmpty || 
+                          capacidad.isEmpty
+                        ) {
+                        // Muestra un mensaje de error
+                        showDialog(
+                          context: context,
+                          builder: (BuildContext context) {
+                            return AlertDialog(
+                              title: const Text('Error'),
+                              content: const Text('Por favor, completa todos los campos.'),
+                              actions: [
+                                TextButton(
+                                  onPressed: () {
+                                    Navigator.of(context).pop();
+                                  },
+                                  child: const Text('OK'),
+                                ),
+                              ],
+                            );
+                          },
+                        );
+                      } 
+                      //Registrar conductor
+                      else {
+                        // Todos los campos están completos, puedes continuar con la lógica de registro
+                        // ...
+
+                        // Imprime los valores
+                        print('Nombre de usuario: $username');
+                        print('Correo electrónico: $email');
+                        print('Contraseña: $password');
+                        print('DNI: $DNI');
+                        print('capacidad: $capacidad');
+                      }
+                    }
+                    //Validacion de campos si no es conductor
+                    else {
+                      if (
+                          username.isEmpty || 
+                          email.isEmpty || 
+                          _selectedDate == null ||
+                          password.isEmpty || 
+                          password2.isEmpty
+                        ) {
+                        // Muestra un mensaje de error
+                        showDialog(
+                          context: context,
+                          builder: (BuildContext context) {
+                            return AlertDialog(
+                              title: const Text('Error'),
+                              content: const Text('Por favor, completa todos los campos.'),
+                              actions: [
+                                TextButton(
+                                  onPressed: () {
+                                    Navigator.of(context).pop();
+                                  },
+                                  child: const Text('OK'),
+                                ),
+                              ],
+                            );
+                          },
+                        );
+                      } 
+                      //Registrar no conductor
+                      else {
+                        // Todos los campos están completos, puedes continuar con la lógica de registro
+                        // ...
+
+                        // Imprime los valores
+                        print('Nombre de usuario: $username');
+                        print('Correo electrónico: $email');
+                        print('Contraseña: $password');
+                      }
+                    }
+                  }
+                },
+                child: const Text.rich(
+                  TextSpan(text: 'Registrarse', style: TextStyle(fontSize: 18.0, color: Colors.white, fontWeight: FontWeight.normal)),
                 ),
               ),
             ],
