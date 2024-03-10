@@ -67,16 +67,20 @@ class _RegistrationScreenState extends State<RegisterScreen> {
                 child: CircleAvatar(
                   radius: 75.0,
                   backgroundColor: Colors.purple,
-                  backgroundImage: _profileImage != null
-                      ? FileImage(File(_profileImage!.path))
-                      : null,
                   child: _profileImage == null
                       ? const Icon(
                           Icons.person,
                           size: 150.0,
                           color: Colors.white,
                         )
-                      : null,
+                      : ClipOval(
+                          child: Image.file(
+                            File(_profileImage!.path),
+                            fit: BoxFit.cover,
+                            width: 150.0,
+                            height: 150.0,
+                          ),
+                        ),
                 ),
               ),
               const SizedBox(height: 10.0),
@@ -154,6 +158,7 @@ class _RegistrationScreenState extends State<RegisterScreen> {
               TextField(
                 controller: _passwordController,
                 autofocus: false,
+                obscureText: true,
                 style: const TextStyle(fontSize: 18.0),
                 decoration: InputDecoration(
                   filled: true,
@@ -177,6 +182,7 @@ class _RegistrationScreenState extends State<RegisterScreen> {
                 controller: _confirmPasswordController,
                 autofocus: false,
                 style: const TextStyle(fontSize: 18.0),
+                obscureText: true,
                 decoration: InputDecoration(
                   filled: true,
                   fillColor: Colors.white,
