@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:ppf_mobile_client/views/login_screen.dart';
-import 'package:ppf_mobile_client/views/register_screen.dart';
+
 
 void main() {
   runApp(const MyApp());
