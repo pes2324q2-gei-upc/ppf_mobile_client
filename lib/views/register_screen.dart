@@ -5,7 +5,7 @@ import 'package:ppf_mobile_client/RemoteService/Remote_service.dart';
 
 //Inicialización de la pantalla de Registro
 class RegisterScreen extends StatefulWidget {
-  const RegisterScreen ({super.key});
+  const RegisterScreen({super.key});
 
   @override
   // ignore: library_private_types_in_public_api
@@ -19,14 +19,17 @@ class _RegistrationScreenState extends State<RegisterScreen> {
   final TextEditingController _lastNameController = TextEditingController();
   final TextEditingController _emailController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
-  final TextEditingController _confirmPasswordController = TextEditingController();
+  final TextEditingController _confirmPasswordController =
+      TextEditingController();
   final TextEditingController _DNIController = TextEditingController();
-  final TextEditingController _capacidadMaximaDelVehiculoController = TextEditingController();
+  final TextEditingController _capacidadMaximaDelVehiculoController =
+      TextEditingController();
   DateTime? _selectedDate;
   XFile? _profileImage;
   bool _isDriver = false;
   RemoteService remoteService = RemoteService();
-  
+  var hide1 = true;
+
   //Selección de fecha
   Future<void> _selectDate(BuildContext context) async {
     DateTime? picked = await showDatePicker(
@@ -75,7 +78,8 @@ class _RegistrationScreenState extends State<RegisterScreen> {
             GestureDetector(
               //Logica de detección de imagen
               onTap: () async {
-                XFile? image = await ImagePicker().pickImage(source: ImageSource.gallery);
+                XFile? image =
+                    await ImagePicker().pickImage(source: ImageSource.gallery);
                 setState(() {
                   _profileImage = image;
                 });
@@ -114,9 +118,12 @@ class _RegistrationScreenState extends State<RegisterScreen> {
                 filled: true,
                 fillColor: Colors.white,
                 hintText: 'email',
-                hintStyle: const TextStyle(fontSize: 18.0,color: Color.fromARGB(255, 117, 117, 117), fontWeight: FontWeight.normal),
+                hintStyle: const TextStyle(
+                    fontSize: 18.0,
+                    color: Color.fromARGB(255, 117, 117, 117),
+                    fontWeight: FontWeight.normal),
                 contentPadding:
-                  const EdgeInsets.only(left: 14.0, bottom: 8.0, top: 8.0),
+                    const EdgeInsets.only(left: 14.0, bottom: 8.0, top: 8.0),
                 focusedBorder: OutlineInputBorder(
                   borderSide: const BorderSide(color: Colors.white),
                   borderRadius: BorderRadius.circular(12),
@@ -138,9 +145,12 @@ class _RegistrationScreenState extends State<RegisterScreen> {
                 filled: true,
                 fillColor: Colors.white,
                 hintText: 'Nombre de Usuario',
-                hintStyle: const TextStyle(fontSize: 18.0,color: Color.fromARGB(255, 117, 117, 117), fontWeight: FontWeight.normal),
+                hintStyle: const TextStyle(
+                    fontSize: 18.0,
+                    color: Color.fromARGB(255, 117, 117, 117),
+                    fontWeight: FontWeight.normal),
                 contentPadding:
-                  const EdgeInsets.only(left: 14.0, bottom: 8.0, top: 8.0),
+                    const EdgeInsets.only(left: 14.0, bottom: 8.0, top: 8.0),
                 focusedBorder: OutlineInputBorder(
                   borderSide: const BorderSide(color: Colors.white),
                   borderRadius: BorderRadius.circular(12),
@@ -163,8 +173,12 @@ class _RegistrationScreenState extends State<RegisterScreen> {
                       filled: true,
                       fillColor: Colors.white,
                       hintText: 'Nombre',
-                      hintStyle: const TextStyle(fontSize: 18.0, color: Color.fromARGB(255, 117, 117, 117), fontWeight: FontWeight.normal),
-                      contentPadding: const EdgeInsets.only(left: 14.0, bottom: 8.0, top: 8.0),
+                      hintStyle: const TextStyle(
+                          fontSize: 18.0,
+                          color: Color.fromARGB(255, 117, 117, 117),
+                          fontWeight: FontWeight.normal),
+                      contentPadding: const EdgeInsets.only(
+                          left: 14.0, bottom: 8.0, top: 8.0),
                       focusedBorder: OutlineInputBorder(
                         borderSide: const BorderSide(color: Colors.white),
                         borderRadius: BorderRadius.circular(12),
@@ -186,8 +200,12 @@ class _RegistrationScreenState extends State<RegisterScreen> {
                       filled: true,
                       fillColor: Colors.white,
                       hintText: 'Apellido',
-                      hintStyle: const TextStyle(fontSize: 18.0, color: Color.fromARGB(255, 117, 117, 117), fontWeight: FontWeight.normal),
-                      contentPadding: const EdgeInsets.only(left: 14.0, bottom: 8.0, top: 8.0),
+                      hintStyle: const TextStyle(
+                          fontSize: 18.0,
+                          color: Color.fromARGB(255, 117, 117, 117),
+                          fontWeight: FontWeight.normal),
+                      contentPadding: const EdgeInsets.only(
+                          left: 14.0, bottom: 8.0, top: 8.0),
                       focusedBorder: OutlineInputBorder(
                         borderSide: const BorderSide(color: Colors.white),
                         borderRadius: BorderRadius.circular(12),
@@ -208,26 +226,35 @@ class _RegistrationScreenState extends State<RegisterScreen> {
               onTap: () => _selectDate(context),
               child: InputDecorator(
                 decoration: InputDecoration(
-                filled: true,
-                fillColor: Colors.white,
-                contentPadding:
-                  const EdgeInsets.only(left: 14.0, bottom: 8.0, top: 8.0),
-                focusedBorder: OutlineInputBorder(
-                  borderSide: const BorderSide(color: Colors.white),
-                  borderRadius: BorderRadius.circular(12),
+                  filled: true,
+                  fillColor: Colors.white,
+                  contentPadding:
+                      const EdgeInsets.only(left: 14.0, bottom: 8.0, top: 8.0),
+                  focusedBorder: OutlineInputBorder(
+                    borderSide: const BorderSide(color: Colors.white),
+                    borderRadius: BorderRadius.circular(12),
+                  ),
+                  enabledBorder: UnderlineInputBorder(
+                    borderSide: const BorderSide(color: Colors.white),
+                    borderRadius: BorderRadius.circular(12),
+                  ),
                 ),
-                enabledBorder: UnderlineInputBorder(
-                  borderSide: const BorderSide(color: Colors.white),
-                  borderRadius: BorderRadius.circular(12),
-                ),
-              ),
                 child: _selectedDate == null
-                    ? const Text.rich(
-                        TextSpan(text:'Fecha de nacimiento', style: TextStyle(fontSize: 18.0,color: Color.fromARGB(255, 117, 117, 117), fontWeight: FontWeight.normal),)
-                    )
-                    : Text.rich(
-                        TextSpan(text:'${_selectedDate?.day}/${_selectedDate?.month}/${_selectedDate?.year}', style:const TextStyle(fontSize: 18.0,color: Color.fromARGB(255, 117, 117, 117), fontWeight: FontWeight.normal),)
-                      ),
+                    ? const Text.rich(TextSpan(
+                        text: 'Fecha de nacimiento',
+                        style: TextStyle(
+                            fontSize: 18.0,
+                            color: Color.fromARGB(255, 117, 117, 117),
+                            fontWeight: FontWeight.normal),
+                      ))
+                    : Text.rich(TextSpan(
+                        text:
+                            '${_selectedDate?.day}/${_selectedDate?.month}/${_selectedDate?.year}',
+                        style: const TextStyle(
+                            fontSize: 18.0,
+                            color: Color.fromARGB(255, 117, 117, 117),
+                            fontWeight: FontWeight.normal),
+                      )),
               ),
             ),
             //Caja para dejar espacio entre los campos
@@ -236,15 +263,18 @@ class _RegistrationScreenState extends State<RegisterScreen> {
             TextField(
               controller: _passwordController,
               autofocus: false,
-              obscureText: true,
+              obscureText: hide1,
               style: const TextStyle(fontSize: 18.0),
               decoration: InputDecoration(
                 filled: true,
                 fillColor: Colors.white,
                 hintText: 'Contraseña',
-                hintStyle: const TextStyle(fontSize: 18.0,color: Color.fromARGB(255, 117, 117, 117), fontWeight: FontWeight.normal),
+                hintStyle: const TextStyle(
+                    fontSize: 18.0,
+                    color: Color.fromARGB(255, 117, 117, 117),
+                    fontWeight: FontWeight.normal),
                 contentPadding:
-                  const EdgeInsets.only(left: 14.0, bottom: 8.0, top: 8.0),
+                    const EdgeInsets.only(left: 14.0, bottom: 8.0, top: 8.0),
                 focusedBorder: OutlineInputBorder(
                   borderSide: const BorderSide(color: Colors.white),
                   borderRadius: BorderRadius.circular(12),
@@ -252,6 +282,16 @@ class _RegistrationScreenState extends State<RegisterScreen> {
                 enabledBorder: UnderlineInputBorder(
                   borderSide: const BorderSide(color: Colors.white),
                   borderRadius: BorderRadius.circular(12),
+                ),
+                suffixIcon: IconButton(
+                  icon: Icon(hide1 ? Icons.visibility : Icons.visibility_off),
+                  onPressed: () {
+                    setState(() {
+                      hide1 = !hide1;
+                    });
+                  },
+                  padding: const EdgeInsets.symmetric(
+                      horizontal: 20.0, vertical: 10.0),
                 ),
               ),
             ),
@@ -262,14 +302,17 @@ class _RegistrationScreenState extends State<RegisterScreen> {
               controller: _confirmPasswordController,
               autofocus: false,
               style: const TextStyle(fontSize: 18.0),
-              obscureText: true,
+              obscureText: hide1,
               decoration: InputDecoration(
                 filled: true,
                 fillColor: Colors.white,
                 hintText: 'Confirmar contraseña',
-                hintStyle: const TextStyle(fontSize: 18.0,color: Color.fromARGB(255, 117, 117, 117), fontWeight: FontWeight.normal),
+                hintStyle: const TextStyle(
+                    fontSize: 18.0,
+                    color: Color.fromARGB(255, 117, 117, 117),
+                    fontWeight: FontWeight.normal),
                 contentPadding:
-                  const EdgeInsets.only(left: 14.0, bottom: 8.0, top: 8.0),
+                    const EdgeInsets.only(left: 14.0, bottom: 8.0, top: 8.0),
                 focusedBorder: OutlineInputBorder(
                   borderSide: const BorderSide(color: Colors.white),
                   borderRadius: BorderRadius.circular(12),
@@ -287,9 +330,13 @@ class _RegistrationScreenState extends State<RegisterScreen> {
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
                 //Texto de si quieres ser conductor
-                const Text.rich(
-                  TextSpan(text:'Quieres ser conductor?', style: TextStyle(fontSize: 18.0,color: Colors.black, fontWeight: FontWeight.bold),)
-                ),
+                const Text.rich(TextSpan(
+                  text: 'Quieres ser conductor?',
+                  style: TextStyle(
+                      fontSize: 18.0,
+                      color: Colors.black,
+                      fontWeight: FontWeight.bold),
+                )),
                 //Seleccionador de si quieres ser conductor
                 Switch(
                   activeColor: Colors.white,
@@ -307,7 +354,8 @@ class _RegistrationScreenState extends State<RegisterScreen> {
             ),
             //Campos de Conductor, solo se muestran quando _isDriver es true
             Visibility(
-              visible: _isDriver, // Controla la visibilidad basándote en el valor de _isDriver
+              visible:
+                  _isDriver, // Controla la visibilidad basándote en el valor de _isDriver
               child: Column(
                 children: [
                   //Caja para dejar espacio entre los campos
@@ -321,8 +369,12 @@ class _RegistrationScreenState extends State<RegisterScreen> {
                       filled: true,
                       fillColor: Colors.white,
                       hintText: 'DNI',
-                      hintStyle: const TextStyle(fontSize: 18.0, color: Color.fromARGB(255, 117, 117, 117), fontWeight: FontWeight.normal),
-                      contentPadding: const EdgeInsets.only(left: 14.0, bottom: 8.0, top: 8.0),
+                      hintStyle: const TextStyle(
+                          fontSize: 18.0,
+                          color: Color.fromARGB(255, 117, 117, 117),
+                          fontWeight: FontWeight.normal),
+                      contentPadding: const EdgeInsets.only(
+                          left: 14.0, bottom: 8.0, top: 8.0),
                       focusedBorder: OutlineInputBorder(
                         borderSide: const BorderSide(color: Colors.white),
                         borderRadius: BorderRadius.circular(12),
@@ -344,8 +396,12 @@ class _RegistrationScreenState extends State<RegisterScreen> {
                       filled: true,
                       fillColor: Colors.white,
                       hintText: 'Capacidad máxima del vehículo (km)',
-                      hintStyle: const TextStyle(fontSize: 18.0, color: Color.fromARGB(255, 117, 117, 117), fontWeight: FontWeight.normal),
-                      contentPadding: const EdgeInsets.only(left: 14.0, bottom: 8.0, top: 8.0),
+                      hintStyle: const TextStyle(
+                          fontSize: 18.0,
+                          color: Color.fromARGB(255, 117, 117, 117),
+                          fontWeight: FontWeight.normal),
+                      contentPadding: const EdgeInsets.only(
+                          left: 14.0, bottom: 8.0, top: 8.0),
                       focusedBorder: OutlineInputBorder(
                         borderSide: const BorderSide(color: Colors.white),
                         borderRadius: BorderRadius.circular(12),
@@ -366,7 +422,8 @@ class _RegistrationScreenState extends State<RegisterScreen> {
               //Formato basico
               style: ElevatedButton.styleFrom(
                 backgroundColor: Colors.green,
-                padding: const EdgeInsets.symmetric(horizontal: 50, vertical: 20),
+                padding:
+                    const EdgeInsets.symmetric(horizontal: 50, vertical: 20),
               ),
               //Acciones al apretarlo
               onPressed: () {
@@ -387,7 +444,8 @@ class _RegistrationScreenState extends State<RegisterScreen> {
                     builder: (BuildContext context) {
                       return AlertDialog(
                         title: const Text('Error'),
-                        content: const Text('Por favor, asegúrese de que repetir la contraseña correctamente'),
+                        content: const Text(
+                            'Por favor, asegúrese de que repetir la contraseña correctamente'),
                         actions: [
                           TextButton(
                             onPressed: () {
@@ -404,22 +462,21 @@ class _RegistrationScreenState extends State<RegisterScreen> {
                 else {
                   // Validación de campos si es conductor
                   if (_isDriver) {
-                    if (
-                        userName.isEmpty || 
-                        email.isEmpty || 
+                    if (userName.isEmpty ||
+                        email.isEmpty ||
                         _selectedDate == null ||
-                        password.isEmpty || 
-                        password2.isEmpty || 
-                        DNI.isEmpty || 
-                        capacidad.isEmpty
-                      ) {
+                        password.isEmpty ||
+                        password2.isEmpty ||
+                        DNI.isEmpty ||
+                        capacidad.isEmpty) {
                       // Muestra un mensaje de error
                       showDialog(
                         context: context,
                         builder: (BuildContext context) {
                           return AlertDialog(
                             title: const Text('Error'),
-                            content: const Text('Por favor, completa todos los campos.'),
+                            content: const Text(
+                                'Por favor, completa todos los campos.'),
                             actions: [
                               TextButton(
                                 onPressed: () {
@@ -431,7 +488,7 @@ class _RegistrationScreenState extends State<RegisterScreen> {
                           );
                         },
                       );
-                    } 
+                    }
                     //Registrar conductor
                     else {
                       // Todos los campos están completos, puedes continuar con la lógica de registro
@@ -447,20 +504,19 @@ class _RegistrationScreenState extends State<RegisterScreen> {
                   }
                   //Validacion de campos si no es conductor
                   else {
-                    if (
-                        userName.isEmpty || 
-                        email.isEmpty || 
+                    if (userName.isEmpty ||
+                        email.isEmpty ||
                         _selectedDate == null ||
-                        password.isEmpty || 
-                        password2.isEmpty
-                      ) {
+                        password.isEmpty ||
+                        password2.isEmpty) {
                       // Muestra un mensaje de error
                       showDialog(
                         context: context,
                         builder: (BuildContext context) {
                           return AlertDialog(
                             title: const Text('Error'),
-                            content: const Text('Por favor, completa todos los campos.'),
+                            content: const Text(
+                                'Por favor, completa todos los campos.'),
                             actions: [
                               TextButton(
                                 onPressed: () {
@@ -472,10 +528,9 @@ class _RegistrationScreenState extends State<RegisterScreen> {
                           );
                         },
                       );
-                    } 
+                    }
                     //Registrar no conductor
                     else {
-                      
                       // Imprime los valores
                       print('Nombre de usuario: $userName');
                       print('First Name: $firstName');
@@ -486,15 +541,20 @@ class _RegistrationScreenState extends State<RegisterScreen> {
 
                       // Todos los campos están completos, puedes continuar con la lógica de registro
                       // ...
-                      remoteService.registerUser(userName,firstName,lastName,email,password,password2,_selectedDate);
-
+                      remoteService.registerUser(userName, firstName, lastName,
+                          email, password, password2, _selectedDate);
                     }
                   }
                 }
               },
               //Texto del boton de registro
               child: const Text.rich(
-                TextSpan(text: 'Registrarse', style: TextStyle(fontSize: 18.0, color: Colors.white, fontWeight: FontWeight.normal)),
+                TextSpan(
+                    text: 'Registrarse',
+                    style: TextStyle(
+                        fontSize: 18.0,
+                        color: Colors.white,
+                        fontWeight: FontWeight.normal)),
               ),
             ),
           ],
