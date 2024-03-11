@@ -5,8 +5,9 @@ import 'package:intl/intl.dart';
 class RemoteService {
   Future<List<User>?> getUsers() async {
     try {
-      var client = Dio();
-      Response response = await client.get('http://127.0.0.1:8081/');
+      Dio dio = Dio();
+      dio.options.baseUrl = 'http://localhost:8081';
+      Response response = await dio.get('/users/');
 
       if (response.statusCode == 200) {
         List<dynamic> jsonResponse = response.data;
@@ -24,9 +25,8 @@ class RemoteService {
   }
 
   Future<bool> registerUser(String userName, String firstName, String lastName, String mail, String pwrd, String pwrd2, DateTime ?birthDate) async {
-    String URI = const String.fromEnvironment('USER_API');
     String formattedDate = DateFormat('yyyy-MM-dd').format(birthDate!);
-    print('Request sent: $formattedDate');
+    print('Date: $formattedDate');
     try {
       Dio dio = Dio();
       dio.options.baseUrl = 'http://localhost:8081';
@@ -45,7 +45,7 @@ class RemoteService {
         },
       );
       // Handle response
-      print('Request sent: post $URI/user/');
+      print('Request sent: post /user/register/');
       print(response.data);
       return true;
       // You can add further logic here based on the response
