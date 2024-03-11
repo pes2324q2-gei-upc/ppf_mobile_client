@@ -1,5 +1,4 @@
 class User {
-  int id;
   String userName;
   String firstName;
   String lastName;
@@ -7,7 +6,6 @@ class User {
   DateTime birthDate;
 
   User(
-    this.id,
     this.userName,
     this.firstName,
     this.lastName,
@@ -17,7 +15,6 @@ class User {
 
   factory User.fromJson(Map<String, dynamic> json) {
     return User(
-      json['id'] as int,
       json['userName'] as String,
       json['firstName'] as String,
       json['lastName'] as String,
