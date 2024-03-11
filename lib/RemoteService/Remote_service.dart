@@ -1,12 +1,15 @@
 import 'package:ppf_mobile_client/Models/Users.dart';
 import 'package:dio/dio.dart';
 import 'package:intl/intl.dart';
+import '/config.dart' show userApi;
+import '/config.dart' show routeApi;
 
 class RemoteService {
   Future<List<User>?> getUsers() async {
+    print(userApi);
     try {
       Dio dio = Dio();
-      dio.options.baseUrl = 'http://localhost:8081';
+      dio.options.baseUrl = userApi;
       Response response = await dio.get('/users/');
 
       if (response.statusCode == 200) {
@@ -26,14 +29,15 @@ class RemoteService {
 
   Future<bool> registerUser(String userName, String firstName, String lastName, String mail, String pwrd, String pwrd2, DateTime ?birthDate) async {
     String formattedDate = DateFormat('yyyy-MM-dd').format(birthDate!);
+    print(userApi);
     print('Date: $formattedDate');
     try {
       Dio dio = Dio();
-      dio.options.baseUrl = 'http://localhost:8081';
+      dio.options.baseUrl = userApi;
       //to parse a date:
 
       var response = await dio.post(
-        '/users/register',
+        '/users/',
         data: {
           "username": userName,
           "first_name": firstName,
