@@ -3,6 +3,14 @@ import 'package:ppf_mobile_client/views/login_screen.dart';
 
 
 void main() {
+  const bool isDebug = bool.fromEnvironment('DEBUG', defaultValue: true);
+  const String userApi = String.fromEnvironment('USER_API', defaultValue: 'localhost:8080');
+  const String routeApi = String.fromEnvironment('ROUTE_API', defaultValue: 'localhost:8081');
+
+  print('Is Debug Mode: $isDebug');
+  print('User API: $userApi');
+  print('Route API: $routeApi');
+
   runApp(const MyApp());
 }
 

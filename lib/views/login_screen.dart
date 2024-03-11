@@ -3,7 +3,7 @@ import 'package:ppf_mobile_client/views/register_screen.dart';
 
 class LoginScreen extends StatefulWidget {
   const LoginScreen({Key? key}) : super(key: key);
-
+  
   @override
   _LoginScreenState createState() => _LoginScreenState();
 }
@@ -11,7 +11,7 @@ class LoginScreen extends StatefulWidget {
 class _LoginScreenState extends State<LoginScreen> {
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
+      return MaterialApp(
       home: Scaffold(
         appBar: AppBar(
           title: const Text('Login Screen'),
