@@ -1,12 +1,16 @@
 class User {
   int id;
-  String username;
+  String userName;
+  String firstName;
+  String lastName;
   String email;
   DateTime birthDate;
 
   User(
     this.id,
-    this.username,
+    this.userName,
+    this.firstName,
+    this.lastName,
     this.email,
     this.birthDate,
   );
@@ -14,10 +18,11 @@ class User {
   factory User.fromJson(Map<String, dynamic> json) {
     return User(
       json['id'] as int,
-      json['username'] as String,
+      json['userName'] as String,
+      json['firstName'] as String,
+      json['lastName'] as String,
       json['email'] as String,
-      DateTime.parse(
-          json['birthDate'] as String), // Parse birthDate string to DateTime
+      DateTime.parse(json['birthDate'] as String), // Parse birthDate string to DateTime
     );
   }
 }
