@@ -1,6 +1,7 @@
 import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:ppf_mobile_client/RemoteService/Remote_service.dart';
 
 //Inicialización de la pantalla de Registro
 class RegisterScreen extends StatefulWidget {
@@ -13,7 +14,9 @@ class RegisterScreen extends StatefulWidget {
 
 //Pantalla de registro
 class _RegistrationScreenState extends State<RegisterScreen> {
-  final TextEditingController _usernameController = TextEditingController();
+  final TextEditingController _userNameController = TextEditingController();
+  final TextEditingController _firstNameController = TextEditingController();
+  final TextEditingController _lastNameController = TextEditingController();
   final TextEditingController _emailController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
   final TextEditingController _confirmPasswordController = TextEditingController();
@@ -22,6 +25,7 @@ class _RegistrationScreenState extends State<RegisterScreen> {
   DateTime? _selectedDate;
   XFile? _profileImage;
   bool _isDriver = false;
+  RemoteService remoteService = RemoteService();
   
   //Selección de fecha
   Future<void> _selectDate(BuildContext context) async {
@@ -127,13 +131,13 @@ class _RegistrationScreenState extends State<RegisterScreen> {
             const SizedBox(height: 10.0),
             //Campo de texto de Nombre Completo
             TextField(
-              controller: _usernameController,
+              controller: _userNameController,
               autofocus: false,
               style: const TextStyle(fontSize: 18.0),
               decoration: InputDecoration(
                 filled: true,
                 fillColor: Colors.white,
-                hintText: 'Nombre completo',
+                hintText: 'Nombre de Usuario',
                 hintStyle: const TextStyle(fontSize: 18.0,color: Color.fromARGB(255, 117, 117, 117), fontWeight: FontWeight.normal),
                 contentPadding:
                   const EdgeInsets.only(left: 14.0, bottom: 8.0, top: 8.0),
@@ -146,6 +150,56 @@ class _RegistrationScreenState extends State<RegisterScreen> {
                   borderRadius: BorderRadius.circular(12),
                 ),
               ),
+            ),
+            const SizedBox(height: 10.0),
+            Row(
+              children: [
+                Expanded(
+                  child: TextField(
+                    controller: _firstNameController,
+                    autofocus: false,
+                    style: const TextStyle(fontSize: 18.0),
+                    decoration: InputDecoration(
+                      filled: true,
+                      fillColor: Colors.white,
+                      hintText: 'Nombre',
+                      hintStyle: const TextStyle(fontSize: 18.0, color: Color.fromARGB(255, 117, 117, 117), fontWeight: FontWeight.normal),
+                      contentPadding: const EdgeInsets.only(left: 14.0, bottom: 8.0, top: 8.0),
+                      focusedBorder: OutlineInputBorder(
+                        borderSide: const BorderSide(color: Colors.white),
+                        borderRadius: BorderRadius.circular(12),
+                      ),
+                      enabledBorder: UnderlineInputBorder(
+                        borderSide: const BorderSide(color: Colors.white),
+                        borderRadius: BorderRadius.circular(12),
+                      ),
+                    ),
+                  ),
+                ),
+                const SizedBox(width: 16), // Agrega un espacio entre los campos
+                Expanded(
+                  child: TextField(
+                    controller: _lastNameController,
+                    autofocus: false,
+                    style: const TextStyle(fontSize: 18.0),
+                    decoration: InputDecoration(
+                      filled: true,
+                      fillColor: Colors.white,
+                      hintText: 'Apellido',
+                      hintStyle: const TextStyle(fontSize: 18.0, color: Color.fromARGB(255, 117, 117, 117), fontWeight: FontWeight.normal),
+                      contentPadding: const EdgeInsets.only(left: 14.0, bottom: 8.0, top: 8.0),
+                      focusedBorder: OutlineInputBorder(
+                        borderSide: const BorderSide(color: Colors.white),
+                        borderRadius: BorderRadius.circular(12),
+                      ),
+                      enabledBorder: UnderlineInputBorder(
+                        borderSide: const BorderSide(color: Colors.white),
+                        borderRadius: BorderRadius.circular(12),
+                      ),
+                    ),
+                  ),
+                ),
+              ],
             ),
             //Caja para dejar espacio entre los campos
             const SizedBox(height: 10.0),
@@ -289,7 +343,7 @@ class _RegistrationScreenState extends State<RegisterScreen> {
                     decoration: InputDecoration(
                       filled: true,
                       fillColor: Colors.white,
-                      hintText: 'Capacidad máxima del vehículo',
+                      hintText: 'Capacidad máxima del vehículo (km)',
                       hintStyle: const TextStyle(fontSize: 18.0, color: Color.fromARGB(255, 117, 117, 117), fontWeight: FontWeight.normal),
                       contentPadding: const EdgeInsets.only(left: 14.0, bottom: 8.0, top: 8.0),
                       focusedBorder: OutlineInputBorder(
@@ -317,7 +371,9 @@ class _RegistrationScreenState extends State<RegisterScreen> {
               //Acciones al apretarlo
               onPressed: () {
                 // Lógica de registro
-                String username = _usernameController.text;
+                String userName = _userNameController.text;
+                String firstName = _firstNameController.text;
+                String lastName = _lastNameController.text;
                 String email = _emailController.text;
                 String password = _passwordController.text;
                 String password2 = _confirmPasswordController.text;
@@ -349,7 +405,7 @@ class _RegistrationScreenState extends State<RegisterScreen> {
                   // Validación de campos si es conductor
                   if (_isDriver) {
                     if (
-                        username.isEmpty || 
+                        userName.isEmpty || 
                         email.isEmpty || 
                         _selectedDate == null ||
                         password.isEmpty || 
@@ -382,7 +438,7 @@ class _RegistrationScreenState extends State<RegisterScreen> {
                       // ...
 
                       // Imprime los valores
-                      print('Nombre de usuario: $username');
+                      print('Nombre de usuario: $userName');
                       print('Correo electrónico: $email');
                       print('Contraseña: $password');
                       print('DNI: $DNI');
@@ -392,7 +448,7 @@ class _RegistrationScreenState extends State<RegisterScreen> {
                   //Validacion de campos si no es conductor
                   else {
                     if (
-                        username.isEmpty || 
+                        userName.isEmpty || 
                         email.isEmpty || 
                         _selectedDate == null ||
                         password.isEmpty || 
@@ -419,13 +475,19 @@ class _RegistrationScreenState extends State<RegisterScreen> {
                     } 
                     //Registrar no conductor
                     else {
+                      
+                      // Imprime los valores
+                      print('Nombre de usuario: $userName');
+                      print('First Name: $firstName');
+                      print('Last Name: $lastName');
+                      print('Correo Electronico: $email');
+                      print('Contraseña: $password');
+                      print('Contraseña2: $password2');
+
                       // Todos los campos están completos, puedes continuar con la lógica de registro
                       // ...
+                      remoteService.registerUser(userName,firstName,lastName,email,password,password2,_selectedDate);
 
-                      // Imprime los valores
-                      print('Nombre de usuario: $username');
-                      print('Correo electrónico: $email');
-                      print('Contraseña: $password');
                     }
                   }
                 }

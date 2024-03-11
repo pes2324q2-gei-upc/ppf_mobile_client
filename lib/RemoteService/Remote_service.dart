@@ -1,5 +1,6 @@
 import 'package:ppf_mobile_client/Models/Users.dart';
 import 'package:dio/dio.dart';
+import 'package:intl/intl.dart';
 
 class RemoteService {
   Future<List<User>?> getUsers() async {
@@ -23,32 +24,38 @@ class RemoteService {
   }
 
   Future<bool> registerUser(String userName, String firstName, String lastName, String mail, String pwrd, String pwrd2, DateTime ?birthDate) async {
-    RemoteService().getUsers();
+    String URI = const String.fromEnvironment('USER_API');
+    String formattedDate = DateFormat('yyyy-MM-dd').format(birthDate!);
+    print('Request sent: $formattedDate');
     try {
       Dio dio = Dio();
+      dio.options.baseUrl = 'http://localhost:8081';
       //to parse a date:
-      Response response = await dio.post(
-        '127.0.0.1:8081/create-user/',
+
+      var response = await dio.post(
+        '/users/register',
         data: {
-          {
-            "username": userName,
-            "first_name": firstName,
-            "last_name": lastName,
-            "email": mail,
-            "birth_date": birthDate, //formattedDate
-            "password": pwrd,
-            "password2": pwrd2
-          }
+          "username": userName,
+          "first_name": firstName,
+          "last_name": lastName,
+          "email": mail,
+          "birth_date": formattedDate, //formattedDate
+          "password": pwrd,
+          "password2": pwrd2
         },
       );
       // Handle response
+      print('Request sent: post $URI/user/');
       print(response.data);
       return true;
       // You can add further logic here based on the response
     } catch (e) {
-      print('Error registering user: $e');
+      if (e is DioException) {
+        print('DioError registering user: $e');
+      } else {
+        print('Error registering user: $e');
+      }
       return false;
-      // Handle error
     }
   }
 }
