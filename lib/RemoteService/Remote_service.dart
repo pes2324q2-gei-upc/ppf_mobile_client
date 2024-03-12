@@ -27,7 +27,8 @@ class RemoteService {
     }
   }
 
-  Future<bool> registerUser(String userName, String firstName, String lastName, String mail, String pwrd, String pwrd2, DateTime ?birthDate) async {
+  Future<bool> registerUser(String userName, String firstName, String lastName,
+      String mail, String pwrd, String pwrd2, DateTime? birthDate) async {
     String formattedDate = DateFormat('yyyy-MM-dd').format(birthDate!);
     print(userApi);
     print('Date: $formattedDate');
@@ -46,6 +47,53 @@ class RemoteService {
           "birth_date": formattedDate, //formattedDate
           "password": pwrd,
           "password2": pwrd2
+        },
+      );
+      // Handle response
+      print('Request sent: post /user/register/');
+      print(response.data);
+      return true;
+      // You can add further logic here based on the response
+    } catch (e) {
+      if (e is DioException) {
+        print('DioError registering user: $e');
+      } else {
+        print('Error registering user: $e');
+      }
+      return false;
+    }
+  }
+
+  Future<bool> registerDriver(
+      String userName,
+      String firstName,
+      String lastName,
+      String mail,
+      String pwrd,
+      String pwrd2,
+      DateTime? birthDate,
+      String DNI,
+      String capacidad) async {
+    String formattedDate = DateFormat('yyyy-MM-dd').format(birthDate!);
+    print(userApi);
+    print('Date: $formattedDate');
+    try {
+      Dio dio = Dio();
+      dio.options.baseUrl = userApi;
+      //to parse a date:
+
+      var response = await dio.post(
+        '/drivers/',
+        data: {
+          "username": userName,
+          "first_name": firstName,
+          "last_name": lastName,
+          "email": mail,
+          "birth_date": formattedDate, //formattedDate
+          "password": pwrd,
+          "password2": pwrd2,
+          "dni": DNI,
+          "capacity": int.parse(capacidad)
         },
       );
       // Handle response
