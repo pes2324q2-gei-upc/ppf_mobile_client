@@ -1,17 +1,17 @@
 import 'package:flutter/material.dart';
 import 'package:ppf_mobile_client/views/register_screen.dart';
 
-class LoginScreen extends StatefulWidget {
-  const LoginScreen({Key? key}) : super(key: key);
-  
+class LogIn extends StatefulWidget {
+  const LogIn({Key? key}) : super(key: key);
+
   @override
-  _LoginScreenState createState() => _LoginScreenState();
+  _LogInState createState() => _LogInState();
 }
 
-class _LoginScreenState extends State<LoginScreen> {
+class _LogInState extends State<LogIn> {
   @override
   Widget build(BuildContext context) {
-      return MaterialApp(
+    return MaterialApp(
       home: Scaffold(
         appBar: AppBar(
           title: const Text('Login Screen'),
