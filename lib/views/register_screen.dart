@@ -14,16 +14,22 @@ class RegisterScreen extends StatefulWidget {
 
 //Pantalla de registro
 class _RegistrationScreenState extends State<RegisterScreen> {
-  final TextEditingController _userNameController = TextEditingController();
-  final TextEditingController _firstNameController = TextEditingController();
-  final TextEditingController _lastNameController = TextEditingController();
-  final TextEditingController _emailController = TextEditingController();
-  final TextEditingController _passwordController = TextEditingController();
-  final TextEditingController _confirmPasswordController =
-      TextEditingController();
-  final TextEditingController _DNIController = TextEditingController();
-  final TextEditingController _capacidadMaximaDelVehiculoController =
-      TextEditingController();
+  final TextEditingController _userNameController = 
+  TextEditingController();
+  final TextEditingController _firstNameController = 
+  TextEditingController();
+  final TextEditingController _lastNameController = 
+  TextEditingController();
+  final TextEditingController _emailController = 
+  TextEditingController();
+  final TextEditingController _passwordController = 
+  TextEditingController();
+  final TextEditingController _confirmPasswordController = 
+  TextEditingController();
+  final TextEditingController _DNIController = 
+  TextEditingController();
+  final TextEditingController _capacidadMaximaDelVehiculoController = 
+  TextEditingController();
   var hide1 = true;
   DateTime? _selectedDate;
   XFile? _profileImage;
