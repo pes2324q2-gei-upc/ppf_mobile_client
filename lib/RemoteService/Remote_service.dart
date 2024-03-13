@@ -99,11 +99,11 @@ class RemoteService {
       return false;
     }
   }
-  bool registerRoute(String routeName) {
+  Future<bool> registerRoute(String routeName) async{
     try {
       Dio dio = Dio();
       dio.options.baseUrl = routeApi;
-      var response = dio.post(
+      var response = await dio.post(
         '/routes/',
         data:{
           "routename": routeName
