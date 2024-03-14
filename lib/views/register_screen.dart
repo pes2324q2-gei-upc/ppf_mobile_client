@@ -3,6 +3,8 @@ import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:ppf_mobile_client/RemoteService/Remote_service.dart';
 
+import 'home_screen_placeholder.dart';
+
 //Inicialización de la pantalla de Registro
 class RegisterScreen extends StatefulWidget {
   const RegisterScreen({super.key});
@@ -334,6 +336,7 @@ class _RegistrationScreenState extends State<RegisterScreen> {
                 DNI,
                 capacidad
               );
+              Navigator.push(context, MaterialPageRoute (builder: (context) => const homeScreen()));
             }
           }
           //Validacion de campos si no es conductor
@@ -381,6 +384,7 @@ class _RegistrationScreenState extends State<RegisterScreen> {
                 password2, 
                 _selectedDate
               );
+              Navigator.push(context, MaterialPageRoute (builder: (context) => const homeScreen()));
             }
           }
         }

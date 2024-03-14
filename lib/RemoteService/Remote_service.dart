@@ -27,7 +27,7 @@ class RemoteService {
     }
   }
 
-  Future<bool> registerUser(String userName, String firstName, String lastName, String mail, String pwrd, String pwrd2, DateTime? birthDate) async {
+  Future<String> registerUser(String userName, String firstName, String lastName, String mail, String pwrd, String pwrd2, DateTime? birthDate) async {
     String formattedDate = DateFormat('yyyy-MM-dd').format(birthDate!);
     print(userApi);
     print('Date: $formattedDate');
@@ -48,22 +48,21 @@ class RemoteService {
           "password2": pwrd2
         },
       );
-      // Handle response
-      print('Request sent: post /user/register/');
-      print(response.data);
-      return true;
-      // You can add further logic here based on the response
+      //Devuelve string vacia si no hay error
+      return '';
+    //Hay que gestionar los errores aqui y passar el string que se va a
+    //imprimir por pantalla en el pop-up de error
     } catch (e) {
       if (e is DioException) {
         print('DioError registering user: $e');
       } else {
         print('Error registering user: $e');
       }
-      return false;
+      return 'e';
     }
   }
 
-  Future<bool> registerDriver(String userName, String firstName, String lastName, String mail, String pwrd, String pwrd2, DateTime? birthDate, String DNI, String capacidad) async {
+  Future<String> registerDriver(String userName, String firstName, String lastName, String mail, String pwrd, String pwrd2, DateTime? birthDate, String DNI, String capacidad) async {
     //to parse a date:
     String formattedDate = DateFormat('yyyy-MM-dd').format(birthDate!);
     print(userApi);
@@ -85,21 +84,21 @@ class RemoteService {
           "capacity": int.parse(capacidad)
         },
       );
-      // Handle response
-      print('Request sent: post /user/');
-      print(response.data);
-      return true;
-      // You can add further logic here based on the response
+      //Devuelve string vacia si no hay error
+      return '';
+    //Hay que gestionar los errores aqui y passar el string que se va a
+    //imprimir por pantalla en el pop-up de error
     } catch (e) {
       if (e is DioException) {
         print('DioError registering user: $e');
       } else {
         print('Error registering user: $e');
       }
-      return false;
+      return '$e';
     }
   }
-  Future<bool> registerRoute(String routeName) async{
+
+  Future<String> registerRoute(String routeName) async{
     try {
       Dio dio = Dio();
       dio.options.baseUrl = routeApi;
@@ -109,9 +108,11 @@ class RemoteService {
           "routename": routeName
         }
       );
-      print('$response');
-      return true;
+      //Devuelve string vacia si no hay error
+      return '';
     }
+    //Hay que gestionar los errores aqui y passar el string que se va a
+    //imprimir por pantalla en el pop-up de error
     catch(e) {
       if (e is DioException) {
         print('DioError registering toute: $e');
@@ -119,7 +120,7 @@ class RemoteService {
       else {
         print('Error registering user: $e');
       }
-      return false;
+      return '$e';
     }
     
   }

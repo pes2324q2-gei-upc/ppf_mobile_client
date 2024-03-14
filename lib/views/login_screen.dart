@@ -27,7 +27,7 @@ class _LogInState extends State<LogIn> {
                   // Navegar a la pantalla de registro al hacer clic en el botón
                   Navigator.push(
                     context,
-                    MaterialPageRoute(builder: (context) => RegisterScreen()),
+                    MaterialPageRoute(builder: (context) => const RegisterScreen()),
                   );
                 },
                 child: const Text('Ir a la pantalla de registro'),
