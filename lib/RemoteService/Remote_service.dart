@@ -27,8 +27,7 @@ class RemoteService {
     }
   }
 
-  Future<bool> registerUser(String userName, String firstName, String lastName,
-      String mail, String pwrd, String pwrd2, DateTime? birthDate) async {
+  Future<bool> registerUser(String userName, String firstName, String lastName, String mail, String pwrd, String pwrd2, DateTime? birthDate) async {
     String formattedDate = DateFormat('yyyy-MM-dd').format(birthDate!);
     print(userApi);
     print('Date: $formattedDate');
@@ -64,24 +63,14 @@ class RemoteService {
     }
   }
 
-  Future<bool> registerDriver(
-      String userName,
-      String firstName,
-      String lastName,
-      String mail,
-      String pwrd,
-      String pwrd2,
-      DateTime? birthDate,
-      String DNI,
-      String capacidad) async {
+  Future<bool> registerDriver(String userName, String firstName, String lastName, String mail, String pwrd, String pwrd2, DateTime? birthDate, String DNI, String capacidad) async {
+    //to parse a date:
     String formattedDate = DateFormat('yyyy-MM-dd').format(birthDate!);
     print(userApi);
     print('Date: $formattedDate');
     try {
       Dio dio = Dio();
       dio.options.baseUrl = userApi;
-      //to parse a date:
-
       var response = await dio.post(
         '/drivers/',
         data: {
@@ -97,7 +86,7 @@ class RemoteService {
         },
       );
       // Handle response
-      print('Request sent: post /user/register/');
+      print('Request sent: post /user/');
       print(response.data);
       return true;
       // You can add further logic here based on the response
@@ -109,5 +98,29 @@ class RemoteService {
       }
       return false;
     }
+  }
+  Future<bool> registerRoute(String routeName) async{
+    try {
+      Dio dio = Dio();
+      dio.options.baseUrl = routeApi;
+      var response = await dio.post(
+        '/routes/',
+        data:{
+          "routename": routeName
+        }
+      );
+      print('$response');
+      return true;
+    }
+    catch(e) {
+      if (e is DioException) {
+        print('DioError registering toute: $e');
+      }
+      else {
+        print('Error registering user: $e');
+      }
+      return false;
+    }
+    
   }
 }
