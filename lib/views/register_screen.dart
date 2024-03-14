@@ -16,24 +16,17 @@ class RegisterScreen extends StatefulWidget {
 
 //Pantalla de registro
 class _RegistrationScreenState extends State<RegisterScreen> {
-  
   //Variables de Registro
-  final TextEditingController _userNameController = 
-  TextEditingController();
-  final TextEditingController _firstNameController = 
-  TextEditingController();
-  final TextEditingController _lastNameController = 
-  TextEditingController();
-  final TextEditingController _emailController = 
-  TextEditingController();
-  final TextEditingController _passwordController = 
-  TextEditingController();
-  final TextEditingController _confirmPasswordController = 
-  TextEditingController();
-  final TextEditingController _DNIController = 
-  TextEditingController();
-  final TextEditingController _capacidadMaximaDelVehiculoController = 
-  TextEditingController();
+  final TextEditingController _userNameController = TextEditingController();
+  final TextEditingController _firstNameController = TextEditingController();
+  final TextEditingController _lastNameController = TextEditingController();
+  final TextEditingController _emailController = TextEditingController();
+  final TextEditingController _passwordController = TextEditingController();
+  final TextEditingController _confirmPasswordController =
+      TextEditingController();
+  final TextEditingController _DNIController = TextEditingController();
+  final TextEditingController _capacidadMaximaDelVehiculoController =
+      TextEditingController();
   var hide1 = true;
   DateTime? _selectedDate;
   XFile? _profileImage;
@@ -53,46 +46,54 @@ class _RegistrationScreenState extends State<RegisterScreen> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
-            
             //Botón de Back, para volver a la pantalla de Login
             _botonBack(),
-            const SizedBox(height: 16.0), //Caja para dejar espacio entre los campos
-           
+            const SizedBox(
+                height: 16.0), //Caja para dejar espacio entre los campos
+
             //Campo de imagen de Usuario
             _imageSelector(),
-            const SizedBox(height: 10.0), //Caja para dejar espacio entre los campos
-            
+            const SizedBox(
+                height: 10.0), //Caja para dejar espacio entre los campos
+
             //Campo de texto de email
             _buildTextField(_emailController, 'email'),
-            const SizedBox(height: 10.0),//Caja para dejar espacio entre los campos
-            
+            const SizedBox(
+                height: 10.0), //Caja para dejar espacio entre los campos
+
             //Campo de texto de Nombre de usuario
             _buildTextField(_userNameController, 'Nombre de Usuario'),
             const SizedBox(height: 10.0),
-            
+
             //Campos de texto de Nombre completo
             _buildNameSelector(),
-            const SizedBox(height: 10.0), //Caja para dejar espacio entre los campos
-            
+            const SizedBox(
+                height: 10.0), //Caja para dejar espacio entre los campos
+
             //Campo de selección de fecha
             _buildDateSelector(),
-            const SizedBox(height: 10.0), //Caja para dejar espacio entre los campos
-            
+            const SizedBox(
+                height: 10.0), //Caja para dejar espacio entre los campos
+
             //Campo de texto de contraseña
             _buildPasswordSelector(),
-            const SizedBox(height: 10.0), //Caja para dejar espacio entre los campos
-            
+            const SizedBox(
+                height: 10.0), //Caja para dejar espacio entre los campos
+
             //Campo de texto de Confirmar contraseña
-            _buildPassword2Selector (),
-            const SizedBox(height: 2.0),//Caja para dejar espacio entre los campos
-            
+            _buildPassword2Selector(),
+            const SizedBox(
+                height: 2.0), //Caja para dejar espacio entre los campos
+
             //Selección de si quieres ser conductor
             _buildDriverSelector(),
-            const SizedBox(height: 10.0), //Caja para dejar espacio entre los campos
+            const SizedBox(
+                height: 10.0), //Caja para dejar espacio entre los campos
 
             //Campos de Conductor, solo se muestran quando _isDriver es true
             _buildDriverFieldsSelector(),
-            const SizedBox(height: 20.0),//Caja para dejar espacio entre los campos
+            const SizedBox(
+                height: 20.0), //Caja para dejar espacio entre los campos
 
             //Boton de registro
             _buildRegisterButton(),
@@ -115,12 +116,11 @@ class _RegistrationScreenState extends State<RegisterScreen> {
         fillColor: Colors.white,
         hintText: hint,
         hintStyle: const TextStyle(
-          fontSize: 18.0,
-          color: Color.fromARGB(255, 117, 117, 117),
-          fontWeight: FontWeight.normal
-        ),
+            fontSize: 18.0,
+            color: Color.fromARGB(255, 117, 117, 117),
+            fontWeight: FontWeight.normal),
         contentPadding:
-          const EdgeInsets.only(left: 14.0, bottom: 8.0, top: 8.0),
+            const EdgeInsets.only(left: 14.0, bottom: 8.0, top: 8.0),
         focusedBorder: OutlineInputBorder(
           borderSide: const BorderSide(color: Colors.white),
           borderRadius: BorderRadius.circular(12),
@@ -145,12 +145,11 @@ class _RegistrationScreenState extends State<RegisterScreen> {
         fillColor: Colors.white,
         hintText: 'Contraseña',
         hintStyle: const TextStyle(
-          fontSize: 18.0,
-          color: Color.fromARGB(255, 117, 117, 117),
-          fontWeight: FontWeight.normal
-        ),
+            fontSize: 18.0,
+            color: Color.fromARGB(255, 117, 117, 117),
+            fontWeight: FontWeight.normal),
         contentPadding:
-          const EdgeInsets.only(left: 14.0, bottom: 8.0, top: 8.0),
+            const EdgeInsets.only(left: 14.0, bottom: 8.0, top: 8.0),
         focusedBorder: OutlineInputBorder(
           borderSide: const BorderSide(color: Colors.white),
           borderRadius: BorderRadius.circular(12),
@@ -174,7 +173,7 @@ class _RegistrationScreenState extends State<RegisterScreen> {
   }
 
   //Selector de la confirmación de la contraseña
-  Widget _buildPassword2Selector () {
+  Widget _buildPassword2Selector() {
     return TextField(
       controller: _confirmPasswordController,
       autofocus: false,
@@ -185,10 +184,9 @@ class _RegistrationScreenState extends State<RegisterScreen> {
         fillColor: Colors.white,
         hintText: 'Confirmar contraseña',
         hintStyle: const TextStyle(
-          fontSize: 18.0,
-          color: Color.fromARGB(255, 117, 117, 117),
-          fontWeight: FontWeight.normal
-        ),
+            fontSize: 18.0,
+            color: Color.fromARGB(255, 117, 117, 117),
+            fontWeight: FontWeight.normal),
         contentPadding:
             const EdgeInsets.only(left: 14.0, bottom: 8.0, top: 8.0),
         focusedBorder: OutlineInputBorder(
@@ -203,48 +201,47 @@ class _RegistrationScreenState extends State<RegisterScreen> {
     );
   }
 
-   //Selector de fecha
+  //Selector de fecha
   Widget _buildDateSelector() {
-      return InkWell(
-        onTap: () => _selectDate(context),
-        child: InputDecorator(
-          decoration: InputDecoration(
-            filled: true,
-            fillColor: Colors.white,
-            contentPadding:
+    return InkWell(
+      onTap: () => _selectDate(context),
+      child: InputDecorator(
+        decoration: InputDecoration(
+          filled: true,
+          fillColor: Colors.white,
+          contentPadding:
               const EdgeInsets.only(left: 14.0, bottom: 8.0, top: 8.0),
-            focusedBorder: OutlineInputBorder(
-              borderSide: const BorderSide(color: Colors.white),
-              borderRadius: BorderRadius.circular(12),
-            ),
-            enabledBorder: UnderlineInputBorder(
-              borderSide: const BorderSide(color: Colors.white),
-              borderRadius: BorderRadius.circular(12),
-            ),
+          focusedBorder: OutlineInputBorder(
+            borderSide: const BorderSide(color: Colors.white),
+            borderRadius: BorderRadius.circular(12),
           ),
-          child: _selectedDate == null
-          ? const Text.rich(TextSpan(
-            text: 'Fecha de nacimiento',
-            style: TextStyle(
-              fontSize: 18.0,
-              color: Color.fromARGB(255, 117, 117, 117),
-              fontWeight: FontWeight.normal
-            ),
-          ))
-          : Text.rich(TextSpan(
-            text: '${_selectedDate?.day}/${_selectedDate?.month}/${_selectedDate?.year}',
-            style: const TextStyle(
-              fontSize: 18.0,
-              color: Color.fromARGB(255, 117, 117, 117),
-              fontWeight: FontWeight.normal
-            ),
-          )),
+          enabledBorder: UnderlineInputBorder(
+            borderSide: const BorderSide(color: Colors.white),
+            borderRadius: BorderRadius.circular(12),
+          ),
         ),
-      );
+        child: _selectedDate == null
+            ? const Text.rich(TextSpan(
+                text: 'Fecha de nacimiento',
+                style: TextStyle(
+                    fontSize: 18.0,
+                    color: Color.fromARGB(255, 117, 117, 117),
+                    fontWeight: FontWeight.normal),
+              ))
+            : Text.rich(TextSpan(
+                text:
+                    '${_selectedDate?.day}/${_selectedDate?.month}/${_selectedDate?.year}',
+                style: const TextStyle(
+                    fontSize: 18.0,
+                    color: Color.fromARGB(255, 117, 117, 117),
+                    fontWeight: FontWeight.normal),
+              )),
+      ),
+    );
   }
 
   //Boton de registro
-  Widget _buildRegisterButton () {
+  Widget _buildRegisterButton() {
     return ElevatedButton(
       //Formato basico
       style: ElevatedButton.styleFrom(
@@ -252,7 +249,7 @@ class _RegistrationScreenState extends State<RegisterScreen> {
         padding: const EdgeInsets.symmetric(horizontal: 50, vertical: 20),
       ),
       //Acciones al apretarlo
-      onPressed: () {
+      onPressed: () async {
         // Lógica de registro
         String userName = _userNameController.text;
         String firstName = _firstNameController.text;
@@ -262,7 +259,10 @@ class _RegistrationScreenState extends State<RegisterScreen> {
         String password2 = _confirmPasswordController.text;
         String DNI = _DNIController.text;
         String capacidad = _capacidadMaximaDelVehiculoController.text;
+        String response;
+
         //contraseñas diferentes
+
         if (password != password2) {
           showDialog(
             context: context,
@@ -288,19 +288,20 @@ class _RegistrationScreenState extends State<RegisterScreen> {
           // Validación de campos si es conductor
           if (_isDriver) {
             if (userName.isEmpty ||
-                email.isEmpty ||
-                _selectedDate == null ||
-                password.isEmpty ||
-                password2.isEmpty ||
-                DNI.isEmpty ||
-                capacidad.isEmpty) {
+              email.isEmpty ||
+              _selectedDate == null ||
+              password.isEmpty ||
+              password2.isEmpty ||
+              DNI.isEmpty ||
+              capacidad.isEmpty) {
               // Muestra un mensaje de error
               showDialog(
                 context: context,
                 builder: (BuildContext context) {
                   return AlertDialog(
                     title: const Text('Error'),
-                    content: const Text('Por favor, completa todos los campos.'),
+                    content:
+                        const Text('Por favor, completa todos los campos.'),
                     actions: [
                       TextButton(
                         onPressed: () {
@@ -315,17 +316,8 @@ class _RegistrationScreenState extends State<RegisterScreen> {
             }
             //Registrar conductor
             else {
-              // Imprime los valores
-              print('Nombre de usuario: $userName');
-              print('First Name: $firstName');
-              print('Last Name: $lastName');
-              print('Correo Electronico: $email');
-              print('Contraseña: $password');
-              print('Contraseña2: $password2');
-              print('DNI: $DNI');
-              print('capacidad: $capacidad');
               // Todos los campos están completos, puedes continuar con la lógica de registro
-              remoteService.registerDriver (
+              response = await remoteService.registerDriver(
                 userName,
                 firstName,
                 lastName,
@@ -334,9 +326,8 @@ class _RegistrationScreenState extends State<RegisterScreen> {
                 password2,
                 _selectedDate,
                 DNI,
-                capacidad
-              );
-              Navigator.push(context, MaterialPageRoute (builder: (context) => const homeScreen()));
+                capacidad);
+              Navigator.push(context, MaterialPageRoute(builder: (context) => const homeScreen()));
             }
           }
           //Validacion de campos si no es conductor
@@ -352,7 +343,8 @@ class _RegistrationScreenState extends State<RegisterScreen> {
                 builder: (BuildContext context) {
                   return AlertDialog(
                     title: const Text('Error'),
-                    content: const Text('Por favor, completa todos los campos.'),
+                    content:
+                        const Text('Por favor, completa todos los campos.'),
                     actions: [
                       TextButton(
                         onPressed: () {
@@ -367,24 +359,31 @@ class _RegistrationScreenState extends State<RegisterScreen> {
             }
             //Registrar no conductor
             else {
-              // Imprime los valores
-              print('Nombre de usuario: $userName');
-              print('First Name: $firstName');
-              print('Last Name: $lastName');
-              print('Correo Electronico: $email');
-              print('Contraseña: $password');
-              print('Contraseña2: $password2');
               // Todos los campos están completos, puedes continuar con la lógica de registro
-              remoteService.registerUser(
-                userName, 
-                firstName, 
-                lastName,
-                email, 
-                password, 
-                password2, 
-                _selectedDate
-              );
-              Navigator.push(context, MaterialPageRoute (builder: (context) => const homeScreen()));
+              response = await remoteService.registerUser(userName, firstName,
+                  lastName, email, password, password2, _selectedDate);
+              if (response == '') {
+                Navigator.push(context,MaterialPageRoute(builder: (context) => const homeScreen()));
+              }
+              else {
+                showDialog(
+                  context: context,
+                  builder: (BuildContext context) {
+                    return AlertDialog(
+                      title: const Text('Error'),
+                      content: Text(response),
+                      actions: [
+                        TextButton(
+                          onPressed: () {
+                            Navigator.of(context).pop();
+                          },
+                          child: const Text('OK'),
+                        ),
+                      ],
+                    );
+                  },
+                );
+              }
             }
           }
         }
@@ -392,13 +391,11 @@ class _RegistrationScreenState extends State<RegisterScreen> {
       //Texto del boton de registro
       child: const Text.rich(
         TextSpan(
-          text: 'Registrarse',
-          style: TextStyle(
-            fontSize: 18.0,
-            color: Colors.white,
-            fontWeight: FontWeight.normal
-          )
-        ),
+            text: 'Registrarse',
+            style: TextStyle(
+                fontSize: 18.0,
+                color: Colors.white,
+                fontWeight: FontWeight.normal)),
       ),
     );
   }
@@ -435,50 +432,48 @@ class _RegistrationScreenState extends State<RegisterScreen> {
         radius: 75.0,
         backgroundColor: Colors.purple,
         //Setear imagen de perfil
-        child: Stack(
-          children: [
-            _profileImage == null
-            //Mostrar icono si no se ha seleccionado una foto de perfil
-            ? const Icon(
-              Icons.person,
-              size: 150.0,
-              color: Colors.white,
-            )
-            //Mostrar foto seleccionada en caso de que se haya seleccionado una
-            : ClipOval(
-              child: Image.file(
-                File(_profileImage!.path),
-                fit: BoxFit.cover,
-                width: 150.0,
-                height: 150.0,
-              ),
-            ),
-            const Positioned(
-              bottom: 0,
-              right: 0,
-              child: Padding(
-                padding: const EdgeInsets.all(0),
-                child: Icon(
-                  size: 45,
-                  Icons.circle,
-                  color: Colors.grey,
-                ),
-              ),
-            ),
-            const Positioned(
-              bottom: 0,
-              right: 0,
-              child: Padding(
-                padding: const EdgeInsets.all(6.5),
-                child: Icon(
-                  size: 30,
-                  Icons.edit,
+        child: Stack(children: [
+          _profileImage == null
+              //Mostrar icono si no se ha seleccionado una foto de perfil
+              ? const Icon(
+                  Icons.person,
+                  size: 150.0,
                   color: Colors.white,
+                )
+              //Mostrar foto seleccionada en caso de que se haya seleccionado una
+              : ClipOval(
+                  child: Image.file(
+                    File(_profileImage!.path),
+                    fit: BoxFit.cover,
+                    width: 150.0,
+                    height: 150.0,
+                  ),
                 ),
+          const Positioned(
+            bottom: 0,
+            right: 0,
+            child: Padding(
+              padding: const EdgeInsets.all(0),
+              child: Icon(
+                size: 45,
+                Icons.circle,
+                color: Colors.grey,
               ),
             ),
-          ]
-        ),
+          ),
+          const Positioned(
+            bottom: 0,
+            right: 0,
+            child: Padding(
+              padding: const EdgeInsets.all(6.5),
+              child: Icon(
+                size: 30,
+                Icons.edit,
+                color: Colors.white,
+              ),
+            ),
+          ),
+        ]),
       ),
     );
   }
@@ -491,10 +486,7 @@ class _RegistrationScreenState extends State<RegisterScreen> {
         const Text.rich(TextSpan(
           text: 'Quieres ser conductor?',
           style: TextStyle(
-            fontSize: 18.0,
-            color: Colors.black,
-            fontWeight: FontWeight.bold
-          ),
+              fontSize: 18.0, color: Colors.black, fontWeight: FontWeight.bold),
         )),
         //Seleccionador de si quieres ser conductor
         Switch(
@@ -515,14 +507,17 @@ class _RegistrationScreenState extends State<RegisterScreen> {
 
   Widget _buildDriverFieldsSelector() {
     return Visibility(
-      visible: _isDriver, //Controla la visibilidad basándote en el valor de _isDriver
+      visible:
+          _isDriver, //Controla la visibilidad basándote en el valor de _isDriver
       child: Column(
         children: [
           //Campo de texto del DNI
           _buildTextField(_DNIController, 'DNI'),
-          const SizedBox(height: 10.0), //Caja para dejar espacio entre los campos
+          const SizedBox(
+              height: 10.0), //Caja para dejar espacio entre los campos
           //Campo de texto de la Capacidad máxima del vehículo
-          _buildTextField(_capacidadMaximaDelVehiculoController, 'Capacidad máxima del vehículo (km)'),
+          _buildTextField(_capacidadMaximaDelVehiculoController,
+              'Capacidad máxima del vehículo (km)'),
         ],
       ),
     );
@@ -533,10 +528,10 @@ class _RegistrationScreenState extends State<RegisterScreen> {
     return Row(
       children: [
         //Campo de texto del nombre
-        Expanded(child: _buildTextField(_firstNameController, 'Nombre')), 
+        Expanded(child: _buildTextField(_firstNameController, 'Nombre')),
         const SizedBox(width: 16), // Agrega un espacio entre los campos
         //Campo de texto del apellido
-        Expanded (child: _buildTextField(_lastNameController, 'Apellido'))
+        Expanded(child: _buildTextField(_lastNameController, 'Apellido'))
       ],
     );
   }

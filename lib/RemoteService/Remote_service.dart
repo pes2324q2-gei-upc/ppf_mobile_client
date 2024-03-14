@@ -27,7 +27,14 @@ class RemoteService {
     }
   }
 
-  Future<String> registerUser(String userName, String firstName, String lastName, String mail, String pwrd, String pwrd2, DateTime? birthDate) async {
+  Future<String> registerUser(
+      String userName,
+      String firstName,
+      String lastName,
+      String mail,
+      String pwrd,
+      String pwrd2,
+      DateTime? birthDate) async {
     String formattedDate = DateFormat('yyyy-MM-dd').format(birthDate!);
     print(userApi);
     print('Date: $formattedDate');
@@ -36,7 +43,7 @@ class RemoteService {
       dio.options.baseUrl = userApi;
       //to parse a date:
 
-      var response = await dio.post(
+      Response response = await dio.post(
         '/users/',
         data: {
           "username": userName,
@@ -50,19 +57,25 @@ class RemoteService {
       );
       //Devuelve string vacia si no hay error
       return '';
-    //Hay que gestionar los errores aqui y passar el string que se va a
-    //imprimir por pantalla en el pop-up de error
-    } catch (e) {
-      if (e is DioException) {
-        print('DioError registering user: $e');
-      } else {
-        print('Error registering user: $e');
-      }
-      return 'e';
+      // Process data
+      //Hay que gestionar los errores aqui y passar el string que se va a
+      //imprimir por pantalla en el pop-up de error
+    } on DioException catch (e) {
+      Response? response = e.response;      
+      return '$response';
     }
   }
 
-  Future<String> registerDriver(String userName, String firstName, String lastName, String mail, String pwrd, String pwrd2, DateTime? birthDate, String DNI, String capacidad) async {
+  Future<String> registerDriver(
+      String userName,
+      String firstName,
+      String lastName,
+      String mail,
+      String pwrd,
+      String pwrd2,
+      DateTime? birthDate,
+      String DNI,
+      String capacidad) async {
     //to parse a date:
     String formattedDate = DateFormat('yyyy-MM-dd').format(birthDate!);
     print(userApi);
@@ -70,7 +83,7 @@ class RemoteService {
     try {
       Dio dio = Dio();
       dio.options.baseUrl = userApi;
-      var response = await dio.post(
+      Response response = await dio.post(
         '/drivers/',
         data: {
           "username": userName,
@@ -86,8 +99,8 @@ class RemoteService {
       );
       //Devuelve string vacia si no hay error
       return '';
-    //Hay que gestionar los errores aqui y passar el string que se va a
-    //imprimir por pantalla en el pop-up de error
+      //Hay que gestionar los errores aqui y passar el string que se va a
+      //imprimir por pantalla en el pop-up de error
     } catch (e) {
       if (e is DioException) {
         print('DioError registering user: $e');
@@ -98,30 +111,24 @@ class RemoteService {
     }
   }
 
-  Future<String> registerRoute(String routeName) async{
+  Future<String> registerRoute(String routeName) async {
     try {
       Dio dio = Dio();
       dio.options.baseUrl = routeApi;
-      var response = await dio.post(
-        '/routes/',
-        data:{
-          "routename": routeName
-        }
-      );
+      Response response =
+          await dio.post('/routes/', data: {"routename": routeName});
       //Devuelve string vacia si no hay error
       return '';
     }
     //Hay que gestionar los errores aqui y passar el string que se va a
     //imprimir por pantalla en el pop-up de error
-    catch(e) {
+    catch (e) {
       if (e is DioException) {
         print('DioError registering toute: $e');
-      }
-      else {
+      } else {
         print('Error registering user: $e');
       }
       return '$e';
     }
-    
   }
 }
