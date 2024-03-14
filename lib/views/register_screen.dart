@@ -113,11 +113,12 @@ class _RegistrationScreenState extends State<RegisterScreen> {
         fillColor: Colors.white,
         hintText: hint,
         hintStyle: const TextStyle(
-            fontSize: 18.0,
-            color: Color.fromARGB(255, 117, 117, 117),
-            fontWeight: FontWeight.normal),
+          fontSize: 18.0,
+          color: Color.fromARGB(255, 117, 117, 117),
+          fontWeight: FontWeight.normal
+        ),
         contentPadding:
-            const EdgeInsets.only(left: 14.0, bottom: 8.0, top: 8.0),
+          const EdgeInsets.only(left: 14.0, bottom: 8.0, top: 8.0),
         focusedBorder: OutlineInputBorder(
           borderSide: const BorderSide(color: Colors.white),
           borderRadius: BorderRadius.circular(12),
@@ -142,11 +143,12 @@ class _RegistrationScreenState extends State<RegisterScreen> {
         fillColor: Colors.white,
         hintText: 'Contraseña',
         hintStyle: const TextStyle(
-            fontSize: 18.0,
-            color: Color.fromARGB(255, 117, 117, 117),
-            fontWeight: FontWeight.normal),
+          fontSize: 18.0,
+          color: Color.fromARGB(255, 117, 117, 117),
+          fontWeight: FontWeight.normal
+        ),
         contentPadding:
-            const EdgeInsets.only(left: 14.0, bottom: 8.0, top: 8.0),
+          const EdgeInsets.only(left: 14.0, bottom: 8.0, top: 8.0),
         focusedBorder: OutlineInputBorder(
           borderSide: const BorderSide(color: Colors.white),
           borderRadius: BorderRadius.circular(12),
@@ -163,8 +165,7 @@ class _RegistrationScreenState extends State<RegisterScreen> {
               hide1 = !hide1;
             });
           },
-          padding: const EdgeInsets.symmetric(
-              horizontal: 20.0, vertical: 10.0),
+          padding: const EdgeInsets.symmetric(horizontal: 20.0, vertical: 10.0),
         ),
       ),
     );
@@ -182,9 +183,10 @@ class _RegistrationScreenState extends State<RegisterScreen> {
         fillColor: Colors.white,
         hintText: 'Confirmar contraseña',
         hintStyle: const TextStyle(
-            fontSize: 18.0,
-            color: Color.fromARGB(255, 117, 117, 117),
-            fontWeight: FontWeight.normal),
+          fontSize: 18.0,
+          color: Color.fromARGB(255, 117, 117, 117),
+          fontWeight: FontWeight.normal
+        ),
         contentPadding:
             const EdgeInsets.only(left: 14.0, bottom: 8.0, top: 8.0),
         focusedBorder: OutlineInputBorder(
@@ -208,7 +210,7 @@ class _RegistrationScreenState extends State<RegisterScreen> {
             filled: true,
             fillColor: Colors.white,
             contentPadding:
-                const EdgeInsets.only(left: 14.0, bottom: 8.0, top: 8.0),
+              const EdgeInsets.only(left: 14.0, bottom: 8.0, top: 8.0),
             focusedBorder: OutlineInputBorder(
               borderSide: const BorderSide(color: Colors.white),
               borderRadius: BorderRadius.circular(12),
@@ -296,8 +298,7 @@ class _RegistrationScreenState extends State<RegisterScreen> {
                 builder: (BuildContext context) {
                   return AlertDialog(
                     title: const Text('Error'),
-                    content: const Text(
-                        'Por favor, completa todos los campos.'),
+                    content: const Text('Por favor, completa todos los campos.'),
                     actions: [
                       TextButton(
                         onPressed: () {
@@ -348,8 +349,7 @@ class _RegistrationScreenState extends State<RegisterScreen> {
                 builder: (BuildContext context) {
                   return AlertDialog(
                     title: const Text('Error'),
-                    content: const Text(
-                        'Por favor, completa todos los campos.'),
+                    content: const Text('Por favor, completa todos los campos.'),
                     actions: [
                       TextButton(
                         onPressed: () {
@@ -487,9 +487,10 @@ class _RegistrationScreenState extends State<RegisterScreen> {
         const Text.rich(TextSpan(
           text: 'Quieres ser conductor?',
           style: TextStyle(
-              fontSize: 18.0,
-              color: Colors.black,
-              fontWeight: FontWeight.bold),
+            fontSize: 18.0,
+            color: Colors.black,
+            fontWeight: FontWeight.bold
+          ),
         )),
         //Seleccionador de si quieres ser conductor
         Switch(
