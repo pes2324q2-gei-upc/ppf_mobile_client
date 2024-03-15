@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:ppf_mobile_client/views/map_preview_screen.dart';
 import 'package:ppf_mobile_client/views/register_screen.dart';
 
 class LogIn extends StatefulWidget {
@@ -29,10 +30,23 @@ class _LogInState extends State<LogIn> {
                   Navigator.push(
                     context,
                     MaterialPageRoute(
-                        builder: (context) => const RegisterScreen()),
+                      builder: (context) => const RegisterScreen(),
+                    ),
                   );
                 },
                 child: const Text('Ir a la pantalla de registro'),
+              ),
+              ElevatedButton(
+                onPressed: () {
+                  // Navegar a la pantalla de registro al hacer clic en el botón
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => const MapPreview(),
+                    ),
+                  );
+                },
+                child: const Text('Ir a la pantalla de preview de mapas'),
               ),
             ],
           ),
