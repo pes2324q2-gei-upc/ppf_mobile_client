@@ -21,16 +21,16 @@ class RemoteService {
         return null;
       }
     
-      //Gestion de errores
+      //Error handling
     } on DioException catch (e) {
       Response? response = e.response;      
       
-      //Error con codigo 400
+      //Error code 400
       if(response?.statusCode == 400) {
         return null;
       }
       
-      //Otros errores
+      //Other errors
       else{
         return null;
       }
@@ -68,24 +68,24 @@ class RemoteService {
         },
       );
 
-      //Devuelve string vacia si no hay error
-      if (response.statusCode == 200) {
+      //Return empty string if there was no error
+      if (response.statusCode == 201) {
         return '';
       }
       else {
         return 'Ha ocurrido un error inesperado. Porfavor, intentelo de nuevo más tarde';
       }
       
-      //Gestion de errores
+      //Error handling
     } on DioException catch (e) {
       Response? response = e.response;      
       
-      //Error con codigo 400
+      //Error code 400
       if(response?.statusCode == 400) {
         return '$response';
       }
       
-      //Otros errores
+      //Other errors
       else{
         return 'Ha ocurrido un error inesperado. Porfavor, intentelo de nuevo más tarde';
       }
@@ -103,13 +103,16 @@ class RemoteService {
       String DNI,
       String capacidad) async {
     
-    //to parse a date:
+    //To parse a date:
     String formattedDate = DateFormat('yyyy-MM-dd').format(birthDate!);
     
     //API call success
     try {
       Dio dio = Dio();
       dio.options.baseUrl = userApi;
+
+      print('accessing: $userApi/drivers/');
+
       Response response = await dio.post(
         '/drivers/',
         data: {
@@ -125,24 +128,24 @@ class RemoteService {
         },
       );
 
-      //Devuelve string vacia si no hay error
-      if (response.statusCode == 200) {
+      //Return empty string if there was no error
+      if (response.statusCode == 201) {
         return '';
       }
       else {
         return 'Ha ocurrido un error inesperado. Porfavor, intentelo de nuevo más tarde';
       }
 
-      //Gestion de errores
+      //Error handling
     } on DioException catch (e) {
       Response? response = e.response;      
       
-      //Error con codigo 400
+      //Error code 400
       if(response?.statusCode == 400) {
         return '$response';
       }
       
-      //Otros errores
+      //Other errors
       else{
         return 'Ha ocurrido un error inesperado. Porfavor, intentelo de nuevo más tarde';
       }
@@ -161,24 +164,24 @@ class RemoteService {
         }
       );
 
-      //Devuelve string vacia si no hay error
-      if (response.statusCode == 200) {
+      //Return empty string if there was no error
+      if (response.statusCode == 201) {
         return '';
       }
       else {
         return 'Ha ocurrido un error inesperado. Porfavor, intentelo de nuevo más tarde';
       }
       
-      //Gestion de errores
+      //Error handling
     } on DioException catch (e) {
       Response? response = e.response;      
       
-      //Error con codigo 400
+      //Code 400 error
       if(response?.statusCode == 400) {
         return '$response';
       }
       
-      //Otros errores
+      //Other errors
       else{
         return 'Ha ocurrido un error inesperado. Porfavor, intentelo de nuevo más tarde';
       }

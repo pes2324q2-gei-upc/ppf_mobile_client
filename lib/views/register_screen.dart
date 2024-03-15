@@ -473,7 +473,7 @@ class _RegistrationScreenState extends State<RegisterScreen> {
         const SizedBox(width: 16),
 
         //Last name text field
-        Expanded(child: _buildTextField(_lastNameController, 'Apellido'))
+        Expanded(child: _buildTextField(_lastNameController, 'Apellidos'))
       ],
     );
   }
