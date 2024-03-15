@@ -1,11 +1,12 @@
 import 'dart:io';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:ppf_mobile_client/RemoteService/Remote_service.dart';
-
+import 'package:email_validator/email_validator.dart';
 import 'home_screen_placeholder.dart';
 
-//Inicialización de la pantalla de Registro
+//Register Screen initialization
 class RegisterScreen extends StatefulWidget {
   const RegisterScreen({super.key});
 
@@ -14,16 +15,17 @@ class RegisterScreen extends StatefulWidget {
   _RegistrationScreenState createState() => _RegistrationScreenState();
 }
 
-//Pantalla de registro
+//Register screen
 class _RegistrationScreenState extends State<RegisterScreen> {
-  //Variables de Registro
+  
+  //Register variables
   final TextEditingController _userNameController = TextEditingController();
   final TextEditingController _firstNameController = TextEditingController();
   final TextEditingController _lastNameController = TextEditingController();
   final TextEditingController _emailController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
   final TextEditingController _confirmPasswordController = TextEditingController();
-  final TextEditingController _DNIController = TextEditingController();
+  final TextEditingController _dniController = TextEditingController();
   final TextEditingController _capacidadMaximaDelVehiculoController = TextEditingController();
   var hide1 = true;
   DateTime? _selectedDate;
@@ -31,60 +33,60 @@ class _RegistrationScreenState extends State<RegisterScreen> {
   bool _isDriver = false;
   RemoteService remoteService = RemoteService();
 
-  //Componentes de la página de Registro
+  //Register screen components
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       resizeToAvoidBottomInset: true,
       backgroundColor: const Color.fromARGB(255, 211, 211, 211),
-      //SingleChildScrollView para gestionar el overflow vertical haciendo que se pueda escrollear
+      //SingleChildScrollView to deal with overflow when opening keyboard
       body: SingleChildScrollView(
         padding: const EdgeInsets.all(16.0),
-        //Column para que se añadan los componentes de arriba a bajo
+        //Column to show components from top to bottom
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
-            //Botón de Back, para volver a la pantalla de Login
+            //Back button to go back to login screen
             _botonBack(),
             const SizedBox(height: 16.0),
 
-            //Campo de imagen de Usuario
+            //Profile picture
             _imageSelector(),
             const SizedBox(height: 10.0),
 
-            //Campo de texto de email
+            //Email text field
             _buildTextField(_emailController, 'email'),
             const SizedBox(height: 10.0),
 
-            //Campo de texto de Nombre de usuario
+            //Username text field
             _buildTextField(_userNameController, 'Nombre de Usuario'),
             const SizedBox(height: 10.0),
 
-            //Campos de texto de Nombre completo
+            //Name text field
             _buildNameSelector(),
             const SizedBox(height: 10.0),
 
-            //Campo de selección de fecha
+            //Date selection field
             _buildDateSelector(),
             const SizedBox(height: 10.0),
 
-            //Campo de texto de contraseña
+            //Password text field
             _buildPasswordSelector(_passwordController, 'Contraseña'),
             const SizedBox(height: 10.0),
 
-            //Campo de texto de Confirmar contraseña
+            //Confirm password text field
             _buildPasswordSelector(_confirmPasswordController, 'Repita la contraseña'),
             const SizedBox(height: 2.0),
 
-            //Selección de si quieres ser conductor
+            //Choosing to be or not to be (a driver :D)
             _buildDriverSelector(),
             const SizedBox(height: 10.0),
 
-            //Campos de Conductor, solo se muestran quando _isDriver es true
+            //Driver specific fields, only shown if _isDriver is true
             _buildDriverFieldsSelector(),
             const SizedBox(height: 20.0),
 
-            //Boton de registro
+            //Register button
             _buildRegisterButton(),
           ],
         ),
@@ -92,12 +94,12 @@ class _RegistrationScreenState extends State<RegisterScreen> {
     );
   }
 
-  //Funciones Constructoras
+  //Constructors
 
-  //Campos de texto
-  Widget _buildTextField(TextEditingController _controller, String? hint) {
+  //Regular text field
+  Widget _buildTextField(TextEditingController contr, String? hint) {
     return TextField(
-      controller: _controller,
+      controller: contr,
       autofocus: false,
       style: const TextStyle(fontSize: 18.0),
       decoration: InputDecoration(
@@ -122,7 +124,7 @@ class _RegistrationScreenState extends State<RegisterScreen> {
     );
   }
 
-  //Selección de la contraseña
+  //Password text field
   Widget _buildPasswordSelector(TextEditingController pasCont, String hint) {
     return TextField(
       controller: pasCont,
@@ -147,7 +149,7 @@ class _RegistrationScreenState extends State<RegisterScreen> {
           borderSide: const BorderSide(color: Colors.white),
           borderRadius: BorderRadius.circular(12),
         ),
-        //Boton de ocultar la contraseña
+        //Hide/Show password button
         suffixIcon: IconButton(
           icon: Icon(hide1 ? Icons.visibility : Icons.visibility_off),
           onPressed: () {
@@ -161,7 +163,37 @@ class _RegistrationScreenState extends State<RegisterScreen> {
     );
   }
 
-  //Selector de fecha
+  //Number selection text field
+  Widget _buildNumberField(TextEditingController contr, String? hint) {
+    return TextField(
+      keyboardType: TextInputType.number,
+      inputFormatters: <TextInputFormatter>[FilteringTextInputFormatter.digitsOnly],
+      controller: contr,
+      autofocus: false,
+      style: const TextStyle(fontSize: 18.0),
+      decoration: InputDecoration(
+        filled: true,
+        fillColor: Colors.white,
+        hintText: hint,
+        hintStyle: const TextStyle(
+            fontSize: 18.0,
+            color: Color.fromARGB(255, 117, 117, 117),
+            fontWeight: FontWeight.normal),
+        contentPadding:
+            const EdgeInsets.only(left: 14.0, bottom: 8.0, top: 8.0),
+        focusedBorder: OutlineInputBorder(
+          borderSide: const BorderSide(color: Colors.white),
+          borderRadius: BorderRadius.circular(12),
+        ),
+        enabledBorder: UnderlineInputBorder(
+          borderSide: const BorderSide(color: Colors.white),
+          borderRadius: BorderRadius.circular(12),
+        ),
+      ),
+    );
+  }
+
+  //Date selection field
   Widget _buildDateSelector() {
     return InkWell(
       onTap: () => _selectDate(context),
@@ -202,158 +234,98 @@ class _RegistrationScreenState extends State<RegisterScreen> {
     );
   }
 
-  //Boton de registro
+  //Register button
   Widget _buildRegisterButton() {
     return ElevatedButton(
-      //Formato basico
       style: ElevatedButton.styleFrom(
         backgroundColor: Colors.green,
         padding: const EdgeInsets.symmetric(horizontal: 50, vertical: 20),
       ),
-      //Acciones al apretarlo
+
+      //Actions when the button is pressed
       onPressed: () async {
-        // Lógica de registro
+        //Register variables
         String userName = _userNameController.text;
         String firstName = _firstNameController.text;
         String lastName = _lastNameController.text;
         String email = _emailController.text;
         String password = _passwordController.text;
         String password2 = _confirmPasswordController.text;
-        String DNI = _DNIController.text;
+        String dni = _dniController.text;
         String capacidad = _capacidadMaximaDelVehiculoController.text;
         String response;
 
-        //contraseñas diferentes
+        //Show error message when passwords are different
         if (password != password2) {
-          showDialog(
-            context: context,
-            builder: (BuildContext context) {
-              return AlertDialog(
-                title: const Text('Error'),
-                content: const Text('Por favor, asegúrese de que repetir la contraseña correctamente'),
-                actions: [
-                  TextButton(
-                    onPressed: () {
-                      Navigator.of(context).pop();
-                    },
-                    child: const Text('OK'),
-                  ),
-                ],
-              );
-            },
-          );
+          _showError('Por favor, asegúrese de que repetir la contraseña correctamente');
         }
-        //contraseñas iguales
+
+        //Show error message if email is not valid
+        else if (!EmailValidator.validate(email)) {
+          _showError('Por favor, introduzca una dirección de correo electrónico válida');
+        }
+
+        //Password and email are valid
         else {
-          // Validación de campos si es conductor
+
+          //Driver case
           if (_isDriver) {
-            if (userName.isEmpty ||
-              email.isEmpty ||
-              _selectedDate == null ||
-              password.isEmpty ||
-              password2.isEmpty ||
-              DNI.isEmpty ||
-              capacidad.isEmpty) {
-              // Muestra un mensaje de error
-              showDialog(
-                context: context,
-                builder: (BuildContext context) {
-                  return AlertDialog(
-                    title: const Text('Error'),
-                    content: const Text('Por favor, completa todos los campos.'),
-                    actions: [
-                      TextButton(
-                        onPressed: () {
-                          Navigator.of(context).pop();
-                        },
-                        child: const Text('OK'),
-                      ),
-                    ],
-                  );
-                },
-              );
+
+            //Show error message if one of the fields is empty
+            if (userName.isEmpty || email.isEmpty || _selectedDate == null || password.isEmpty || password2.isEmpty || dni.isEmpty || capacidad.isEmpty) {              
+              _showError('Por favor, completa todos los campos');
             }
-            //Registrar conductor
+            
+            //Check if the DNI is valid
+            else if (!isValidDNI(dni)) {
+              _showError('Por favor, introduzca un DNI válido');
+            }
+
+            //Register driver if all fields are full
             else {
-              // Todos los campos están completos, puedes continuar con la lógica de registro
-              response = await remoteService.registerDriver(
-                userName,
-                firstName,
-                lastName,
-                email,
-                password,
-                password2,
-                _selectedDate,
-                DNI,
-                capacidad);
-              Navigator.push(context, MaterialPageRoute(builder: (context) => const homeScreen()));
-            }
-          }
-          //Validacion de campos si no es conductor
-          else {
-            if (userName.isEmpty ||
-                email.isEmpty ||
-                _selectedDate == null ||
-                password.isEmpty ||
-                password2.isEmpty) {
-              // Muestra un mensaje de error
-              showDialog(
-                context: context,
-                builder: (BuildContext context) {
-                  return AlertDialog(
-                    title: const Text('Error'),
-                    content: const Text('Por favor, completa todos los campos.'),
-                    actions: [
-                      TextButton(
-                        onPressed: () {
-                          Navigator.of(context).pop();
-                        },
-                        child: const Text('OK'),
-                      ),
-                    ],
-                  );
-                },
-              );
-            }
-            //Registrar no conductor
-            else {
-              // Todos los campos están completos, puedes continuar con la lógica de registro
-              response = await remoteService.registerUser(
-                userName, 
-                firstName,
-                lastName, 
-                email, 
-                password, 
-                password2,
-                _selectedDate
-              );
+              response = await remoteService.registerDriver(userName, firstName, lastName, email, password, password2, _selectedDate, dni, capacidad);
+              
+              //Redirect to home screen if registered correctly
               if (response == '') {
                 Navigator.push(context,MaterialPageRoute(builder: (context) => const homeScreen()));
               }
+              
+              //Show error while registering
               else {
-                showDialog(
-                  context: context,
-                  builder: (BuildContext context) {
-                    return AlertDialog(
-                      title: const Text('Error'),
-                      content: Text(response),
-                      actions: [
-                        TextButton(
-                          onPressed: () {
-                            Navigator.of(context).pop();
-                          },
-                          child: const Text('OK'),
-                        ),
-                      ],
-                    );
-                  },
-                );
+                _showError(response);
               }
+
+            }
+          }
+
+          //Non driver case
+          else {
+
+            //Show error message if one of the fields is empty
+            if (userName.isEmpty || email.isEmpty || _selectedDate == null || password.isEmpty || password2.isEmpty) {
+              _showError('Por favor, completa todos los campos');
+            }
+
+            //Register non driver if all fields are full
+            else {
+              response = await remoteService.registerUser(userName, firstName, lastName, email, password, password2, _selectedDate);
+              
+              //Redirect to home screen if registered correctly
+              if (response == '') {
+                Navigator.push(context,MaterialPageRoute(builder: (context) => const homeScreen()));
+              }
+
+              //Show error while registering
+              else {
+                _showError(response);
+              }
+
             }
           }
         }
       },
-      //Texto del boton de registro
+
+      //Register button text
       child: const Text.rich(
         TextSpan(
           text: 'Registrarse',
@@ -367,14 +339,14 @@ class _RegistrationScreenState extends State<RegisterScreen> {
     );
   }
 
-  //Constructor boton de volver a Login
+  //Back button constructor
   Widget _botonBack() {
     return Row(
       children: [
-        //Botón de back
+        //Back button
         IconButton(
           icon: const Icon(Icons.arrow_back),
-          //Lógica de click
+          //Click logic
           onPressed: () {
             Navigator.pop(context);
           },
@@ -383,31 +355,31 @@ class _RegistrationScreenState extends State<RegisterScreen> {
     );
   }
 
-  //Constructor selector de imagen
+  //Profile picture selector constructor
   Widget _imageSelector() {
     return GestureDetector(
-      //Logica de selección de imagen
+      //Image selection logic
       onTap: () async {
         XFile? image = await ImagePicker().pickImage(source: ImageSource.gallery);
         setState(() {
           _profileImage = image;
         });
       },
-      //Campo donde se muestra la imagen de perfil
+      //Field where profile picture is shown
       child: CircleAvatar(
         radius: 75.0,
         backgroundColor: Colors.purple,
-        //Setear imagen de perfil
+        //Set profile picture
         child: Stack(
           children: [
             _profileImage == null
-            //Mostrar icono si no se ha seleccionado una foto de perfil
+            //Show icon if no profile picture has been selected
             ? const Icon(
               Icons.person,
               size: 150.0,
               color: Colors.white,
             )
-            //Mostrar foto seleccionada en caso de que se haya seleccionado una
+            //Show selected profile picture
             : ClipOval(
               child: Image.file(
                 File(_profileImage!.path),
@@ -416,11 +388,12 @@ class _RegistrationScreenState extends State<RegisterScreen> {
                 height: 150.0,
               ),
             ),
+            //Bottom left corner edit icon
             const Positioned(
               bottom: 0,
               right: 0,
               child: Padding(
-                padding: const EdgeInsets.all(0),
+                padding: EdgeInsets.all(0),
                 child: Icon(
                   size: 45,
                   Icons.circle,
@@ -432,7 +405,7 @@ class _RegistrationScreenState extends State<RegisterScreen> {
               bottom: 0,
               right: 0,
               child: Padding(
-                padding: const EdgeInsets.all(6.5),
+                padding: EdgeInsets.all(6.5),
                 child: Icon(
                   size: 30,
                   Icons.edit,
@@ -446,17 +419,18 @@ class _RegistrationScreenState extends State<RegisterScreen> {
     );
   }
 
+  //Driver selecting slider constructor
   Widget _buildDriverSelector() {
     return Row(
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: [
-        //Texto de si quieres ser conductor
+        //"Do you want to be a driver?" text
         const Text.rich(TextSpan(
           text: 'Quieres ser conductor?',
           style: TextStyle(fontSize: 18.0, color: Colors.black, fontWeight: FontWeight.bold),
           )
         ),
-        //Seleccionador de si quieres ser conductor
+        //Slider to choose wether to be a driver
         Switch(
           activeColor: Colors.white,
           activeTrackColor: Colors.green,
@@ -473,39 +447,61 @@ class _RegistrationScreenState extends State<RegisterScreen> {
     );
   }
 
+  //Driver specific fields selector
   Widget _buildDriverFieldsSelector() {
     return Visibility(
-      visible: _isDriver, //Controla la visibilidad basándote en el valor de _isDriver
+      visible: _isDriver, //Controls visibiliti based on _isDriver's value
       child: Column(
         children: [
-          //Campo de texto del DNI
-          _buildTextField(_DNIController, 'DNI'),
+          //DNI text field
+          _buildTextField(_dniController, 'DNI'),
           const SizedBox(height: 10.0),
 
-          //Campo de texto de la Capacidad máxima del vehículo
-          _buildTextField(_capacidadMaximaDelVehiculoController, 'Capacidad máxima del vehículo (km)'),
+          //Max capacity field
+          _buildNumberField(_capacidadMaximaDelVehiculoController, 'Capacidad máxima del vehículo (km)'),
         ],
       ),
     );
   }
 
-  //Nombre
+  //Name selection constructor
   Widget _buildNameSelector() {
     return Row(
       children: [
-        //Campo de texto del nombre
+        //First name text field
         Expanded(child: _buildTextField(_firstNameController, 'Nombre')),
         const SizedBox(width: 16),
 
-        //Campo de texto del apellido
+        //Last name text field
         Expanded(child: _buildTextField(_lastNameController, 'Apellido'))
       ],
     );
   }
 
-  //Funciones extra
+  //Extra functions
 
-  //Selección de fecha
+  //Show errors
+  Future<void> _showError(String error)async {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: const Text('Error'),
+          content: Text(error),
+          actions: [
+            TextButton(
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+              child: const Text('OK'),
+            ),
+          ],
+        );
+      },
+    );
+  }
+
+  //Date selector
   Future<void> _selectDate(BuildContext context) async {
     DateTime? picked = await showDatePicker(
       context: context,
@@ -519,5 +515,14 @@ class _RegistrationScreenState extends State<RegisterScreen> {
         _selectedDate = picked;
       });
     }
+  }
+
+  //Check if DNI is valid
+  bool isValidDNI(String dni) {
+    // Regular expression for validating a string with 8 numbers followed by a letter
+    final dniRegex = RegExp(r'^\d{8}[a-zA-Z]$');
+
+    // Check if the string matches the regular expression
+    return dniRegex.hasMatch(dni);
   }
 }

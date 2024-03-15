@@ -12,18 +12,28 @@ class RemoteService {
       dio.options.baseUrl = userApi;
       Response response = await dio.get('/users/');
 
+
       if (response.statusCode == 200) {
         List<dynamic> jsonResponse = response.data;
-        List<User>? users =
-            jsonResponse.map((data) => User.fromJson(data)).toList();
+        List<User>? users = jsonResponse.map((data) => User.fromJson(data)).toList();
         return users;
       } else {
-        print('Request failed with status: ${response.statusCode}');
         return null;
       }
-    } catch (e) {
-      print('Error: $e');
-      return null;
+    
+      //Gestion de errores
+    } on DioException catch (e) {
+      Response? response = e.response;      
+      
+      //Error con codigo 400
+      if(response?.statusCode == 400) {
+        return null;
+      }
+      
+      //Otros errores
+      else{
+        return null;
+      }
     }
   }
 
@@ -35,14 +45,16 @@ class RemoteService {
       String pwrd,
       String pwrd2,
       DateTime? birthDate) async {
+    
+    //Parse date:
     String formattedDate = DateFormat('yyyy-MM-dd').format(birthDate!);
-    print(userApi);
-    print('Date: $formattedDate');
+    
+    //API call success
     try {
       Dio dio = Dio();
       dio.options.baseUrl = userApi;
-      //to parse a date:
-
+      
+      //API call
       Response response = await dio.post(
         '/users/',
         data: {
@@ -55,14 +67,25 @@ class RemoteService {
           "password2": pwrd2
         },
       );
+
       //Devuelve string vacia si no hay error
-      return '';
+      if (response.statusCode == 200) {
+        return '';
+      }
+      else {
+        return 'Ha ocurrido un error inesperado. Porfavor, intentelo de nuevo más tarde';
+      }
+      
       //Gestion de errores
     } on DioException catch (e) {
       Response? response = e.response;      
+      
+      //Error con codigo 400
       if(response?.statusCode == 400) {
         return '$response';
       }
+      
+      //Otros errores
       else{
         return 'Ha ocurrido un error inesperado. Porfavor, intentelo de nuevo más tarde';
       }
@@ -79,8 +102,11 @@ class RemoteService {
       DateTime? birthDate,
       String DNI,
       String capacidad) async {
+    
     //to parse a date:
     String formattedDate = DateFormat('yyyy-MM-dd').format(birthDate!);
+    
+    //API call success
     try {
       Dio dio = Dio();
       dio.options.baseUrl = userApi;
@@ -98,15 +124,25 @@ class RemoteService {
           "capacity": int.parse(capacidad)
         },
       );
+
       //Devuelve string vacia si no hay error
-      //Devuelve string vacia si no hay error
-      return '';
+      if (response.statusCode == 200) {
+        return '';
+      }
+      else {
+        return 'Ha ocurrido un error inesperado. Porfavor, intentelo de nuevo más tarde';
+      }
+
       //Gestion de errores
     } on DioException catch (e) {
       Response? response = e.response;      
+      
+      //Error con codigo 400
       if(response?.statusCode == 400) {
         return '$response';
       }
+      
+      //Otros errores
       else{
         return 'Ha ocurrido un error inesperado. Porfavor, intentelo de nuevo más tarde';
       }
@@ -114,23 +150,38 @@ class RemoteService {
   }
 
   Future<String> registerRoute(String routeName) async {
+    //API call success
     try {
       Dio dio = Dio();
       dio.options.baseUrl = routeApi;
-      Response response =
-          await dio.post('/routes/', data: {"routename": routeName});
+      Response response = await dio.post(
+        '/routes/',
+        data: {
+          "routename": routeName
+        }
+      );
+
       //Devuelve string vacia si no hay error
-      return '';
-    }
-    //Hay que gestionar los errores aqui y passar el string que se va a
-    //imprimir por pantalla en el pop-up de error
-    catch (e) {
-      if (e is DioException) {
-        print('DioError registering toute: $e');
-      } else {
-        print('Error registering user: $e');
+      if (response.statusCode == 200) {
+        return '';
       }
-      return '$e';
+      else {
+        return 'Ha ocurrido un error inesperado. Porfavor, intentelo de nuevo más tarde';
+      }
+      
+      //Gestion de errores
+    } on DioException catch (e) {
+      Response? response = e.response;      
+      
+      //Error con codigo 400
+      if(response?.statusCode == 400) {
+        return '$response';
+      }
+      
+      //Otros errores
+      else{
+        return 'Ha ocurrido un error inesperado. Porfavor, intentelo de nuevo más tarde';
+      }
     }
   }
 }
