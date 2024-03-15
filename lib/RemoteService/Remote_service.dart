@@ -57,12 +57,15 @@ class RemoteService {
       );
       //Devuelve string vacia si no hay error
       return '';
-      // Process data
-      //Hay que gestionar los errores aqui y passar el string que se va a
-      //imprimir por pantalla en el pop-up de error
+      //Gestion de errores
     } on DioException catch (e) {
       Response? response = e.response;      
-      return '$response';
+      if(response?.statusCode == 400) {
+        return '$response';
+      }
+      else{
+        return 'Ha ocurrido un error inesperado. Porfavor, intentelo de nuevo más tarde';
+      }
     }
   }
 
@@ -78,8 +81,6 @@ class RemoteService {
       String capacidad) async {
     //to parse a date:
     String formattedDate = DateFormat('yyyy-MM-dd').format(birthDate!);
-    print(userApi);
-    print('Date: $formattedDate');
     try {
       Dio dio = Dio();
       dio.options.baseUrl = userApi;
@@ -98,16 +99,17 @@ class RemoteService {
         },
       );
       //Devuelve string vacia si no hay error
+      //Devuelve string vacia si no hay error
       return '';
-      //Hay que gestionar los errores aqui y passar el string que se va a
-      //imprimir por pantalla en el pop-up de error
-    } catch (e) {
-      if (e is DioException) {
-        print('DioError registering user: $e');
-      } else {
-        print('Error registering user: $e');
+      //Gestion de errores
+    } on DioException catch (e) {
+      Response? response = e.response;      
+      if(response?.statusCode == 400) {
+        return '$response';
       }
-      return '$e';
+      else{
+        return 'Ha ocurrido un error inesperado. Porfavor, intentelo de nuevo más tarde';
+      }
     }
   }
 
