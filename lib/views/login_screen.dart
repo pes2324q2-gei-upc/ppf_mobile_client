@@ -2,9 +2,10 @@ import 'package:flutter/material.dart';
 import 'package:ppf_mobile_client/views/register_screen.dart';
 
 class LogIn extends StatefulWidget {
-  const LogIn({Key? key}) : super(key: key);
+  const LogIn({super.key});
 
   @override
+  // ignore: library_private_types_in_public_api
   _LogInState createState() => _LogInState();
 }
 
@@ -27,7 +28,8 @@ class _LogInState extends State<LogIn> {
                   // Navegar a la pantalla de registro al hacer clic en el botón
                   Navigator.push(
                     context,
-                    MaterialPageRoute(builder: (context) => RegisterScreen()),
+                    MaterialPageRoute(
+                        builder: (context) => const RegisterScreen()),
                   );
                 },
                 child: const Text('Ir a la pantalla de registro'),
