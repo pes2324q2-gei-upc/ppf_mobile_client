@@ -62,4 +62,35 @@ class RemoteService {
       return false;
     }
   }
+
+  Future<String> logInUser(String email, String password) async {
+    try {
+      Dio dio = Dio();
+      dio.options.baseUrl = userApi;
+      Response response = await dio.post(
+        '/login/',
+        data: {
+          "email": email,
+          "password": password,
+        }
+      );
+      if (response.statusCode == 200) {
+        dynamic jsonResponse = response.data;
+        return jsonResponse["token"] as String;
+      } 
+      return "";
+    } on DioException catch (e) {
+      Response? response = e.response;
+
+      //Code 400 error
+      if(response?.statusCode == 401) {
+        return "Invalid credentials";
+      }
+
+      //Other errors
+      else{
+        return 'Ha ocurrido un error inesperado. Porfavor, intentelo de nuevo más tarde';
+      }
+    }
+  }
 }

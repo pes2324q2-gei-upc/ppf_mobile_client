@@ -1,10 +1,22 @@
 import 'package:flutter/material.dart';
+import 'package:ppf_mobile_client/Views/forgot_password.dart';
+import 'package:ppf_mobile_client/Views/register_screen.dart';
+import 'package:ppf_mobile_client/RemoteService/Remote_service.dart';
 
-class LogIn extends StatelessWidget  {
+class LogIn extends StatefulWidget  {
   const LogIn ({super.key});
 
   @override
-  Widget build(BuildContext context) {
+  State<LogIn> createState() => _LogInState();
+}
+
+class _LogInState extends State<LogIn> {
+
+  final TextEditingController _emailController = TextEditingController();
+  final TextEditingController _passwordController = TextEditingController();
+
+  @override
+  MaterialApp build(BuildContext context) {
     return MaterialApp(
       title: 'Sing Up',
       theme: ThemeData(
@@ -13,59 +25,76 @@ class LogIn extends StatelessWidget  {
         scaffoldBackgroundColor: const Color.fromARGB(255, 213, 213, 213),
       ),
       home: Scaffold(
-        body: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            Padding(
-              padding: const EdgeInsets.all(20.0),
-              child: Image.asset(
-                "assets/logo.png",
-                height: 200,
-                width: 200,
-              ),
+        resizeToAvoidBottomInset: false,
+        body: Center(
+          child: SingleChildScrollView(
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Padding(
+                  padding: const EdgeInsets.all(20.0),
+                  child: Image.asset(
+                    "assets/logo.png",
+                    height: 200,
+                    width: 200,
+                  ),
+                ),
+                Padding(
+                  padding: const EdgeInsets.all(10.0),
+                  child: Email(controller: _emailController,),
+                ),
+                Padding(
+                  padding: const EdgeInsets.all(10.0),
+                  child: Password(controller: _passwordController,),
+                ),
+                const Center(
+                  child: Padding(
+                    padding: EdgeInsets.all(10.0),
+                    child: ForgotPasswordLink(),
+                  ),
+                ),
+                Padding(
+                  padding: const EdgeInsets.all(20.0),
+                  child: LogInButton(emailController: _emailController, passwordController: _passwordController),
+                ),
+                Padding(
+                  padding: const EdgeInsets.all(10.0),
+                  child: Row(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      AutentificationButton(icon: Image.asset('assets/GoogleLogo.png',width: 50.0,height: 50.0,)),
+                      const SizedBox(width: 30),
+                      AutentificationButton(icon: Image.asset('assets/FacebookLogo.png',width: 50.0,height: 50.0,)),
+                    ],
+                  ),
+                ),
+                const Padding(
+                  padding: EdgeInsets.all(10.0),
+                  child: SignUpOption(),
+                )
+              ],
             ),
-            const Padding(
-              padding: EdgeInsets.all(10.0),
-              child: Email(),
-            ),
-            const Padding(
-              padding: EdgeInsets.all(10.0),
-              child: Password(),
-            ),
-            const Center(
-              child: Padding(
-                padding: EdgeInsets.all(10.0),
-                child: ForgotPassword(),
-              ),
-            ),
-            const Padding(
-              padding: EdgeInsets.all(20.0),
-              child: LogInButton(),
-            ),
-            Padding(
-              padding: const EdgeInsets.all(10.0),
-              child: Row(
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  AutentificationButton(icon: Image.asset('assets/GoogleLogo.png',width: 50.0,height: 50.0,)),
-                  const SizedBox(width: 30),
-                  AutentificationButton(icon: Image.asset('assets/FacebookLogo.png',width: 50.0,height: 50.0,)),
-                ],
-              ),
-            ),
-            const Padding(
-              padding: EdgeInsets.all(10.0),
-              child: Row(
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  Text('¿No tienes cuenta?'),
-                  SizedBox(width: 5,),
-                  SignInLink(),
-                ],
-              ),
-            )
-          ],
-        ),),
+          ),
+        ),
+      ),
+    );
+  }
+}
+
+class SignUpOption extends StatelessWidget {
+  const SignUpOption({
+    super.key,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return const Row(
+      mainAxisSize: MainAxisSize.min,
+      children: [
+        Text('¿No tienes cuenta?'),
+        SizedBox(width: 5,),
+        SignInLink(),
+      ],
     );
   }
 }
@@ -81,7 +110,7 @@ class SignInLink extends StatelessWidget {
       onTap: () {
         Navigator.push(
           context,
-          MaterialPageRoute(builder: (context) => const Placeholder()),
+          MaterialPageRoute(builder: (context) => const RegisterScreen()),
         );
       },
       child: const Text(
@@ -122,7 +151,12 @@ class AutentificationButton extends StatelessWidget {
 class LogInButton extends StatelessWidget {
   const LogInButton({
     super.key,
+    required this.emailController,
+    required this.passwordController
   });
+
+  final TextEditingController emailController;
+  final TextEditingController passwordController;
 
   @override
   Widget build(BuildContext context) {
@@ -130,12 +164,19 @@ class LogInButton extends StatelessWidget {
       height: 50,
       width: 250,
       child: ElevatedButton(
-        onPressed: () {
-          Navigator.push(
-            context,
-            //INFO
-            MaterialPageRoute(builder: (context) => const Placeholder()),
-          );
+        onPressed: () async {
+          RemoteService rs = RemoteService();
+          String token = await rs.logInUser(emailController.text, passwordController.text);
+            if (token != 'Invalid credentials') {
+              Navigator.push(
+                // ignore: use_build_context_synchronously
+                context,
+                //INFO
+                MaterialPageRoute(builder: (context) => const Placeholder()),
+              );
+            }
+            else {
+            }
         },
         style: ElevatedButton.styleFrom(
           backgroundColor: Colors.green,
@@ -152,8 +193,8 @@ class LogInButton extends StatelessWidget {
   }
 }
 
-class ForgotPassword extends StatelessWidget {
-  const ForgotPassword({
+class ForgotPasswordLink extends StatelessWidget {
+  const ForgotPasswordLink ({
     super.key,
   });
 
@@ -163,7 +204,7 @@ class ForgotPassword extends StatelessWidget {
       onTap: () {
         Navigator.push(
           context,
-          MaterialPageRoute(builder: (context) => const Placeholder()),
+          MaterialPageRoute(builder: (context) => const ForgotPassword()),
         );
       },
       child: const Text(
@@ -179,7 +220,12 @@ class ForgotPassword extends StatelessWidget {
 }
 
 class Email extends StatelessWidget {
-  const Email({super.key});
+  const Email({
+    super.key,
+    required this.controller,
+  });
+
+  final TextEditingController controller;
 
   @override
   Widget build(BuildContext context) {
@@ -188,8 +234,9 @@ class Email extends StatelessWidget {
         borderRadius: BorderRadius.circular(20.0),
         color: Colors.white,
       ),
-      child: const TextField(
-        decoration: InputDecoration(
+      child: TextField(
+        controller: controller,
+        decoration: const InputDecoration(
           contentPadding: EdgeInsets.all(15.0),
           border: InputBorder.none,
           //border: OutlineInputBorder(),
@@ -201,7 +248,12 @@ class Email extends StatelessWidget {
 }
 
 class Password extends StatefulWidget {
-  const Password({super.key});
+  const Password({
+    super.key,
+    required this.controller,
+  });
+
+  final TextEditingController controller;
 
   @override
   State<Password> createState() => _PasswordState();
@@ -219,6 +271,7 @@ class _PasswordState extends State<Password> {
         color: Colors.white,
       ),
       child: TextField(
+        controller: widget.controller,
         obscureText: hide,
         decoration: InputDecoration(
           contentPadding: const EdgeInsets.all(15.0),
