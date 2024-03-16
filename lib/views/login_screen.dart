@@ -42,7 +42,7 @@ class _LogInState extends State<LogIn> {
                   Navigator.push(
                     context,
                     MaterialPageRoute(
-                      builder: (context) => const MapPreview(),
+                      builder: (context) => const MapSample(),
                     ),
                   );
                 },

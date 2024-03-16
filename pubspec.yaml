@@ -38,6 +38,7 @@ dependencies:
   dio: ^5.4.1
   image_picker: ^1.0.7
   intl: ^0.17.0
+  google_maps_flutter: ^2.6.0
 
 dev_dependencies:
   flutter_test:

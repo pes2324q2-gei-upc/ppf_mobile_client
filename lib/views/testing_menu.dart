@@ -37,7 +37,7 @@ class _TestingMenuState extends State<TestingMenu> {
                   Navigator.push(
                     context,
                     MaterialPageRoute(
-                      builder: (context) => const MapPreview(),
+                      builder: (context) => const MapSample(),
                     ),
                   );
                 },
