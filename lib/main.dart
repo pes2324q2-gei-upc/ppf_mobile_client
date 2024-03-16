@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:ppf_mobile_client/views/login_screen.dart';
+import 'package:ppf_mobile_client/views/testing_menu.dart';
 
 void main() {
   /*
@@ -42,6 +42,6 @@ class MyApp extends StatelessWidget {
           colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
           useMaterial3: true,
         ),
-        home: const LogIn());
+        home: const TestingMenu());
   }
 }
