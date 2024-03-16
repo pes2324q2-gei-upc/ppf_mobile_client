@@ -19,7 +19,8 @@ class User {
       json['firstName'] as String,
       json['lastName'] as String,
       json['email'] as String,
-      DateTime.parse(json['birthDate'] as String), // Parse birthDate string to DateTime
+      DateTime.parse(
+          json['birthDate'] as String), // Parse birthDate string to DateTime
     );
   }
 }
