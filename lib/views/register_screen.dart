@@ -4,7 +4,7 @@ import 'package:flutter/services.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:ppf_mobile_client/RemoteService/Remote_service.dart';
 import 'package:email_validator/email_validator.dart';
-import 'home_screen_placeholder.dart';
+import 'login_screen.dart';
 
 //Register Screen initialization
 class RegisterScreen extends StatefulWidget {
@@ -38,7 +38,7 @@ class _RegistrationScreenState extends State<RegisterScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       resizeToAvoidBottomInset: true,
-      backgroundColor: const Color.fromARGB(255, 211, 211, 211),
+      backgroundColor: Colors.grey[300],
       //SingleChildScrollView to deal with overflow when opening keyboard
       body: SingleChildScrollView(
         padding: const EdgeInsets.all(16.0),
@@ -55,7 +55,7 @@ class _RegistrationScreenState extends State<RegisterScreen> {
             const SizedBox(height: 10.0),
 
             //Email text field
-            _buildTextField(_emailController, 'email'),
+            _buildTextField(_emailController, 'Correo electrónico'),
             const SizedBox(height: 10.0),
 
             //Username text field
@@ -106,9 +106,9 @@ class _RegistrationScreenState extends State<RegisterScreen> {
         filled: true,
         fillColor: Colors.white,
         hintText: hint,
-        hintStyle: const TextStyle(
+        hintStyle: TextStyle(
             fontSize: 18.0,
-            color: Color.fromARGB(255, 117, 117, 117),
+            color: Colors.grey[500],
             fontWeight: FontWeight.normal),
         contentPadding:
             const EdgeInsets.only(left: 14.0, bottom: 8.0, top: 8.0),
@@ -117,7 +117,7 @@ class _RegistrationScreenState extends State<RegisterScreen> {
           borderRadius: BorderRadius.circular(12),
         ),
         enabledBorder: UnderlineInputBorder(
-          borderSide: const BorderSide(color: Colors.white),
+          borderSide: const BorderSide(color: Color.fromRGBO(158, 158, 158, 1)),
           borderRadius: BorderRadius.circular(12),
         ),
       ),
@@ -135,9 +135,9 @@ class _RegistrationScreenState extends State<RegisterScreen> {
         filled: true,
         fillColor: Colors.white,
         hintText: hint,
-        hintStyle: const TextStyle(
+        hintStyle: TextStyle(
             fontSize: 18.0,
-            color: Color.fromARGB(255, 117, 117, 117),
+            color: Colors.grey[500],
             fontWeight: FontWeight.normal),
         contentPadding:
             const EdgeInsets.only(left: 14.0, bottom: 8.0, top: 8.0),
@@ -146,7 +146,7 @@ class _RegistrationScreenState extends State<RegisterScreen> {
           borderRadius: BorderRadius.circular(12),
         ),
         enabledBorder: UnderlineInputBorder(
-          borderSide: const BorderSide(color: Colors.white),
+          borderSide: const BorderSide(color: Color.fromRGBO(158, 158, 158, 1)),
           borderRadius: BorderRadius.circular(12),
         ),
         //Hide/Show password button
@@ -175,9 +175,9 @@ class _RegistrationScreenState extends State<RegisterScreen> {
         filled: true,
         fillColor: Colors.white,
         hintText: hint,
-        hintStyle: const TextStyle(
+        hintStyle: TextStyle(
             fontSize: 18.0,
-            color: Color.fromARGB(255, 117, 117, 117),
+            color: Colors.grey[500],
             fontWeight: FontWeight.normal),
         contentPadding:
             const EdgeInsets.only(left: 14.0, bottom: 8.0, top: 8.0),
@@ -186,7 +186,7 @@ class _RegistrationScreenState extends State<RegisterScreen> {
           borderRadius: BorderRadius.circular(12),
         ),
         enabledBorder: UnderlineInputBorder(
-          borderSide: const BorderSide(color: Colors.white),
+          borderSide: const BorderSide(color: Color.fromRGBO(158, 158, 158, 1)),
           borderRadius: BorderRadius.circular(12),
         ),
       ),
@@ -208,25 +208,25 @@ class _RegistrationScreenState extends State<RegisterScreen> {
             borderRadius: BorderRadius.circular(12),
           ),
           enabledBorder: UnderlineInputBorder(
-            borderSide: const BorderSide(color: Colors.white),
+            borderSide: const BorderSide(color: Color.fromRGBO(158, 158, 158, 1)),
             borderRadius: BorderRadius.circular(12),
           ),
         ),
         child: _selectedDate == null
-        ? const Text.rich(TextSpan(
+        ? Text.rich(TextSpan(
           text: 'Fecha de nacimiento',
           style: TextStyle(
             fontSize: 18.0,
-            color: Color.fromARGB(255, 117, 117, 117),
+            color: Colors.grey[500],
             fontWeight: FontWeight.normal),
           )
         )
         : Text.rich(TextSpan(
           text:
             '${_selectedDate?.day}/${_selectedDate?.month}/${_selectedDate?.year}',
-          style: const TextStyle(
+          style: TextStyle(
             fontSize: 18.0,
-            color: Color.fromARGB(255, 117, 117, 117),
+            color: Colors.grey[500],
             fontWeight: FontWeight.normal),
           )
         ),
@@ -238,7 +238,7 @@ class _RegistrationScreenState extends State<RegisterScreen> {
   Widget _buildRegisterButton() {
     return ElevatedButton(
       style: ElevatedButton.styleFrom(
-        backgroundColor: Colors.green,
+        backgroundColor: Colors.green[600],
         padding: const EdgeInsets.symmetric(horizontal: 50, vertical: 20),
       ),
 
@@ -277,8 +277,8 @@ class _RegistrationScreenState extends State<RegisterScreen> {
             }
             
             //Check if the DNI is valid
-            else if (!isValidDNI(dni)) {
-              _showError('Por favor, introduzca un DNI válido');
+            else if (!isValidDNI(dni) && !isValidNIE(dni)) {
+              _showError('Por favor, introduzca un DNI/NIE válido');
             }
 
             //Register driver if all fields are full
@@ -287,7 +287,7 @@ class _RegistrationScreenState extends State<RegisterScreen> {
               
               //Redirect to home screen if registered correctly
               if (response == '') {
-                Navigator.push(context,MaterialPageRoute(builder: (context) => const homeScreen()));
+                Navigator.push(context,MaterialPageRoute(builder: (context) => const LogIn()));
               }
               
               //Show error while registering
@@ -312,7 +312,7 @@ class _RegistrationScreenState extends State<RegisterScreen> {
               
               //Redirect to home screen if registered correctly
               if (response == '') {
-                Navigator.push(context,MaterialPageRoute(builder: (context) => const homeScreen()));
+                Navigator.push(context,MaterialPageRoute(builder: (context) => const LogIn()));
               }
 
               //Show error while registering
@@ -389,7 +389,7 @@ class _RegistrationScreenState extends State<RegisterScreen> {
               ),
             ),
             //Bottom left corner edit icon
-            const Positioned(
+            Positioned(
               bottom: 0,
               right: 0,
               child: Padding(
@@ -397,7 +397,7 @@ class _RegistrationScreenState extends State<RegisterScreen> {
                 child: Icon(
                   size: 45,
                   Icons.circle,
-                  color: Colors.grey,
+                  color:  Colors.grey[500],
                 ),
               ),
             ),
@@ -433,9 +433,9 @@ class _RegistrationScreenState extends State<RegisterScreen> {
         //Slider to choose wether to be a driver
         Switch(
           activeColor: Colors.white,
-          activeTrackColor: Colors.green,
+          activeTrackColor: Colors.lightGreenAccent[700],
           inactiveThumbColor: Colors.white,
-          inactiveTrackColor: Colors.grey,
+          inactiveTrackColor: Colors.grey[500],
           value: _isDriver,
           onChanged: (value) {
             setState(() {
@@ -454,11 +454,11 @@ class _RegistrationScreenState extends State<RegisterScreen> {
       child: Column(
         children: [
           //DNI text field
-          _buildTextField(_dniController, 'DNI'),
+          _buildTextField(_dniController, 'DNI/NIE'),
           const SizedBox(height: 10.0),
 
           //Max capacity field
-          _buildNumberField(_capacidadMaximaDelVehiculoController, 'Capacidad máxima del vehículo (km)'),
+          _buildNumberField(_capacidadMaximaDelVehiculoController, 'Autonomia máxima del vehículo (km)'),
         ],
       ),
     );
@@ -521,6 +521,15 @@ class _RegistrationScreenState extends State<RegisterScreen> {
   bool isValidDNI(String dni) {
     // Regular expression for validating a string with 8 numbers followed by a letter
     final dniRegex = RegExp(r'^\d{8}[a-zA-Z]$');
+
+    // Check if the string matches the regular expression
+    return dniRegex.hasMatch(dni);
+  }
+
+  //Check if NIE is valid
+  bool isValidNIE(String dni) {
+    // Regular expression for validating a string with 8 numbers followed by a letter
+    final dniRegex = RegExp(r'^[a-zA-Z]\d{7}[a-zA-Z]$');
 
     // Check if the string matches the regular expression
     return dniRegex.hasMatch(dni);

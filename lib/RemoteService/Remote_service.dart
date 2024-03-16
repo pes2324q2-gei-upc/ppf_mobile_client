@@ -124,7 +124,7 @@ class RemoteService {
           "password": pwrd,
           "password2": pwrd2,
           "dni": DNI,
-          "capacity": int.parse(capacidad)
+          "autonomy": int.parse(capacidad)
         },
       );
 
