@@ -1,3 +1,5 @@
+// ignore_for_file: file_names
+
 class User {
   String userName;
   String firstName;
@@ -19,7 +21,8 @@ class User {
       json['firstName'] as String,
       json['lastName'] as String,
       json['email'] as String,
-      DateTime.parse(json['birthDate'] as String), // Parse birthDate string to DateTime
+      DateTime.parse(
+          json['birthDate'] as String), // Parse birthDate string to DateTime
     );
   }
 }

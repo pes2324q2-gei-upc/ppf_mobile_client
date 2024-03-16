@@ -1,12 +1,12 @@
-import 'package:ppf_mobile_client/Models/Users.dart';
+// ignore: file_names
+import 'package:ppf_mobile_client/Models/users.dart';
 import 'package:dio/dio.dart';
 import 'package:intl/intl.dart';
 import '/config.dart' show userApi;
-import '/config.dart' show routeApi;
+//import '/config.dart' show routeApi;
 
 class RemoteService {
   Future<List<User>?> getUsers() async {
-    print(userApi);
     try {
       Dio dio = Dio();
       dio.options.baseUrl = userApi;
@@ -18,24 +18,22 @@ class RemoteService {
             jsonResponse.map((data) => User.fromJson(data)).toList();
         return users;
       } else {
-        print('Request failed with status: ${response.statusCode}');
         return null;
       }
     } catch (e) {
-      print('Error: $e');
       return null;
     }
   }
 
-  Future<bool> registerUser(String userName, String firstName, String lastName, String mail, String pwrd, String pwrd2, DateTime ?birthDate) async {
+  Future<bool> registerUser(String userName, String firstName, String lastName,
+      String mail, String pwrd, String pwrd2, DateTime? birthDate) async {
     String formattedDate = DateFormat('yyyy-MM-dd').format(birthDate!);
-    print(userApi);
-    print('Date: $formattedDate');
     try {
       Dio dio = Dio();
       dio.options.baseUrl = userApi;
       //to parse a date:
 
+      // ignore: unused_local_variable
       var response = await dio.post(
         '/users/',
         data: {
@@ -43,22 +41,17 @@ class RemoteService {
           "first_name": firstName,
           "last_name": lastName,
           "email": mail,
-          "birth_date": formattedDate, //formattedDate
+          "birth_date": formattedDate,
           "password": pwrd,
           "password2": pwrd2
         },
       );
       // Handle response
-      print('Request sent: post /user/register/');
-      print(response.data);
       return true;
       // You can add further logic here based on the response
     } catch (e) {
       if (e is DioException) {
-        print('DioError registering user: $e');
-      } else {
-        print('Error registering user: $e');
-      }
+      } else {}
       return false;
     }
   }
