@@ -32,6 +32,7 @@ class _LogInState extends State<LogIn> {
                     MaterialPageRoute(
                       builder: (context) => const RegisterScreen(),
                     ),
+
                   );
                 },
                 child: const Text('Ir a la pantalla de registro'),
