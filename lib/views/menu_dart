@@ -1,0 +1,87 @@
+import 'package:flutter/material.dart';
+import 'dart:io';
+import 'package:image_picker/image_picker.dart';
+import 'package:ppf_mobile_client/RemoteService/Remote_service.dart';
+
+void main() {
+  runApp(MyApp());
+}
+
+class MyApp extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return MaterialApp(
+      home: MainPage(),
+    );
+  }
+}
+
+class MainPage extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(
+        backgroundColor: Color(0xFF080808),
+        title: Text("Menú Principal"),
+        leading: IconButton(
+          icon: Icon(Icons.chat_bubble),
+          onPressed: () {
+            // Acción al presionar el botón de chat
+          },
+        ),
+        actions: [
+          IconButton(
+            icon: Icon(Icons.account_circle), // Icono temporal de perfil
+            onPressed: () {
+              // Acción al presionar el botón de perfil
+            },
+          ),
+        ],
+      ),
+      backgroundColor: Color(0xFFC0C9C1),
+      body: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          // Aquí irían los botones de contenido
+          Expanded(
+            child: ListView(
+              children: List.generate(
+                10, // Cantidad de botones de contenido
+                (index) => Padding(
+                  padding: const EdgeInsets.symmetric(vertical: 8.0),
+                  child: ElevatedButton(
+                    onPressed: () {
+                      // Acción al presionar un botón de contenido
+                    },
+                    style: ElevatedButton.styleFrom(
+                      primary: Color(0xFFADADAD),
+                      padding: EdgeInsets.all(20),
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(20),
+                      ),
+                    ),
+                    child: Text("Botón ${index + 1}"),
+                  ),
+                ),
+              ),
+            ),
+          ),
+          // Botón inferior con el símbolo +
+          Container(
+            width: double.infinity,
+            color: Color(0xFF1A5F1F),
+            child: IconButton(
+              onPressed: () {
+                // Acción al presionar el botón +
+              },
+              icon: Icon(
+                Icons.add,
+                color: Colors.white,
+              ),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+}
