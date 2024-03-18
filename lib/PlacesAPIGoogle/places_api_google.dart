@@ -1,8 +1,9 @@
-import 'dart:convert';
 import 'package:geocoding/geocoding.dart';
+import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:uuid/uuid.dart';
 import 'package:flutter/material.dart';
-import 'package:dio/dio.dart';
+import 'package:ppf_mobile_client/RemoteService/Remote_service.dart';
+
 class PlacesApiGoogleMaps extends StatefulWidget {
   const PlacesApiGoogleMaps({super.key});
 
@@ -11,148 +12,136 @@ class PlacesApiGoogleMaps extends StatefulWidget {
 }
 
 class _PlacesApiGoogleMapsState extends State<PlacesApiGoogleMaps> {
-  
+  RemoteService remoteService = RemoteService();
+
   String tokenForSession = '';
 
-  String selectedAddress = '';
-  String selectedLongitude = '';
-  String selectedLatitude = '';
+  String selectedDepartureAddress = '';
+  LatLng selectedDepartureLatLng = const LatLng(0.0,0.0);
+  
+  String selectedADestinationAddress = '';
+  LatLng selectedDestinationLatLng = const LatLng(0.0,0.0);
+  
+  var uuid = const Uuid();
 
-  var uuid = Uuid();
+  List<dynamic> listForDepartures = [];
+  List<dynamic> listForDestinations = [];
 
-  List<dynamic> listForPlaces = [];
-
-  final TextEditingController _controller = TextEditingController();
+  final TextEditingController _departureController = TextEditingController();
+  final TextEditingController _destinationController = TextEditingController();
   
   void makeSuggestion(String input) async
   {
-    Dio dio = Dio();
-    String googlePlacesApiKey = 'AIzaSyDur4ZSjQ52es0R0tm-E2v35tQgsOIXGyw';
-    String groundURL = 'https://maps.googleapis.com/maps/api/place/queryautocomplete/json';
-
-    try {
-      var responseResult = await dio.get
-      (
-        groundURL,
-        queryParameters: 
-        {
-          'input': input,
-          'key': googlePlacesApiKey,
-          'sessiontoken': tokenForSession
-        }
-      );
-      var resultData = responseResult.data;
-      print('Result Data');
-      print(resultData);
-
-      if(responseResult.statusCode == 200) {
-        setState(() {
-          listForPlaces = jsonDecode(responseResult.toString()) ['predictions'];
-        });
-      }
-    }
-    on DioException catch (e) {
-      print(e.message);
-    }
+    var suggestions = await remoteService.makeSuggestionRemote(input, tokenForSession);
+    setState(() {
+      listForDepartures = suggestions;
+    });
   }
 
   void onSuggestionSelected(String suggestion) {
     // Cierra la lista de sugerencias
     setState(() {
-      listForPlaces = [];
+      listForDepartures = [];
     });
-    // Actualiza el valor del TextField con la sugerencia seleccionada
-    _controller.text = suggestion;
   }
 
 void onModify() {
   // Verifica si el texto actual es igual al valor seleccionado anteriormente
-  if (_controller.text != selectedAddress) {
+  if (_departureController.text != selectedDepartureAddress) {
     // Si son diferentes, actualiza el valor seleccionado y haz una nueva solicitud de sugerencias
-    selectedAddress = _controller.text;
+    selectedDepartureAddress = _departureController.text;
     if (tokenForSession == '') {
       setState(() {
         tokenForSession = uuid.v4();
       });
     }
-    makeSuggestion(selectedAddress);
+    makeSuggestion(selectedDepartureAddress);
   }
 }
 
 @override
   void initState() {
-    // TODO: implement initState
     super.initState();
-    _controller.addListener(() {
+    _departureController.addListener(() {
       onModify();
      });
+     makeSuggestion(_departureController.text);
   }
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      decoration: const BoxDecoration(
-        gradient: LinearGradient(
-          colors: [Colors.orange, Colors.teal],
-          begin: Alignment.centerLeft,
-          end: Alignment.centerRight,
-          stops: [0.0, 1.0],
-          tileMode: TileMode.clamp,
-          )
+    return Scaffold(
+      resizeToAvoidBottomInset: true,
+      backgroundColor: Colors.grey[300],
+      appBar: AppBar(
+        centerTitle: true,
+        title: const Text('Places Api Google Maps Search'),
       ),
-      child: Scaffold(
-        backgroundColor: Colors.transparent,
-        appBar: AppBar(
-          centerTitle: true,
-          title: const Text('Places Api Google Maps Search'),
-          flexibleSpace: Container(
-            decoration: const BoxDecoration(
-              gradient: LinearGradient(
-                colors: [Colors.teal, Colors.orange],
-                begin: Alignment.centerLeft,
-                end: Alignment.centerRight,
-                stops: [0.0, 1.0],
-                tileMode: TileMode.clamp,
-              )
-            ),
-          ),  
+      body: Padding(
+        padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 12),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.stretch,
+          children: [
+    
+            _buildTextField(_departureController, 'Salida'),
+    
+            _buildSuggestionList(_departureController),
+            
+            const SizedBox(height: 16.0),
+            
+            _buildTextField(_destinationController, 'Salida'),
+    
+            _buildSuggestionList(_destinationController),
+          ],
+        )
+      ),
+    );
+  }
+
+  Widget _buildSuggestionList(TextEditingController controller) {
+    return Expanded(
+      child: ListView.builder(
+        itemCount: listForDepartures.length,
+        itemBuilder: (context, index) {
+          return ListTile(
+            onTap: () async {
+              selectedDepartureAddress = listForDepartures[index] ['description'];
+              List<Location> locations = await locationFromAddress(listForDepartures[index] ['description']);
+              selectedDepartureLatLng = LatLng(locations.last.latitude,locations.last.longitude);
+              onSuggestionSelected(listForDepartures[index] ['description']);
+              controller.text = listForDepartures[index] ['description'];
+            },
+            title: Text(listForDepartures[index]['description']),
+          );
+        },
+      ),
+    );
+  }
+
+  Widget _buildTextField(TextEditingController contr, String? hint) {
+    return TextField(
+      controller: contr,
+      autofocus: false,
+      style: const TextStyle(fontSize: 18.0),
+      decoration: InputDecoration(
+        filled: true,
+        fillColor: Colors.white,
+        hintText: hint,
+        hintStyle: TextStyle(
+            fontSize: 18.0,
+            color: Colors.grey[500],
+            fontWeight: FontWeight.normal),
+        contentPadding:
+            const EdgeInsets.only(left: 14.0, bottom: 8.0, top: 8.0),
+        focusedBorder: OutlineInputBorder(
+          borderSide: const BorderSide(color: Colors.white),
+          borderRadius: BorderRadius.circular(12),
         ),
-        body: Padding(
-          padding: const EdgeInsets.symmetric(vertical: 12),
-          child: Column(
-            children: [
-              TextFormField(
-                controller: _controller,
-                decoration: const InputDecoration(
-                  hintText: 'Search here'
-                ),
-              ),
-              Expanded(
-                child: ListView.builder(
-                  itemCount: listForPlaces.length,
-                  itemBuilder: (context, index) {
-                    return ListTile(
-                      onTap: () async {
-                        selectedAddress = listForPlaces[index] ['description'];
-
-                        print('Selected address: $selectedAddress');
-
-                        List<Location> locations = await locationFromAddress(listForPlaces[index] ['description']);
-
-                        print(locations.last.longitude);
-                        print(locations.last.latitude);
-
-                        onSuggestionSelected(listForPlaces[index] ['description']);
-                      },
-                      title: Text(listForPlaces[index]['description']),
-                    );
-                  },
-                ),
-              )
-            ],
-          )
+        enabledBorder: UnderlineInputBorder(
+          borderSide: const BorderSide(color: Color.fromRGBO(158, 158, 158, 1)),
+          borderRadius: BorderRadius.circular(12),
         ),
-      )  
+      ),
     );
   }
 }
