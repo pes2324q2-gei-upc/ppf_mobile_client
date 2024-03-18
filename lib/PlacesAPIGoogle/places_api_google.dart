@@ -116,7 +116,7 @@ void onModifyDestination() {
       body: Padding(
         padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 12),
         child: Column(
-          crossAxisAlignment: CrossAxisAlignment.stretch,
+          crossAxisAlignment: CrossAxisAlignment.center,
           children: [
     
             _buildTextField(_departureController, 'Salida'),
@@ -135,45 +135,51 @@ void onModifyDestination() {
   }
 
   Widget _buildDepartureSuggestionList() {
-    return Expanded(
-      child: ListView.builder(
-        itemCount: listForDepartures.length,
-        itemBuilder: (context, index) {
-          return ListTile(
-            onTap: () async {
-              setState(() {
-                selectedDepartureAddress = listForDepartures[index]['description'];
-                _departureController.text = selectedDepartureAddress;
-                listForDepartures = []; // Cerrar la lista de sugerencias
-              });
-              List<Location> locations = await locationFromAddress(selectedDepartureAddress);
-              selectedDepartureLatLng = LatLng(locations.last.latitude, locations.last.longitude);
-            },
-            title: Text(listForDepartures[index]['description']),
-          );
-        },
+    return Visibility(
+      visible: _departureController.text.isNotEmpty && listForDepartures.isNotEmpty, 
+      child: Expanded(
+        child: ListView.builder(
+          itemCount: listForDepartures.length,
+          itemBuilder: (context, index) {
+            return ListTile(
+              onTap: () async {
+                setState(() {
+                  selectedDepartureAddress = listForDepartures[index]['description'];
+                  _departureController.text = selectedDepartureAddress;
+                  listForDepartures = []; // Cerrar la lista de sugerencias
+                });
+                List<Location> locations = await locationFromAddress(selectedDepartureAddress);
+                selectedDepartureLatLng = LatLng(locations.last.latitude, locations.last.longitude);
+              },
+              title: Text(listForDepartures[index]['description']),
+            );
+          },
+        ),
       ),
     );
   }
 
   Widget _buildDestinationSuggestionList() {
-    return Expanded(
-      child: ListView.builder(
-        itemCount: listForDestinations.length,
-        itemBuilder: (context, index) {
-          return ListTile(
-            onTap: () async {
-              setState(() {
-                selectedDestinationAddress = listForDestinations[index]['description'];
-                _destinationController.text = selectedDestinationAddress;
-                listForDestinations = []; // Cerrar la lista de sugerencias
-              });
-              List<Location> locations = await locationFromAddress(selectedDestinationAddress);
-              selectedDestinationLatLng = LatLng(locations.last.latitude, locations.last.longitude);
-            },
-            title: Text(listForDestinations[index]['description']),
-          );
-        },
+    return Visibility(
+      visible: _destinationController.text.isNotEmpty && listForDestinations.isNotEmpty, 
+      child: Expanded(
+        child: ListView.builder(
+          itemCount: listForDestinations.length,
+          itemBuilder: (context, index) {
+            return ListTile(
+              onTap: () async {
+                setState(() {
+                  selectedDestinationAddress = listForDestinations[index]['description'];
+                  _destinationController.text = selectedDestinationAddress;
+                  listForDestinations = []; // Cerrar la lista de sugerencias
+                });
+                List<Location> locations = await locationFromAddress(selectedDestinationAddress);
+                selectedDestinationLatLng = LatLng(locations.last.latitude, locations.last.longitude);
+              },
+              title: Text(listForDestinations[index]['description']),
+            );
+          },
+        ),
       ),
     );
   }
