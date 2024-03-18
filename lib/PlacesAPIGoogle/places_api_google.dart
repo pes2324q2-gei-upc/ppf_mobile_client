@@ -19,7 +19,7 @@ class _PlacesApiGoogleMapsState extends State<PlacesApiGoogleMaps> {
   String selectedDepartureAddress = '';
   LatLng selectedDepartureLatLng = const LatLng(0.0,0.0);
   
-  String selectedADestinationAddress = '';
+  String selectedDestinationAddress = '';
   LatLng selectedDestinationLatLng = const LatLng(0.0,0.0);
   
   var uuid = const Uuid();
@@ -30,7 +30,7 @@ class _PlacesApiGoogleMapsState extends State<PlacesApiGoogleMaps> {
   final TextEditingController _departureController = TextEditingController();
   final TextEditingController _destinationController = TextEditingController();
   
-  void makeSuggestion(String input) async
+  void makeDepartureSuggestion(String input) async
   {
     var suggestions = await remoteService.makeSuggestionRemote(input, tokenForSession);
     setState(() {
@@ -38,24 +38,56 @@ class _PlacesApiGoogleMapsState extends State<PlacesApiGoogleMaps> {
     });
   }
 
-  void onSuggestionSelected(String suggestion) {
+  void makeDestinationSuggestion(String input) async
+  {
+    var suggestions = await remoteService.makeSuggestionRemote(input, tokenForSession);
+    setState(() {
+      listForDestinations = suggestions;
+    });
+  }
+
+  void onSuggestionDepartureSelected(String suggestion) {
     // Cierra la lista de sugerencias
     setState(() {
       listForDepartures = [];
     });
   }
+  void onSuggestionDestinationSelected(String suggestion) {
+    // Cierra la lista de sugerencias
+    setState(() {
+      listForDestinations = [];
+    });
+  }
 
-void onModify() {
+void onModifyDeparture() {
   // Verifica si el texto actual es igual al valor seleccionado anteriormente
   if (_departureController.text != selectedDepartureAddress) {
     // Si son diferentes, actualiza el valor seleccionado y haz una nueva solicitud de sugerencias
-    selectedDepartureAddress = _departureController.text;
+    setState(() {
+      selectedDepartureAddress = _departureController.text;
+    });
     if (tokenForSession == '') {
       setState(() {
         tokenForSession = uuid.v4();
       });
     }
-    makeSuggestion(selectedDepartureAddress);
+    makeDepartureSuggestion(selectedDepartureAddress);
+  }
+}
+
+void onModifyDestination() {
+  // Verifica si el texto actual es igual al valor seleccionado anteriormente
+  if (_destinationController.text != selectedDestinationAddress) {
+    // Si son diferentes, actualiza el valor seleccionado y haz una nueva solicitud de sugerencias
+    setState(() {
+      selectedDestinationAddress = _destinationController.text;
+    });
+    if (tokenForSession == '') {
+      setState(() {
+        tokenForSession = uuid.v4();
+      });
+    }
+    makeDestinationSuggestion(selectedDestinationAddress);
   }
 }
 
@@ -63,9 +95,13 @@ void onModify() {
   void initState() {
     super.initState();
     _departureController.addListener(() {
-      onModify();
+      onModifyDeparture();
      });
-     makeSuggestion(_departureController.text);
+     _destinationController.addListener(() {
+      onModifyDestination();
+     });
+     makeDepartureSuggestion(_departureController.text);
+     makeDestinationSuggestion(_destinationController.text);
   }
 
   @override
@@ -85,33 +121,57 @@ void onModify() {
     
             _buildTextField(_departureController, 'Salida'),
     
-            _buildSuggestionList(_departureController),
+            _buildDepartureSuggestionList(),
             
             const SizedBox(height: 16.0),
             
             _buildTextField(_destinationController, 'Salida'),
     
-            _buildSuggestionList(_destinationController),
+            _buildDestinationSuggestionList(),
           ],
         )
       ),
     );
   }
 
-  Widget _buildSuggestionList(TextEditingController controller) {
+  Widget _buildDepartureSuggestionList() {
     return Expanded(
       child: ListView.builder(
         itemCount: listForDepartures.length,
         itemBuilder: (context, index) {
           return ListTile(
             onTap: () async {
-              selectedDepartureAddress = listForDepartures[index] ['description'];
-              List<Location> locations = await locationFromAddress(listForDepartures[index] ['description']);
-              selectedDepartureLatLng = LatLng(locations.last.latitude,locations.last.longitude);
-              onSuggestionSelected(listForDepartures[index] ['description']);
-              controller.text = listForDepartures[index] ['description'];
+              setState(() {
+                selectedDepartureAddress = listForDepartures[index]['description'];
+                _departureController.text = selectedDepartureAddress;
+                listForDepartures = []; // Cerrar la lista de sugerencias
+              });
+              List<Location> locations = await locationFromAddress(selectedDepartureAddress);
+              selectedDepartureLatLng = LatLng(locations.last.latitude, locations.last.longitude);
             },
             title: Text(listForDepartures[index]['description']),
+          );
+        },
+      ),
+    );
+  }
+
+  Widget _buildDestinationSuggestionList() {
+    return Expanded(
+      child: ListView.builder(
+        itemCount: listForDestinations.length,
+        itemBuilder: (context, index) {
+          return ListTile(
+            onTap: () async {
+              setState(() {
+                selectedDestinationAddress = listForDestinations[index]['description'];
+                _destinationController.text = selectedDestinationAddress;
+                listForDestinations = []; // Cerrar la lista de sugerencias
+              });
+              List<Location> locations = await locationFromAddress(selectedDestinationAddress);
+              selectedDestinationLatLng = LatLng(locations.last.latitude, locations.last.longitude);
+            },
+            title: Text(listForDestinations[index]['description']),
           );
         },
       ),

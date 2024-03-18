@@ -193,7 +193,7 @@ class RemoteService {
   Future<List<dynamic>> makeSuggestionRemote(String input, String tokenForSession) async
   {
     Dio dio = Dio();
-    String googlePlacesApiKey = 'AIzaSyBAuUToAEF5WkzF9vv6ANFv18qr9yNPb-Q';
+    String googlePlacesApiKey = '';
     String groundURL = 'https://maps.googleapis.com/maps/api/place/queryautocomplete/json';
 
     try {
