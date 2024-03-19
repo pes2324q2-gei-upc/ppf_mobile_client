@@ -69,25 +69,39 @@ class _PlacesApiGoogleMapsState extends State<PlacesApiGoogleMaps> {
             const SizedBox(height: 16.0),
             Row(
               children: [
+                const Column(
+                  children: [
+                    SizedBox(height: 16.0),
+                    Icon(Icons.circle_outlined, size: 20),
+                    SizedBox(width: 10),
+                    Icon(Icons.more_vert, size: 30)
+                  ],
+                ),
                 const SizedBox(width: 16),
-                Flexible(child:_buildTextField(_departureController, 'Salida')),
+                Flexible(child:_buildTextField(_departureController, 'Salida', const Icon(Icons.search))),
                 const SizedBox(width: 16),
               ]
             ),
             _buildDepartureSuggestionList(),
-            const SizedBox(height: 16.0),
+            //const SizedBox(height: 10),
             Row(
               children: [
+                const Column(
+                  children: [
+                    Icon(Icons.location_on_outlined, size: 30),
+                    SizedBox(height: 16),
+                  ],
+                ),
                 const SizedBox(width: 16),
-                Flexible(child:_buildTextField(_destinationController, 'Destino')),
+                Flexible(child:_buildTextField(_destinationController, 'Destino', const Icon(Icons.search))),
                 const SizedBox(width: 16),
               ]
             ),
             _buildDestinationSuggestionList(),
-            const SizedBox(height: 16.0), 
+            const SizedBox(height: 10.0), 
             Row(
               children: [
-                const SizedBox(width: 16),
+                const SizedBox(width: 46),
                 Flexible(child:_buildNameSelector()),
                 const SizedBox(width: 16),
               ]
@@ -162,21 +176,22 @@ class _PlacesApiGoogleMapsState extends State<PlacesApiGoogleMaps> {
     );
   }
 
-  Widget _buildTextField(TextEditingController contr, String? hint) {
+  Widget _buildTextField(TextEditingController contr, String? hint, Icon sufix) {
     return TextField(
       controller: contr,
       autofocus: false,
-      style: const TextStyle(fontSize: 12.0),
+      style: const TextStyle(fontSize: 18.0),
       decoration: InputDecoration(
+        suffixIcon: sufix,
         filled: true,
         fillColor: Colors.white,
         hintText: hint,
         hintStyle: TextStyle(
-            fontSize: 12.0,
+            fontSize: 18.0,
             color: Colors.grey[500],
             fontWeight: FontWeight.normal),
         contentPadding:
-            const EdgeInsets.only(left: 8.0, bottom: 2.0, top: 2.0),
+            const EdgeInsets.only(left: 14.0, bottom: 8.0, top: 8.0),
         focusedBorder: OutlineInputBorder(
           borderSide: const BorderSide(color: Colors.white),
           borderRadius: BorderRadius.circular(12),
@@ -329,24 +344,42 @@ class _PlacesApiGoogleMapsState extends State<PlacesApiGoogleMaps> {
           ),
         ),
         child: _selectedDate == null
-        ? Text(
-          'Fecha de salida',
-          overflow: TextOverflow.ellipsis,
+        ?RichText(
           maxLines: 1,
-          style: TextStyle(
-            fontSize: 12.0,
-            color: Colors.grey[500],
-            fontWeight: FontWeight.normal),
+          overflow: TextOverflow.ellipsis,
+          text: TextSpan(
+            children: [
+              const WidgetSpan(
+                child: Icon(Icons.calendar_month, size:18),
+              ),
+              TextSpan(
+                text: 'Salida',
+                style: TextStyle(
+                  color: Colors.grey[500],
+                  fontSize: 18,  
+                ),
+              ),
+            ],
+          ),
+        ) 
+        : RichText(
+          maxLines: 1,
+          overflow: TextOverflow.ellipsis,
+          text: TextSpan(
+            children: [
+              const WidgetSpan(
+                child: Icon(Icons.calendar_month, size: 18),
+              ),
+              TextSpan(
+                text: '${_selectedDate?.day}/${_selectedDate?.month}/${_selectedDate?.year}',
+                style: TextStyle(
+                  color: Colors.grey[500],
+                  fontSize: 18,  
+                ),
+              ),
+            ],
+          ),
         )
-        : Text.rich(TextSpan(
-          text:
-            '${_selectedDate?.day}/${_selectedDate?.month}/${_selectedDate?.year}',
-          style: TextStyle(
-            fontSize: 12.0,
-            color: Colors.grey[500],
-            fontWeight: FontWeight.normal),
-          )
-        ),
       ),
     );
   }
@@ -373,10 +406,10 @@ class _PlacesApiGoogleMapsState extends State<PlacesApiGoogleMaps> {
         Expanded(child: _buildDateSelector()),
         const SizedBox(width: 16),
 
-        Expanded(child: _buildTextField(_priceController, 'Precio')),
+        Expanded(child: _buildTextField(_priceController, 'Precio', const Icon(Icons.euro, size:16))),
         const SizedBox(width: 16),
 
-        Expanded(child: _buildTextField(_freeSpacesController, 'Plazas libres'))
+        Expanded(child: _buildTextField(_freeSpacesController, 'Plazas libres', const Icon(Icons.person, size:18)))
       ],
     );
   }
