@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'package:geocoding/geocoding.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
+import 'package:ppf_mobile_client/views/testing_menu.dart';
 import 'package:uuid/uuid.dart';
 import 'package:flutter/material.dart';
 import 'package:ppf_mobile_client/RemoteService/Remote_service.dart';
@@ -228,8 +229,24 @@ class _PlacesApiGoogleMapsState extends State<PlacesApiGoogleMaps> {
     _mapController.complete(controller);
   }
 
-  void joinRouteAction () {
+  Future<void> joinRouteAction () async {
+    //Check for nulls
+    String freeSpaces = _freeSpacesController.text; 
+    String price = _priceController.text;
+    if (selectedDepartureAddress.isEmpty || selectedDepartureLatLng.latitude == 0 || selectedDepartureLatLng.longitude == 0 || selectedDestinationAddress.isEmpty || selectedDestinationLatLng.latitude == 0 || selectedDestinationLatLng.longitude == 0 || _selectedDate == null || freeSpaces.isEmpty || price.isEmpty){
+      _showError('Por favor, rellene todos los campos');
+    }
+    else {
+    var response = await remoteService.registerRoute(selectedDepartureAddress, selectedDepartureLatLng.latitude, selectedDepartureLatLng.longitude, selectedDestinationAddress, selectedDestinationLatLng.latitude, selectedDestinationLatLng.longitude, _selectedDate, freeSpaces, price);
+              
+      if (response == '') {
+        Navigator.push(context,MaterialPageRoute(builder: (context) => const TestingMenu()));
+      }
 
+      else {
+        _showError(response);
+      }
+    }
   }
 
   void makeDepartureSuggestion(String input) async
@@ -361,6 +378,26 @@ class _PlacesApiGoogleMapsState extends State<PlacesApiGoogleMaps> {
 
         Expanded(child: _buildTextField(_freeSpacesController, 'Plazas libres'))
       ],
+    );
+  }
+
+  Future<void> _showError(String error)async {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: const Text('Error'),
+          content: Text(error),
+          actions: [
+            TextButton(
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+              child: const Text('OK'),
+            ),
+          ],
+        );
+      },
     );
   }
 }

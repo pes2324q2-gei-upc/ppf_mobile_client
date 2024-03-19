@@ -154,7 +154,7 @@ class RemoteService {
     }
   }
 
-  Future<String> registerRoute(String routeName) async {
+  Future<String> registerRoute(String departure, double departureLatitude, double departureLongitude, String destination, double destinationLatitude, double destinationLongitude, DateTime? selectedDate, String freeSpaces, String price) async {
     //API call success
     try {
       Dio dio = Dio();
@@ -162,7 +162,18 @@ class RemoteService {
       Response response = await dio.post(
         '/routes/',
         data: {
-          "routename": routeName
+          "preview": true,
+          "route": {
+            "originAlias": departure,
+            "originLatitude": departureLatitude,
+            "originLongitude": departureLongitude,
+            "destinationAlias": destination, // ie Apenins 5, Badalona, España -> alias: Badalona
+            "destinationLatitude": destinationLatitude,
+            "destinationLongitude": destinationLongitude,
+            "departureTime": selectedDate,
+            "freeSeats": int.parse(freeSpaces),
+            "price": double.parse(price)
+          }
         }
       );
 
