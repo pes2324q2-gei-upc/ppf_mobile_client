@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:ppf_mobile_client/PlacesAPIGoogle/places_api_google.dart';
-import 'package:ppf_mobile_client/TransformsMaps/transform_latlng.dart';
 import 'package:ppf_mobile_client/views/map_preview_screen.dart';
 import 'package:ppf_mobile_client/views/register_screen.dart';
 import 'package:ppf_mobile_client/views/route_creation_screen.dart';
@@ -56,17 +55,6 @@ class _TestingMenuState extends State<TestingMenu> {
                   );
                 },
                 child: const Text('Ir a la pantalla de creación de rutas'),
-              ),
-              ElevatedButton(
-                onPressed: () {
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                      builder: (context) => const TransformLatLngToAddress(),
-                    ),
-                  );
-                },
-                child: const Text('Ir a transformLatLngToAddress'),
               ),
               ElevatedButton(
                 onPressed: () {
