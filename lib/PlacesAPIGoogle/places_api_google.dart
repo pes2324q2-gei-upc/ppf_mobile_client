@@ -83,7 +83,6 @@ class _PlacesApiGoogleMapsState extends State<PlacesApiGoogleMaps> {
               ]
             ),
             _buildDepartureSuggestionList(),
-            //const SizedBox(height: 10),
             Row(
               children: [
                 const Column(
@@ -125,7 +124,7 @@ class _PlacesApiGoogleMapsState extends State<PlacesApiGoogleMaps> {
       visible: _departureController.text.isNotEmpty && listForDepartures.isNotEmpty, 
       child: SizedBox(
         height: 300,
-        child: Expanded(
+        child: Flexible(
           child: ListView.builder(
             itemCount: listForDepartures.length,
             itemBuilder: (context, index) {
@@ -136,8 +135,13 @@ class _PlacesApiGoogleMapsState extends State<PlacesApiGoogleMaps> {
                     _departureController.text = selectedDepartureAddress;
                     listForDepartures = []; // Cerrar la lista de sugerencias
                   });
-                  List<Location> locations = await locationFromAddress(selectedDepartureAddress);
-                  selectedDepartureLatLng = LatLng(locations.last.latitude, locations.last.longitude);
+                  try {
+                    List<Location> locations = await locationFromAddress(selectedDepartureAddress);
+                    selectedDepartureLatLng = LatLng(locations.last.latitude, locations.last.longitude);
+                  }
+                  catch (e) {
+                    _showError('Error: $e');
+                  }
                 },
                 title: Text(listForDepartures[index]['description']),
               );
@@ -153,7 +157,7 @@ class _PlacesApiGoogleMapsState extends State<PlacesApiGoogleMaps> {
       visible: _destinationController.text.isNotEmpty && listForDestinations.isNotEmpty, 
       child: SizedBox(
         height: 300,
-        child: Expanded(
+        child: Flexible(
           child: ListView.builder(
             itemCount: listForDestinations.length,
             itemBuilder: (context, index) {
@@ -164,8 +168,13 @@ class _PlacesApiGoogleMapsState extends State<PlacesApiGoogleMaps> {
                     _destinationController.text = selectedDestinationAddress;
                     listForDestinations = []; // Cerrar la lista de sugerencias
                   });
-                  List<Location> locations = await locationFromAddress(selectedDestinationAddress);
-                  selectedDestinationLatLng = LatLng(locations.last.latitude, locations.last.longitude);
+                  try {
+                    List<Location> locations = await locationFromAddress(selectedDestinationAddress);
+                    selectedDestinationLatLng = LatLng(locations.last.latitude, locations.last.longitude);
+                  }
+                  catch (e) {
+                    _showError('Error: $e');
+                  }
                 },
                 title: Text(listForDestinations[index]['description']),
               );
@@ -248,8 +257,8 @@ class _PlacesApiGoogleMapsState extends State<PlacesApiGoogleMaps> {
     //Check for nulls
     String freeSpaces = _freeSpacesController.text; 
     String price = _priceController.text;
-    if (selectedDepartureAddress.isEmpty || selectedDepartureLatLng.latitude == 0 || selectedDepartureLatLng.longitude == 0 || selectedDestinationAddress.isEmpty || selectedDestinationLatLng.latitude == 0 || selectedDestinationLatLng.longitude == 0 || _selectedDate == null || freeSpaces.isEmpty || price.isEmpty){
-      _showError('Por favor, rellene todos los campos');
+    if (selectedDepartureAddress.isEmpty || selectedDepartureLatLng.latitude == 0.0 || selectedDepartureLatLng.longitude == 0.0 || selectedDestinationAddress.isEmpty || selectedDestinationLatLng.latitude == 0.0 || selectedDestinationLatLng.longitude == 0.0 || _selectedDate == null || freeSpaces.isEmpty || price.isEmpty){
+      _showError('$selectedDepartureAddress $selectedDestinationLatLng $selectedDestinationAddress $selectedDestinationLatLng $_selectedDate $freeSpaces $price');
     }
     else {
     var response = await remoteService.registerRoute(selectedDepartureAddress, selectedDepartureLatLng.latitude, selectedDepartureLatLng.longitude, selectedDestinationAddress, selectedDestinationLatLng.latitude, selectedDestinationLatLng.longitude, _selectedDate, freeSpaces, price);
@@ -388,8 +397,8 @@ class _PlacesApiGoogleMapsState extends State<PlacesApiGoogleMaps> {
     DateTime? picked = await showDatePicker(
       context: context,
       initialDate: DateTime.now(),
-      firstDate: DateTime(1900),
-      lastDate: DateTime.now(),
+      firstDate: DateTime.now(),
+      lastDate: DateTime(2100),
     );
 
     if (picked != null && picked != _selectedDate) {
