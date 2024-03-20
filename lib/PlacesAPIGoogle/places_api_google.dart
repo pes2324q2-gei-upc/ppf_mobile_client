@@ -1,6 +1,9 @@
 import 'dart:async';
+import 'dart:math';
+import 'package:flutter_cupertino_datetime_picker/flutter_cupertino_datetime_picker.dart';
 import 'package:geocoding/geocoding.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
+import 'package:intl/intl.dart';
 import 'package:ppf_mobile_client/views/testing_menu.dart';
 import 'package:uuid/uuid.dart';
 import 'package:flutter/material.dart';
@@ -18,7 +21,7 @@ class _PlacesApiGoogleMapsState extends State<PlacesApiGoogleMaps> {
 
   String tokenForSession = '';
 
-  final Set<Marker> _markers = {};
+  //final Set<Marker> _markers = {};
 
   String selectedDepartureAddress = '';
   LatLng selectedDepartureLatLng = const LatLng(0.0,0.0);
@@ -393,18 +396,40 @@ class _PlacesApiGoogleMapsState extends State<PlacesApiGoogleMaps> {
     );
   }
 
-  Future<void> _selectDate(BuildContext context) async {
-    DateTime? picked = await showDatePicker(
-      context: context,
-      initialDate: DateTime.now(),
-      firstDate: DateTime.now(),
-      lastDate: DateTime(2100),
-    );
-
-    if (picked != null && picked != _selectedDate) {
-      setState(() {
-        _selectedDate = picked;
-      });
+  _selectDate(BuildContext context) {
+    if(_selectedDate != null){
+      return DatePicker.showDatePicker(
+        context,
+        dateFormat: 'dd MMMM yyyy HH:mm',
+        initialDateTime: _selectedDate!,
+        minDateTime: DateTime.now(),
+        maxDateTime: DateTime(3000),
+        onMonthChangeStartWithFirstDate: true,
+        onConfirm: (dateTime, List<int> index) {
+          setState(() {
+            _selectedDate = dateTime;
+            final selIOS = DateFormat('dd-MMM-yyyy - HH:mm').format(_selectedDate!);
+            print(selIOS);
+          });
+        },
+      );
+    }
+    else{
+      return DatePicker.showDatePicker(
+        context,
+        dateFormat: 'dd MMMM yyyy HH:mm',
+        initialDateTime: DateTime.now(),
+        minDateTime: DateTime.now(),
+        maxDateTime: DateTime(3000),
+        onMonthChangeStartWithFirstDate: true,
+        onConfirm: (dateTime, List<int> index) {
+          setState(() {
+            _selectedDate = dateTime;
+            final selIOS = DateFormat('dd-MMM-yyyy - HH:mm').format(_selectedDate!);
+            print(selIOS);
+          });
+        },
+      );
     }
   }
 

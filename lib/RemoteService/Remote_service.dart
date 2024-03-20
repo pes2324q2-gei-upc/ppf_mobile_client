@@ -155,6 +155,11 @@ class RemoteService {
   }
 
   Future<String> registerRoute(String departure, double departureLatitude, double departureLongitude, String destination, double destinationLatitude, double destinationLongitude, DateTime? selectedDate, String freeSpaces, String price) async {
+    
+
+    String formattedDate = DateFormat('yyyy-MM-ddThh:mm:ss').format(selectedDate!);
+    print(formattedDate);
+
     //API call success
     try {
       Dio dio = Dio();
@@ -162,18 +167,17 @@ class RemoteService {
       Response response = await dio.post(
         '/routes/',
         data: {
-          "preview": true,
-          "route": {
-            "originAlias": departure,
-            "originLatitude": departureLatitude,
-            "originLongitude": departureLongitude,
-            "destinationAlias": destination, // ie Apenins 5, Badalona, España -> alias: Badalona
-            "destinationLatitude": destinationLatitude,
-            "destinationLongitude": destinationLongitude,
-            "departureTime": selectedDate,
-            "freeSeats": int.parse(freeSpaces),
-            "price": double.parse(price)
-          }
+          "originLat": departureLatitude,
+          "originLon": departureLongitude,
+          "originAlias": departure,
+          "destinationLat": destinationLatitude,
+          "destinationLon": destinationLongitude,
+          "destinationAlias": destination,
+          "departureTime": formattedDate,
+          "arrivalTime": formattedDate,
+          "freeSeats": int.parse(freeSpaces),
+          "price": double.parse(price),
+          "driver": "Yo"
         }
       );
 
@@ -186,11 +190,11 @@ class RemoteService {
       }
       
       //Error handling
-    } on DioException catch (e) {
+   } on DioException catch (e) {
       Response? response = e.response;      
       
-      //Code 400 error
-      if(response?.statusCode == 400) {
+      //Error code 400
+      if(response?.statusCode == 404) {
         return '$response';
       }
       
