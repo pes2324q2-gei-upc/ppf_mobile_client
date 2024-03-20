@@ -159,7 +159,8 @@ class RemoteService {
 
     String formattedDate = DateFormat('yyyy-MM-ddThh:mm:ss').format(selectedDate!);
     print(formattedDate);
-
+    print('$routeApi/routes/');
+    
     //API call success
     try {
       Dio dio = Dio();
@@ -167,6 +168,7 @@ class RemoteService {
       Response response = await dio.post(
         '/routes/',
         data: {
+          "driver": "Yo",
           "originLat": departureLatitude,
           "originLon": departureLongitude,
           "originAlias": departure,
@@ -174,13 +176,11 @@ class RemoteService {
           "destinationLon": destinationLongitude,
           "destinationAlias": destination,
           "departureTime": formattedDate,
-          "arrivalTime": formattedDate,
           "freeSeats": int.parse(freeSpaces),
-          "price": double.parse(price),
-          "driver": "Yo"
+          "price": double.parse(price)
         }
       );
-
+      
       //Return empty string if there was no error
       if (response.statusCode == 201) {
         return '';
@@ -191,6 +191,7 @@ class RemoteService {
       
       //Error handling
    } on DioException catch (e) {
+      print(e);
       Response? response = e.response;      
       
       //Error code 400

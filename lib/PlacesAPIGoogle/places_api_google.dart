@@ -60,64 +60,69 @@ class _PlacesApiGoogleMapsState extends State<PlacesApiGoogleMaps> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      resizeToAvoidBottomInset: true,
-      backgroundColor: Colors.grey[300],
-      appBar: AppBar(),
-      body: SingleChildScrollView(
-        padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 12),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.center,
-          children: [
-            const SizedBox(height: 16.0),
-            Row(
-              children: [
-                const Column(
-                  children: [
-                    SizedBox(height: 16.0),
-                    Icon(Icons.circle_outlined, size: 20),
-                    SizedBox(width: 10),
-                    Icon(Icons.more_vert, size: 30)
-                  ],
-                ),
-                const SizedBox(width: 16),
-                Flexible(child:_buildTextField(_departureController, 'Salida', const Icon(Icons.search))),
-                const SizedBox(width: 16),
-              ]
-            ),
-            _buildDepartureSuggestionList(),
-            Row(
-              children: [
-                const Column(
-                  children: [
-                    Icon(Icons.location_on_outlined, size: 30),
-                    SizedBox(height: 16),
-                  ],
-                ),
-                const SizedBox(width: 16),
-                Flexible(child:_buildTextField(_destinationController, 'Destino', const Icon(Icons.search))),
-                const SizedBox(width: 16),
-              ]
-            ),
-            _buildDestinationSuggestionList(),
-            const SizedBox(height: 10.0), 
-            Row(
-              children: [
-                const SizedBox(width: 46),
-                Flexible(child:_buildNameSelector()),
-                const SizedBox(width: 16),
-              ]
-            ),
-            const SizedBox(height: 16.0), 
-            SizedBox(
-              height: 400,
-              child: _buildGoogleMap(),
-            ),
-            const SizedBox(height: 16.0),
-            _buildCreateRouteButton(),
-            const SizedBox(height: 16.0),
-          ],
-        )
+    return GestureDetector(
+      onTap: () {
+        _closeSuggestionLists();
+      },
+      child: Scaffold(
+        resizeToAvoidBottomInset: true,
+        backgroundColor: Colors.grey[300],
+        appBar: AppBar(),
+        body: SingleChildScrollView(
+          padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 12),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.center,
+            children: [
+              const SizedBox(height: 16.0),
+              Row(
+                children: [
+                  const Column(
+                    children: [
+                      SizedBox(height: 16.0),
+                      Icon(Icons.circle_outlined, size: 20),
+                      SizedBox(width: 10),
+                      Icon(Icons.more_vert, size: 30)
+                    ],
+                  ),
+                  const SizedBox(width: 16),
+                  Flexible(child:_buildTextField(_departureController, 'Salida', const Icon(Icons.search))),
+                  const SizedBox(width: 16),
+                ]
+              ),
+              _buildDepartureSuggestionList(),
+              Row(
+                children: [
+                  const Column(
+                    children: [
+                      Icon(Icons.location_on_outlined, size: 30),
+                      SizedBox(height: 16),
+                    ],
+                  ),
+                  const SizedBox(width: 16),
+                  Flexible(child:_buildTextField(_destinationController, 'Destino', const Icon(Icons.search))),
+                  const SizedBox(width: 16),
+                ]
+              ),
+              _buildDestinationSuggestionList(),
+              const SizedBox(height: 10.0), 
+              Row(
+                children: [
+                  const SizedBox(width: 46),
+                  Flexible(child:_buildNameSelector()),
+                  const SizedBox(width: 16),
+                ]
+              ),
+              const SizedBox(height: 16.0), 
+              SizedBox(
+                height: 400,
+                child: _buildGoogleMap(),
+              ),
+              const SizedBox(height: 16.0),
+              _buildCreateRouteButton(),
+              const SizedBox(height: 16.0),
+            ],
+          )
+        ),
       ),
     );
   }
@@ -466,5 +471,12 @@ class _PlacesApiGoogleMapsState extends State<PlacesApiGoogleMaps> {
         );
       },
     );
+  }
+  
+  void _closeSuggestionLists() {
+    setState(() {
+      listForDepartures = [];
+      listForDestinations = [];
+    });
   }
 }
