@@ -114,41 +114,12 @@ class _PlacesApiGoogleMapsState extends State<PlacesApiGoogleMaps> {
               Row(
                 children: [
                   const SizedBox(width: 46),
-                  Flexible(child:_buildNameSelector()),
+                  Flexible(child:_buildFieldSelectors()),
                   const SizedBox(width: 16),
                 ]
               ),
               const SizedBox(height: 16.0), 
-              SizedBox(
-                height: 400,
-                child: (currentUserPosition.latitude == 0 && currentUserPosition.longitude == 0)
-                ? const Center(
-                    child: Text("Loading...")
-                  )
-                : GoogleMap(
-                    mapType: MapType.normal,
-                    initialCameraPosition: CameraPosition(target: currentUserPosition, zoom: 14),
-                    markers: {
-                      Marker(
-                        markerId: MarkerId('currentPosition'),
-                        position: currentUserPosition,
-                        icon: BitmapDescriptor.defaultMarker,
-                      ),
-                      Marker(
-                        markerId: MarkerId('departure'),
-                        position: selectedDepartureLatLng,
-                        icon: BitmapDescriptor.defaultMarkerWithHue(BitmapDescriptor.hueRed),
-                      ),
-                      Marker(
-                        markerId: MarkerId('destination'),
-                        position: selectedDestinationLatLng,
-                        icon: BitmapDescriptor.defaultMarkerWithHue(BitmapDescriptor.hueRed),
-                      ),
-                    },
-                    polylines: Set<Polyline>.of(polylines.values),
-                    onMapCreated: ((GoogleMapController controller) => _mapController.complete(controller)),
-                ),
-              ),
+              _buildMap(),
               const SizedBox(height: 16.0),
               _buildCreateRouteButton(),
               const SizedBox(height: 16.0),
@@ -157,6 +128,39 @@ class _PlacesApiGoogleMapsState extends State<PlacesApiGoogleMaps> {
         ),
       ),
     );
+  }
+
+  Widget _buildMap () {
+   return SizedBox(
+    height: 400,
+    child: (currentUserPosition.latitude == 0 && currentUserPosition.longitude == 0)
+    ? const Center(
+        child: Text("Loading...")
+      )
+    : GoogleMap(
+        mapType: MapType.normal,
+        initialCameraPosition: CameraPosition(target: currentUserPosition, zoom: 14),
+        markers: {
+          Marker(
+            markerId: MarkerId('currentPosition'),
+            position: currentUserPosition,
+            icon: BitmapDescriptor.defaultMarkerWithHue(BitmapDescriptor.hueBlue)
+          ),
+          Marker(
+            markerId: MarkerId('departure'),
+            position: selectedDepartureLatLng,
+            icon: BitmapDescriptor.defaultMarkerWithHue(BitmapDescriptor.hueRed),
+          ),
+          Marker(
+            markerId: MarkerId('destination'),
+            position: selectedDestinationLatLng,
+            icon: BitmapDescriptor.defaultMarkerWithHue(BitmapDescriptor.hueRed),
+          ),
+        },
+        polylines: Set<Polyline>.of(polylines.values),
+        onMapCreated: ((GoogleMapController controller) => _mapController.complete(controller)),
+    ),
+  );
   }
 
   Widget _buildDepartureSuggestionList() {
@@ -253,42 +257,14 @@ class _PlacesApiGoogleMapsState extends State<PlacesApiGoogleMaps> {
     );
   }
 
-  Widget _buildIntegerField(TextEditingController contr, String? hint, Icon sufix) {
+  Widget _buildNumberField(TextEditingController contr, String? hint, Icon sufix, bool isDouble) {
     return TextField(
       controller: contr,
       autofocus: false,
       keyboardType: TextInputType.number,
-      inputFormatters: <TextInputFormatter>[FilteringTextInputFormatter.digitsOnly],
-      style: const TextStyle(fontSize: 18.0),
-      decoration: InputDecoration(
-        suffixIcon: sufix,
-        filled: true,
-        fillColor: Colors.white,
-        hintText: hint,
-        hintStyle: TextStyle(
-            fontSize: 18.0,
-            color: Colors.grey[500],
-            fontWeight: FontWeight.normal),
-        contentPadding:
-            const EdgeInsets.only(left: 14.0, bottom: 8.0, top: 8.0),
-        focusedBorder: OutlineInputBorder(
-          borderSide: const BorderSide(color: Colors.white),
-          borderRadius: BorderRadius.circular(12),
-        ),
-        enabledBorder: UnderlineInputBorder(
-          borderSide: const BorderSide(color: Color.fromRGBO(158, 158, 158, 1)),
-          borderRadius: BorderRadius.circular(12),
-        ),
-      ),
-    );
-  }
-
-  Widget _buildDoubleField(TextEditingController contr, String? hint, Icon sufix) {
-    return TextField(
-      controller: contr,
-      autofocus: false,
-      keyboardType: TextInputType.number,
-      inputFormatters: <TextInputFormatter>[FilteringTextInputFormatter.allow(RegExp(r'[0-9 .]'))],
+      inputFormatters: isDouble
+      ? <TextInputFormatter>[FilteringTextInputFormatter.allow(RegExp(r'[0-9 .]'))]
+      : <TextInputFormatter>[FilteringTextInputFormatter.digitsOnly],
       style: const TextStyle(fontSize: 18.0),
       decoration: InputDecoration(
         suffixIcon: sufix,
@@ -391,7 +367,7 @@ class _PlacesApiGoogleMapsState extends State<PlacesApiGoogleMaps> {
     String freeSpaces = _freeSpacesController.text; 
     String price = _priceController.text;
     if (selectedDepartureAddress.isEmpty || selectedDepartureLatLng.latitude == 0.0 || selectedDepartureLatLng.longitude == 0.0 || selectedDestinationAddress.isEmpty || selectedDestinationLatLng.latitude == 0.0 || selectedDestinationLatLng.longitude == 0.0 || _selectedDate == null || freeSpaces.isEmpty || price.isEmpty){
-      _showError('$selectedDepartureAddress $selectedDestinationLatLng $selectedDestinationAddress $selectedDestinationLatLng $_selectedDate $freeSpaces $price');
+      _showError('Porfavor, rellene todos los campos');
     }
     else {
     var response = await remoteService.registerRoute(selectedDepartureAddress, selectedDepartureLatLng.latitude, selectedDepartureLatLng.longitude, selectedDestinationAddress, selectedDestinationLatLng.latitude, selectedDestinationLatLng.longitude, _selectedDate, freeSpaces, price);
@@ -589,17 +565,17 @@ class _PlacesApiGoogleMapsState extends State<PlacesApiGoogleMaps> {
     }
   }
 
-  Widget _buildNameSelector() {
+  Widget _buildFieldSelectors() {
     return Row(
       children: [
 
         Expanded(child: _buildDateSelector()),
         const SizedBox(width: 16),
 
-        Expanded(child: _buildDoubleField(_priceController, 'Precio', const Icon(Icons.euro, size:16))),
+        Expanded(child: _buildNumberField(_priceController, 'Precio', const Icon(Icons.euro, size:16), true)),
         const SizedBox(width: 16),
 
-        Expanded(child: _buildIntegerField(_freeSpacesController, 'Plazas libres', const Icon(Icons.person, size:18)))
+        Expanded(child: _buildNumberField(_freeSpacesController, 'Plazas libres', const Icon(Icons.person, size:18), false))
       ],
     );
   }
