@@ -1,4 +1,4 @@
-const String GOOGLE_MAPS_API_KEY = "";
+const String GOOGLE_MAPS_API_KEY = "AIzaSyCbqOjDXWHRfTA1Z6abEOMH1BDdQ2vCvec";
 
 String get userApi {
   bool isProd = const bool.fromEnvironment('dart.vm.product');

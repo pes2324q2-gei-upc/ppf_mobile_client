@@ -142,20 +142,16 @@ class _PlacesApiGoogleMapsState extends State<PlacesApiGoogleMaps> {
             position: currentUserPosition,
             icon: BitmapDescriptor.defaultMarkerWithHue(BitmapDescriptor.hueBlue)
           ),
-          selectedDepartureAddress == ''
-          ? Marker(
+          Marker(
             markerId: MarkerId('departure'),
             position: selectedDepartureLatLng,
             icon: BitmapDescriptor.defaultMarkerWithHue(BitmapDescriptor.hueRed),
-          )
-          :const Marker(markerId: MarkerId('destination')),
-          selectedDestinationAddress == ''
-          ? Marker(
+          ),
+          Marker(
             markerId: MarkerId('destination'),
             position: selectedDestinationLatLng,
             icon: BitmapDescriptor.defaultMarkerWithHue(BitmapDescriptor.hueRed),
-          )
-          :const Marker(markerId: MarkerId('destination')),
+          ),
         },
         polylines: Set<Polyline>.of(polylines.values),
         onMapCreated: ((GoogleMapController controller) => _mapController.complete(controller)),
@@ -420,20 +416,20 @@ class _PlacesApiGoogleMapsState extends State<PlacesApiGoogleMaps> {
     setState(() {
         
     });
-    if (selectedDepartureAddress != '' && selectedDestinationAddress != '') {
+    if (selectedDepartureLatLng.latitude != 0 && selectedDepartureLatLng.latitude != 0 && selectedDestinationLatLng.latitude != 0 && selectedDestinationLatLng.longitude != 0) {
       getPolylinePoints().then((coordinates) => {
         generatePolyLineFromPoints(coordinates),
         _fitRouteBounds(coordinates),
       });
     }
     //Only one suggestion selected
-    else if (selectedDepartureAddress != '' || selectedDestinationAddress != '') {
+    else if ((selectedDepartureLatLng.latitude != 0 && selectedDepartureLatLng.latitude != 0) || (selectedDestinationLatLng.latitude != 0 && selectedDestinationLatLng.longitude != 0)) {
       //Selected departure
-      if (selectedDepartureAddress != ''){
+      if (selectedDepartureLatLng.latitude != 0 && selectedDepartureLatLng.latitude != 0){
         _cameraToPosition(selectedDepartureLatLng);
       }
       //Selected destination
-      else if (selectedDestinationAddress != ''){
+      else if (selectedDestinationLatLng.latitude != 0 && selectedDestinationLatLng.longitude != 0){
         _cameraToPosition(selectedDestinationLatLng);
       }
     }
