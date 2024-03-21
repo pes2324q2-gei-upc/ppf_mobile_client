@@ -1,5 +1,4 @@
 import 'dart:convert';
-
 import 'package:ppf_mobile_client/Models/Users.dart';
 import 'package:dio/dio.dart';
 import 'package:intl/intl.dart';
@@ -101,7 +100,7 @@ class RemoteService {
       String pwrd,
       String pwrd2,
       DateTime? birthDate,
-      String DNI,
+      String dni,
       String capacidad) async {
     
     //To parse a date:
@@ -121,7 +120,7 @@ class RemoteService {
           "birth_date": formattedDate, //formattedDate
           "password": pwrd,
           "password2": pwrd2,
-          "dni": DNI,
+          "dni": dni,
           "autonomy": int.parse(capacidad)
         },
       );
