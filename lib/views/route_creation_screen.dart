@@ -4,7 +4,6 @@ import 'package:flutter_cupertino_datetime_picker/flutter_cupertino_datetime_pic
 import 'package:geocoding/geocoding.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
-import 'package:intl/intl.dart';
 import 'package:ppf_mobile_client/config.dart';
 import 'package:ppf_mobile_client/views/testing_menu.dart';
 import 'package:uuid/uuid.dart';
@@ -416,7 +415,6 @@ class _RouteCreationScreenState extends State<RouteCreationScreen> {
         price.isEmpty) {
       _showError('Porfavor, rellene todos los campos');
     } else {
-      print('hola1');
       var response = await remoteService.registerRoute(
           selectedDepartureAddress,
           selectedDepartureLatLng.latitude,
@@ -605,9 +603,6 @@ class _RouteCreationScreenState extends State<RouteCreationScreen> {
         onConfirm: (dateTime, List<int> index) {
           setState(() {
             _selectedDate = dateTime;
-            final selIOS =
-                DateFormat('dd-MMM-yyyy - HH:mm').format(_selectedDate!);
-            print(selIOS);
           });
         },
       );
@@ -622,9 +617,6 @@ class _RouteCreationScreenState extends State<RouteCreationScreen> {
         onConfirm: (dateTime, List<int> index) {
           setState(() {
             _selectedDate = dateTime;
-            final selIOS =
-                DateFormat('dd-MMM-yyyy - HH:mm').format(_selectedDate!);
-            print(selIOS);
           });
         },
       );

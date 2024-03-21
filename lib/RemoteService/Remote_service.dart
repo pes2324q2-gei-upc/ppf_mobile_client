@@ -8,7 +8,6 @@ import '/config.dart' show routeApi;
 
 class RemoteService {
   Future<List<User>?> getUsers() async {
-    print(userApi);
     try {
       Dio dio = Dio();
       dio.options.baseUrl = userApi;
@@ -112,9 +111,6 @@ class RemoteService {
     try {
       Dio dio = Dio();
       dio.options.baseUrl = userApi;
-
-      print('accessing: $userApi/drivers/');
-
       Response response = await dio.post(
         '/drivers/',
         data: {
