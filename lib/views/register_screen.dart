@@ -393,7 +393,7 @@ class _RegistrationScreenState extends State<RegisterScreen> {
               bottom: 0,
               right: 0,
               child: Padding(
-                padding: EdgeInsets.all(0),
+                padding: const EdgeInsets.all(0),
                 child: Icon(
                   size: 45,
                   Icons.circle,
