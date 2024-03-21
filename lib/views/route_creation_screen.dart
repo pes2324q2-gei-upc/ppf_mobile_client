@@ -135,7 +135,7 @@ class _RouteCreationScreenState extends State<RouteCreationScreen> {
                   CameraPosition(target: currentUserPosition, zoom: 14),
               markers: {
                 Marker(
-                    markerId: MarkerId('currentPosition'),
+                    markerId: const MarkerId('currentPosition'),
                     position: currentUserPosition,
                     icon: BitmapDescriptor.defaultMarkerWithHue(
                         BitmapDescriptor.hueBlue)),
@@ -679,9 +679,9 @@ class _RouteCreationScreenState extends State<RouteCreationScreen> {
         travelMode: TravelMode.driving,
       );
       if (result.points.isNotEmpty) {
-        result.points.forEach((PointLatLng point) {
+        for (var point in result.points) {
           polylineCoordinates.add(LatLng(point.latitude, point.longitude));
-        });
+        }
       } else {
         _showError(
             'No se ha podido encontrar una ruta entre los puntos seleccionados');
