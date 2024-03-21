@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:ppf_mobile_client/classes/language.dart';
+import 'package:ppf_mobile_client/classes/language_constants.dart';
 
 class MyApp extends StatelessWidget {
   const MyApp({Key? key});
@@ -14,7 +16,8 @@ class MyApp extends StatelessWidget {
 class MainPage extends StatelessWidget {
   const MainPage({Key? key});
 
-  @override
+ 
+ @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
@@ -27,15 +30,42 @@ class MainPage extends StatelessWidget {
           },
         ),
         actions: [
+          DropdownButtonHideUnderline(
+            child: DropdownButton<Language>(
+              onChanged: (Language? language) {
+                // Aquí puedes implementar la lógica para cambiar el idioma seleccionado
+                // Por ejemplo, puedes usar flutter_localizations para cambiar el idioma de la aplicación
+                print("Idioma cambiado a: ${language!.name}");
+              },
+              icon: Icon(Icons.language, color: Colors.white),
+              items: Language.languageList()
+                  .map<DropdownMenuItem<Language>>(
+                    (e) => DropdownMenuItem<Language>(
+                      value: e,
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceAround,
+                        children: <Widget>[
+                          Text(
+                            e.flag,
+                            style: const TextStyle(fontSize: 30),
+                          ),
+                          Text(e.name)
+                        ],
+                      ),
+                    ),
+                  )
+                  .toList(),
+            ),
+          ),
           IconButton(
-            icon: Icon(Icons.person, color: Colors.white), // Símbolo temporal
+            icon: const Icon(Icons.person, color: Colors.white), // Símbolo temporal
             onPressed: () {
               // Acción al presionar el botón de perfil
             },
           ),
         ],
       ),
-      backgroundColor: Color(0xFFC0C9C1),
+      backgroundColor: const Color(0xFFC0C9C1),
       body: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
@@ -51,7 +81,7 @@ class MainPage extends StatelessWidget {
                     },
                     style: ButtonStyle(
                       backgroundColor:
-                          MaterialStateProperty.all<Color>(Color(0xFFADADAD)),
+                          MaterialStateProperty.all<Color>(const Color(0xFFADADAD)),
                       shape: MaterialStateProperty.all<OutlinedBorder>(
                         RoundedRectangleBorder(
                           borderRadius: BorderRadius.circular(10),
@@ -64,30 +94,32 @@ class MainPage extends StatelessWidget {
                         Row(
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           children: [
-                            Row(
-                              children: [
-                                Icon(Icons.person, color: Colors.white),
-                                SizedBox(width: 5),
-                                Text(
-                                  'Nombre',
-                                  style: TextStyle(
-                                    color: Colors.white,
-                                    fontSize: 16,
+                            Expanded(
+                              child: Row(
+                                children: [
+                                  const Icon(Icons.person, color: Colors.white),
+                                  SizedBox(width: 5),
+                                  Text(
+                                    translation(context).nombre,
+                                    style: const TextStyle(
+                                      color: Colors.white,
+                                      fontSize: 16,
+                                    ),
                                   ),
-                                ),
-                              ],
+                                ],
+                              ),
                             ),
                             Padding(
                               padding: const EdgeInsets.all(5.0),
                               child: Container(
-                                padding: EdgeInsets.symmetric(
+                                padding: const EdgeInsets.symmetric(
                                     vertical: 5, horizontal: 10),
                                 decoration: BoxDecoration(
                                   color: Colors.white,
                                   borderRadius: BorderRadius.circular(10),
                                 ),
                                 child: Text(
-                                  'Precio por persona',
+                                  translation(context).precioPorPersona,
                                   style: TextStyle(color: Colors.black),
                                 ),
                               ),
@@ -104,22 +136,22 @@ class MainPage extends StatelessWidget {
                                 Row(
                                   children: [
                                     Container(
-                                      padding: EdgeInsets.all(5),
+                                      padding: const EdgeInsets.all(5),
                                       decoration: BoxDecoration(
                                         color: Colors.white,
                                         borderRadius:
                                             BorderRadius.circular(10),
                                       ),
                                       child: Text(
-                                        'Ciudad inicio',
-                                        style: TextStyle(
+                                        translation(context).ciudadInicio,
+                                        style: const TextStyle(
                                           color: Colors.black,
                                           fontSize: 16,
                                         ),
                                       ),
                                     ),
                                     SizedBox(width: 10),
-                                    Text(
+                                    const Text(
                                       '00:00',
                                       style: TextStyle(
                                         color: Colors.white,
@@ -128,7 +160,7 @@ class MainPage extends StatelessWidget {
                                     ),
                                   ],
                                 ),
-                                Icon(
+                                const Icon(
                                   Icons.arrow_downward,
                                   color: Colors.white,
                                   size: 40,
@@ -143,15 +175,15 @@ class MainPage extends StatelessWidget {
                                             BorderRadius.circular(10),
                                       ),
                                       child: Text(
-                                        'Ciudad destino',
-                                        style: TextStyle(
+                                        translation(context).ciudadDestino,
+                                        style: const TextStyle(
                                           color: Colors.black,
                                           fontSize: 16,
                                         ),
                                       ),
                                     ),
                                     SizedBox(width: 10),
-                                    Text(
+                                    const Text(
                                       '00:00',
                                       style: TextStyle(
                                         color: Colors.white,
@@ -170,14 +202,14 @@ class MainPage extends StatelessWidget {
                           child: Padding(
                             padding: const EdgeInsets.all(5.0),
                             child: Container(
-                              padding: EdgeInsets.all(5),
+                              padding: const EdgeInsets.all(5),
                               decoration: BoxDecoration(
                                 color: Colors.white,
                                 borderRadius: BorderRadius.circular(10),
                               ),
                               child: Text(
-                                'Plazas libres',
-                                style: TextStyle(
+                                translation(context).plazasLibres,
+                                style: const TextStyle(
                                   color: Colors.black,
                                   fontSize: 16,
                                 ),
@@ -202,7 +234,7 @@ class MainPage extends StatelessWidget {
               onPressed: () {
                 // Acción al presionar el botón de adición
               },
-              icon: Icon(
+              icon: const Icon(
                 Icons.add,
                 color: Colors.white,
               ),

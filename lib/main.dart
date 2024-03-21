@@ -1,5 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:ppf_mobile_client/views/login_screen.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:ppf_mobile_client/classes/language_constants.dart';
+
 
 void main() {
   /*
@@ -42,6 +45,9 @@ class MyApp extends StatelessWidget {
           colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
           useMaterial3: true,
         ),
+        localizationsDelegates: AppLocalizations.localizationsDelegates,
+        supportedLocales: AppLocalizations.supportedLocales,
+        locale: Locale('en', ''),
         home: const LogIn());
   }
 }
