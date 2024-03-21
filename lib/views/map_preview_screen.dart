@@ -42,6 +42,9 @@ class MapSampleState extends State<MapSample> {
 
       // Calculate and draw polyline between markers
       _polylineCoordinates = _calculateRoute(_markers.toList());
+
+      // Adjust camera position to focus on markers
+      _fitMarkersToBounds();
     });
   }
 
@@ -49,10 +52,9 @@ class MapSampleState extends State<MapSample> {
     // Here you would normally use a routing service like Google Directions API
     // For simplicity, this example calculates a straight line between the markers
     List<LatLng> polylineCoordinates = [];
-    for (int i = 0; i < markers.length - 1; i++) {
+    for (int i = 0; i < markers.length; i++) {
       polylineCoordinates.add(markers[i].position);
     }
-    polylineCoordinates.add(markers.last.position);
     return polylineCoordinates;
   }
 
@@ -134,14 +136,41 @@ class MapSampleState extends State<MapSample> {
     _goToUPC(); // Example functionality, you can replace this with your desired action
   }
 
+  void _fitMarkersToBounds() {
+    if (_markers.isEmpty) return;
+
+    double minLat = _markers.first.position.latitude;
+    double maxLat = _markers.first.position.latitude;
+    double minLng = _markers.first.position.longitude;
+    double maxLng = _markers.first.position.longitude;
+
+    for (Marker marker in _markers) {
+      final lat = marker.position.latitude;
+      final lng = marker.position.longitude;
+
+      minLat = min(minLat, lat);
+      maxLat = max(maxLat, lat);
+      minLng = min(minLng, lng);
+      maxLng = max(maxLng, lng);
+    }
+
+    final bounds = LatLngBounds(
+      southwest: LatLng(minLat, minLng),
+      northeast: LatLng(maxLat, maxLng),
+    );
+
+    const padding = 50.0; // Adjust padding as needed
+    final cameraUpdate = CameraUpdate.newLatLngBounds(bounds, padding);
+
+    _controller.future.then((controller) {
+      controller.animateCamera(cameraUpdate);
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text(
-          "Google Maps Example",
-          style: TextStyle(fontWeight: FontWeight.bold),
-        ),
         backgroundColor: Colors.grey[500],
       ),
       backgroundColor: Colors.grey[300],
@@ -185,53 +214,48 @@ class MapSampleState extends State<MapSample> {
           ),
           Padding(
             padding: const EdgeInsets.all(4.0),
-            child: Row(
-              children: [
-                Expanded(
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      Icon(
-                        Icons.circle_outlined,
-                        color: Colors.grey[500],
-                        size: 20, // Reduced icon size
-                      ),
-                      const SizedBox(width: 4), // Reduced spacing
-                      Container(
-                        width: 150, // Reduced width for the container
-                        decoration: BoxDecoration(
-                          color: Colors.white,
-                          borderRadius:
-                              BorderRadius.circular(8), // Reduced border radius
-                        ),
-                        child: SingleChildScrollView(
-                          scrollDirection: Axis.horizontal,
-                          child: Padding(
-                            padding:
-                                const EdgeInsets.all(4.0), // Reduced padding
-                            child: Text(
-                              getOrigin(),
-                              style: TextStyle(
-                                fontWeight: FontWeight.bold,
-                                fontSize: 12, // Reduced font size
-                                color: Colors.grey[500],
-                              ),
-                            ),
+            child: Expanded(
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Icon(
+                    Icons.circle_outlined,
+                    color: Colors.grey[500],
+                    size: 20, // Reduced icon size
+                  ),
+                  const SizedBox(width: 4), // Reduced spacing
+                  Container(
+                    width: 150, // Reduced width for the container
+                    decoration: BoxDecoration(
+                      color: Colors.white,
+                      borderRadius:
+                          BorderRadius.circular(8), // Reduced border radius
+                    ),
+                    child: SingleChildScrollView(
+                      scrollDirection: Axis.horizontal,
+                      child: Padding(
+                        padding: const EdgeInsets.all(4.0), // Reduced padding
+                        child: Text(
+                          getOrigin(),
+                          style: TextStyle(
+                            fontWeight: FontWeight.bold,
+                            fontSize: 12, // Reduced font size
+                            color: Colors.grey[500],
                           ),
                         ),
                       ),
-                      const SizedBox(width: 4),
-                      Text(
-                        getDepartureTime(),
-                        style: TextStyle(
-                          fontWeight: FontWeight.bold,
-                          color: Colors.grey[500],
-                        ),
-                      ),
-                    ],
+                    ),
                   ),
-                ),
-              ],
+                  const SizedBox(width: 4),
+                  Text(
+                    getDepartureTime(),
+                    style: TextStyle(
+                      fontWeight: FontWeight.bold,
+                      color: Colors.grey[500],
+                    ),
+                  ),
+                ],
+              ),
             ),
           ),
           Padding(
