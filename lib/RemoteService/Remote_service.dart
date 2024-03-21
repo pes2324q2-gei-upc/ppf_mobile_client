@@ -71,7 +71,7 @@ class RemoteService {
         '/login/',
         data: {
           "email": email,
-          "password": password,
+          "password": password
         }
       );
       if (response.statusCode == 200) {

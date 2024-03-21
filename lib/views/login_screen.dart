@@ -2,7 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:ppf_mobile_client/Views/forgot_password.dart';
 import 'package:ppf_mobile_client/Views/register_screen.dart';
 import 'package:ppf_mobile_client/RemoteService/Remote_service.dart';
+import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 
+//Princpial Widget of the view
 class LogIn extends StatefulWidget  {
   const LogIn ({super.key});
 
@@ -81,6 +83,7 @@ class _LogInState extends State<LogIn> {
   }
 }
 
+//Widget to register in the application
 class SignUpOption extends StatelessWidget {
   const SignUpOption({
     super.key,
@@ -88,43 +91,33 @@ class SignUpOption extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return const Row(
+    return Row(
       mainAxisSize: MainAxisSize.min,
       children: [
-        Text('¿No tienes cuenta?'),
-        SizedBox(width: 5,),
-        SignInLink(),
+        const Text('¿No tienes cuenta?'),
+        const SizedBox(width: 5,),
+        GestureDetector(
+          onTap: () {
+            Navigator.push(
+              context,
+              MaterialPageRoute(builder: (context) => const RegisterScreen()),
+            );
+          },
+          child: const Text(
+            'Sign In',
+            style: TextStyle(
+             color: Color.fromARGB(255, 26, 95, 31),
+             decoration: TextDecoration.underline,
+             fontWeight: FontWeight.bold,
+            ),
+          ),
+        ),
       ],
     );
   }
 }
 
-class SignInLink extends StatelessWidget {
-  const SignInLink({
-    super.key,
-  });
-
-  @override
-  Widget build(BuildContext context) {
-    return GestureDetector(
-      onTap: () {
-        Navigator.push(
-          context,
-          MaterialPageRoute(builder: (context) => const RegisterScreen()),
-        );
-      },
-      child: const Text(
-        'Sign In',
-        style: TextStyle(
-          color: Color.fromARGB(255, 26, 95, 31),
-          decoration: TextDecoration.underline,
-          fontWeight: FontWeight.bold,
-        ),
-      ),
-    );
-  }
-}
-
+//Widget to start log in with other platforms
 class AutentificationButton extends StatelessWidget {
   const AutentificationButton({
     super.key,
@@ -139,6 +132,7 @@ class AutentificationButton extends StatelessWidget {
       onPressed: () {
         Navigator.push(
           context,
+          //Navigate to the view to log in with other platforms
           MaterialPageRoute(builder: (context) => const Placeholder()),
         );
       },
@@ -148,51 +142,88 @@ class AutentificationButton extends StatelessWidget {
   }
 }
 
-class LogInButton extends StatelessWidget {
+//Button to confirm credentials and login to the application
+class LogInButton extends StatefulWidget {
   const LogInButton({
     super.key,
     required this.emailController,
     required this.passwordController
   });
-
+  
   final TextEditingController emailController;
   final TextEditingController passwordController;
 
   @override
+  State<LogInButton> createState() => _LogInButtonState();
+}
+
+class _LogInButtonState extends State<LogInButton> {
+
+  //Variable that determines whether an error message is to be printed or not.
+  var error = false;
+
+  @override
   Widget build(BuildContext context) {
-    return SizedBox(
-      height: 50,
-      width: 250,
-      child: ElevatedButton(
-        onPressed: () async {
-          RemoteService rs = RemoteService();
-          String token = await rs.logInUser(emailController.text, passwordController.text);
-            if (token != 'Invalid credentials') {
-              Navigator.push(
-                // ignore: use_build_context_synchronously
-                context,
-                //INFO
-                MaterialPageRoute(builder: (context) => const Placeholder()),
-              );
-            }
-            else {
-            }
-        },
-        style: ElevatedButton.styleFrom(
-          backgroundColor: Colors.green,
-        ), 
-        child: const Text(
-          'Log in',
-          style: TextStyle(
-            color: Colors.white,
-            fontSize: 20,
+    return Column(
+      children: [
+        //If an error has occurred while starting the session, a text is written indicating it
+        if (error) 
+          const Padding(
+            padding: EdgeInsets.all(20.0),
+            child: Text(
+              "Error: Credenciales Inválidas",
+              style: TextStyle(
+                color: Colors.red,
+              ),
+            ),
+          ),
+        SizedBox(
+          height: 50,
+          width: 250,
+          child: ElevatedButton(
+            onPressed: () async {
+              RemoteService rs = RemoteService();
+              String token = await rs.logInUser(widget.emailController.text, widget.passwordController.text);
+                //If the connection has been executed correctly without errors
+                if (token != 'Invalid credentials') {
+                  const storage = FlutterSecureStorage();
+                  String? antiguotoken = await storage.read(key: 'token');
+                  print("Hola buenas este es el token: ${antiguotoken}");
+                  await storage.write(key: 'token', value: token);
+                  String? nuevotoken = await storage.read(key: 'token');
+                  print("Token nuevo: ${nuevotoken}");
+                  Navigator.push(
+                    // ignore: use_build_context_synchronously
+                    context,
+                    //Navigate to home page view
+                    MaterialPageRoute(builder: (context) => const Placeholder()),
+                  );
+                }
+                else {
+                  //If there has been a problem logging in, we warn that there is an error.
+                  setState(() {
+                    error = true;
+                  });
+                }
+            },
+            style: ElevatedButton.styleFrom(
+              backgroundColor: Colors.green,
+            ), 
+            child: const Text(
+              'Log in',
+              style: TextStyle(
+                color: Colors.white,
+                fontSize: 20,
+              ),
+            ),
           ),
         ),
-      ),
+      ],
     );
   }
 }
 
+//Widget to go to ForgotPassword view
 class ForgotPasswordLink extends StatelessWidget {
   const ForgotPasswordLink ({
     super.key,
@@ -219,6 +250,7 @@ class ForgotPasswordLink extends StatelessWidget {
   }
 }
 
+//Widget to indicate the user's email address
 class Email extends StatelessWidget {
   const Email({
     super.key,
@@ -235,11 +267,11 @@ class Email extends StatelessWidget {
         color: Colors.white,
       ),
       child: TextField(
+        //Assign the TextField controller
         controller: controller,
         decoration: const InputDecoration(
           contentPadding: EdgeInsets.all(15.0),
           border: InputBorder.none,
-          //border: OutlineInputBorder(),
           hintText: 'Email',
         ),
       ),
@@ -247,6 +279,7 @@ class Email extends StatelessWidget {
   }
 }
 
+//Widget to display the user's password
 class Password extends StatefulWidget {
   const Password({
     super.key,
@@ -261,6 +294,7 @@ class Password extends StatefulWidget {
 
 class _PasswordState extends State<Password> {
 
+  //Variable that determines whether to hide the written text or not.
   var hide = true;
 
   @override
@@ -271,12 +305,14 @@ class _PasswordState extends State<Password> {
         color: Colors.white,
       ),
       child: TextField(
+        //Assign the TextField controller
         controller: widget.controller,
         obscureText: hide,
         decoration: InputDecoration(
           contentPadding: const EdgeInsets.all(15.0),
           hintText: 'Password',
           suffixIcon: IconButton(
+            //Depending on the value of hide, an icon is assigned to it.
             icon: Icon(hide ? Icons.visibility : Icons.visibility_off),
             onPressed: () {
               setState(() {
@@ -286,7 +322,6 @@ class _PasswordState extends State<Password> {
             padding: const EdgeInsets.symmetric(horizontal: 20.0, vertical: 10.0),
           ),
           border: InputBorder.none,
-          //border: OutlineInputBorder(),
         ),
       ),
     );
