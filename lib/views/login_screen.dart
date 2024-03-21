@@ -187,11 +187,7 @@ class _LogInButtonState extends State<LogInButton> {
                 //If the connection has been executed correctly without errors
                 if (token != 'Invalid credentials') {
                   const storage = FlutterSecureStorage();
-                  String? antiguotoken = await storage.read(key: 'token');
-                  print("Hola buenas este es el token: ${antiguotoken}");
                   await storage.write(key: 'token', value: token);
-                  String? nuevotoken = await storage.read(key: 'token');
-                  print("Token nuevo: ${nuevotoken}");
                   Navigator.push(
                     // ignore: use_build_context_synchronously
                     context,
