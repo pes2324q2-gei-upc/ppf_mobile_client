@@ -1,5 +1,4 @@
 import 'dart:async';
-import 'dart:math';
 import 'package:flutter/services.dart';
 import 'package:flutter_cupertino_datetime_picker/flutter_cupertino_datetime_picker.dart';
 import 'package:geocoding/geocoding.dart';
@@ -27,9 +26,6 @@ class _PlacesApiGoogleMapsState extends State<PlacesApiGoogleMaps> {
   LatLng currentUserPosition = const LatLng(0.0,0.0);
   
   Map<PolylineId, Polyline> polylines = {};
-
-  bool suggestionDepartureSelected = false;
-  bool suggestionDestinationSelected = false;
 
   String selectedDepartureAddress = '';
   LatLng selectedDepartureLatLng = const LatLng(0.0,0.0);
@@ -146,16 +142,20 @@ class _PlacesApiGoogleMapsState extends State<PlacesApiGoogleMaps> {
             position: currentUserPosition,
             icon: BitmapDescriptor.defaultMarkerWithHue(BitmapDescriptor.hueBlue)
           ),
-          Marker(
+          selectedDepartureAddress == ''
+          ? Marker(
             markerId: MarkerId('departure'),
             position: selectedDepartureLatLng,
             icon: BitmapDescriptor.defaultMarkerWithHue(BitmapDescriptor.hueRed),
-          ),
-          Marker(
+          )
+          :const Marker(markerId: MarkerId('destination')),
+          selectedDestinationAddress == ''
+          ? Marker(
             markerId: MarkerId('destination'),
             position: selectedDestinationLatLng,
             icon: BitmapDescriptor.defaultMarkerWithHue(BitmapDescriptor.hueRed),
-          ),
+          )
+          :const Marker(markerId: MarkerId('destination')),
         },
         polylines: Set<Polyline>.of(polylines.values),
         onMapCreated: ((GoogleMapController controller) => _mapController.complete(controller)),
@@ -177,7 +177,6 @@ class _PlacesApiGoogleMapsState extends State<PlacesApiGoogleMaps> {
                     selectedDepartureAddress = listForDepartures[index]['description'];
                     _departureController.text = selectedDepartureAddress;
                     listForDepartures = []; // Cerrar la lista de sugerencias
-                    suggestionDepartureSelected = true;
                   });
                   try {
                     List<Location> locations = await locationFromAddress(selectedDepartureAddress);
@@ -210,7 +209,6 @@ class _PlacesApiGoogleMapsState extends State<PlacesApiGoogleMaps> {
                     selectedDestinationAddress = listForDestinations[index]['description'];
                     _destinationController.text = selectedDestinationAddress;
                     listForDestinations = []; // Cerrar la lista de sugerencias
-                    suggestionDestinationSelected = true;
                   });
                   try {
                     List<Location> locations = await locationFromAddress(selectedDestinationAddress);
@@ -316,8 +314,27 @@ class _PlacesApiGoogleMapsState extends State<PlacesApiGoogleMaps> {
     );
   }
 
-  void _onMapCreated(GoogleMapController controller) {
-    _mapController.complete(controller);
+  void _fitRouteBounds(List<LatLng> coordinates) {
+    double minLat = coordinates[0].latitude;
+    double maxLat = coordinates[0].latitude;
+    double minLong = coordinates[0].longitude;
+    double maxLong = coordinates[0].longitude;
+
+    for (LatLng coord in coordinates) {
+      if (coord.latitude > maxLat) maxLat = coord.latitude;
+      if (coord.latitude < minLat) minLat = coord.latitude;
+      if (coord.longitude > maxLong) maxLong = coord.longitude;
+      if (coord.longitude < minLong) minLong = coord.longitude;
+    }
+
+    LatLngBounds bounds = LatLngBounds(
+      southwest: LatLng(minLat, minLong),
+      northeast: LatLng(maxLat, maxLong),
+    );
+
+    _mapController.future.then((controller) {
+      controller.animateCamera(CameraUpdate.newLatLngBounds(bounds, 100));
+    });
   }
 
   void _liveLocation() {
@@ -387,7 +404,6 @@ class _PlacesApiGoogleMapsState extends State<PlacesApiGoogleMaps> {
     var suggestions = await remoteService.makeSuggestionRemote(input, tokenForSession);
     setState(() {
       listForDepartures = suggestions;
-      suggestionDepartureSelected = false;
     });
   }
 
@@ -396,7 +412,6 @@ class _PlacesApiGoogleMapsState extends State<PlacesApiGoogleMaps> {
     var suggestions = await remoteService.makeSuggestionRemote(input, tokenForSession);
     setState(() {
       listForDestinations = suggestions;
-      suggestionDestinationSelected = false;
     });
   }
 
@@ -405,14 +420,14 @@ class _PlacesApiGoogleMapsState extends State<PlacesApiGoogleMaps> {
     setState(() {
         
     });
-    if (suggestionDepartureSelected && suggestionDestinationSelected) {
+    if (selectedDepartureAddress != '' && selectedDestinationAddress != '') {
       getPolylinePoints().then((coordinates) => {
         generatePolyLineFromPoints(coordinates),
+        _fitRouteBounds(coordinates),
       });
-      _cameraToPosition(selectedDestinationLatLng);
     }
     //Only one suggestion selected
-    else if (suggestionDepartureSelected || suggestionDestinationSelected) {
+    else if (selectedDepartureAddress != '' || selectedDestinationAddress != '') {
       //Selected departure
       if (selectedDepartureAddress != ''){
         _cameraToPosition(selectedDepartureLatLng);
