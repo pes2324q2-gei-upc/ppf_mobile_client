@@ -3,7 +3,7 @@ import 'dart:convert';
 import 'package:ppf_mobile_client/Models/Users.dart';
 import 'package:dio/dio.dart';
 import 'package:intl/intl.dart';
-import '/config.dart' show userApi;
+import '/config.dart' show GOOGLE_MAPS_API_KEY, userApi;
 import '/config.dart' show routeApi;
 
 class RemoteService {
@@ -158,8 +158,6 @@ class RemoteService {
     
 
     String formattedDate = DateFormat('yyyy-MM-ddThh:mm:ss').format(selectedDate!);
-    print(formattedDate);
-    print('$routeApi/routes/');
     
     //API call success
     try {
@@ -191,7 +189,6 @@ class RemoteService {
       
       //Error handling
    } on DioException catch (e) {
-      print(e);
       Response? response = e.response;      
       
       //Error code 400
@@ -209,7 +206,7 @@ class RemoteService {
   Future<List<dynamic>> makeSuggestionRemote(String input, String tokenForSession) async
   {
     Dio dio = Dio();
-    String googlePlacesApiKey = '';
+    String googlePlacesApiKey = GOOGLE_MAPS_API_KEY;
     String groundURL = 'https://maps.googleapis.com/maps/api/place/queryautocomplete/json';
 
     try {
@@ -223,9 +220,6 @@ class RemoteService {
           'sessiontoken': tokenForSession
         }
       );
-      var resultData = responseResult.data;
-      print('Result Data');
-      print(resultData);
 
       return jsonDecode(responseResult.toString()) ['predictions'];
 

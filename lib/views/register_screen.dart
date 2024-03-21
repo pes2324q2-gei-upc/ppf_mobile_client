@@ -167,7 +167,7 @@ class _RegistrationScreenState extends State<RegisterScreen> {
   Widget _buildNumberField(TextEditingController contr, String? hint) {
     return TextField(
       keyboardType: TextInputType.number,
-      inputFormatters: <TextInputFormatter>[FilteringTextInputFormatter.digitsOnly],
+      inputFormatters: <TextInputFormatter>[FilteringTextInputFormatter.allow(RegExp(r'[0-9 .]'))],
       controller: contr,
       autofocus: false,
       style: const TextStyle(fontSize: 18.0),

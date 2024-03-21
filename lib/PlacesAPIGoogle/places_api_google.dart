@@ -1,13 +1,17 @@
 import 'dart:async';
 import 'dart:math';
+import 'package:flutter/services.dart';
 import 'package:flutter_cupertino_datetime_picker/flutter_cupertino_datetime_picker.dart';
 import 'package:geocoding/geocoding.dart';
+import 'package:geolocator/geolocator.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:intl/intl.dart';
+import 'package:ppf_mobile_client/config.dart';
 import 'package:ppf_mobile_client/views/testing_menu.dart';
 import 'package:uuid/uuid.dart';
 import 'package:flutter/material.dart';
 import 'package:ppf_mobile_client/RemoteService/Remote_service.dart';
+import 'package:flutter_polyline_points/flutter_polyline_points.dart';
 
 class PlacesApiGoogleMaps extends StatefulWidget {
   const PlacesApiGoogleMaps({super.key});
@@ -20,8 +24,12 @@ class _PlacesApiGoogleMapsState extends State<PlacesApiGoogleMaps> {
   RemoteService remoteService = RemoteService();
 
   String tokenForSession = '';
+  LatLng currentUserPosition = const LatLng(0.0,0.0);
+  
+  Map<PolylineId, Polyline> polylines = {};
 
-  //final Set<Marker> _markers = {};
+  bool suggestionDepartureSelected = false;
+  bool suggestionDestinationSelected = false;
 
   String selectedDepartureAddress = '';
   LatLng selectedDepartureLatLng = const LatLng(0.0,0.0);
@@ -40,14 +48,12 @@ class _PlacesApiGoogleMapsState extends State<PlacesApiGoogleMaps> {
   final TextEditingController _departureController = TextEditingController();
   final TextEditingController _destinationController = TextEditingController();
   final Completer<GoogleMapController> _mapController = Completer<GoogleMapController>();
-  static const CameraPosition _cameraPositionController = CameraPosition(
-    target: LatLng(41.38668599929463, 2.196905132696342),
-    zoom: 14.4746,
-  );
 
 @override
   void initState() {
     super.initState();
+    _liveLocation();
+    getCurrentLatLng();
     _departureController.addListener(() {
       onModifyDeparture();
      });
@@ -115,7 +121,33 @@ class _PlacesApiGoogleMapsState extends State<PlacesApiGoogleMaps> {
               const SizedBox(height: 16.0), 
               SizedBox(
                 height: 400,
-                child: _buildGoogleMap(),
+                child: (currentUserPosition.latitude == 0 && currentUserPosition.longitude == 0)
+                ? const Center(
+                    child: Text("Loading...")
+                  )
+                : GoogleMap(
+                    mapType: MapType.normal,
+                    initialCameraPosition: CameraPosition(target: currentUserPosition, zoom: 14),
+                    markers: {
+                      Marker(
+                        markerId: MarkerId('currentPosition'),
+                        position: currentUserPosition,
+                        icon: BitmapDescriptor.defaultMarker,
+                      ),
+                      Marker(
+                        markerId: MarkerId('departure'),
+                        position: selectedDepartureLatLng,
+                        icon: BitmapDescriptor.defaultMarkerWithHue(BitmapDescriptor.hueRed),
+                      ),
+                      Marker(
+                        markerId: MarkerId('destination'),
+                        position: selectedDestinationLatLng,
+                        icon: BitmapDescriptor.defaultMarkerWithHue(BitmapDescriptor.hueRed),
+                      ),
+                    },
+                    polylines: Set<Polyline>.of(polylines.values),
+                    onMapCreated: ((GoogleMapController controller) => _mapController.complete(controller)),
+                ),
               ),
               const SizedBox(height: 16.0),
               _buildCreateRouteButton(),
@@ -132,7 +164,6 @@ class _PlacesApiGoogleMapsState extends State<PlacesApiGoogleMaps> {
       visible: _departureController.text.isNotEmpty && listForDepartures.isNotEmpty, 
       child: SizedBox(
         height: 300,
-        child: Flexible(
           child: ListView.builder(
             itemCount: listForDepartures.length,
             itemBuilder: (context, index) {
@@ -142,10 +173,12 @@ class _PlacesApiGoogleMapsState extends State<PlacesApiGoogleMaps> {
                     selectedDepartureAddress = listForDepartures[index]['description'];
                     _departureController.text = selectedDepartureAddress;
                     listForDepartures = []; // Cerrar la lista de sugerencias
+                    suggestionDepartureSelected = true;
                   });
                   try {
                     List<Location> locations = await locationFromAddress(selectedDepartureAddress);
                     selectedDepartureLatLng = LatLng(locations.last.latitude, locations.last.longitude);
+                    suggestionSelected();
                   }
                   catch (e) {
                     _showError('Error: $e');
@@ -155,7 +188,6 @@ class _PlacesApiGoogleMapsState extends State<PlacesApiGoogleMaps> {
               );
             },
           ),
-        ),
       )
     );
   }
@@ -165,7 +197,6 @@ class _PlacesApiGoogleMapsState extends State<PlacesApiGoogleMaps> {
       visible: _destinationController.text.isNotEmpty && listForDestinations.isNotEmpty, 
       child: SizedBox(
         height: 300,
-        child: Flexible(
           child: ListView.builder(
             itemCount: listForDestinations.length,
             itemBuilder: (context, index) {
@@ -175,10 +206,12 @@ class _PlacesApiGoogleMapsState extends State<PlacesApiGoogleMaps> {
                     selectedDestinationAddress = listForDestinations[index]['description'];
                     _destinationController.text = selectedDestinationAddress;
                     listForDestinations = []; // Cerrar la lista de sugerencias
+                    suggestionDestinationSelected = true;
                   });
                   try {
                     List<Location> locations = await locationFromAddress(selectedDestinationAddress);
                     selectedDestinationLatLng = LatLng(locations.last.latitude, locations.last.longitude);
+                    suggestionSelected();
                   }
                   catch (e) {
                     _showError('Error: $e');
@@ -188,7 +221,6 @@ class _PlacesApiGoogleMapsState extends State<PlacesApiGoogleMaps> {
               );
             },
           ),
-        ),
       )
     );
   }
@@ -221,18 +253,69 @@ class _PlacesApiGoogleMapsState extends State<PlacesApiGoogleMaps> {
     );
   }
 
-  Widget _buildGoogleMap() {
-    return Expanded(
-      flex: 2,
-      child: Padding(
-        padding: const EdgeInsets.all(8.0),
-        child: GoogleMap(
-          mapType: MapType.normal,
-          initialCameraPosition: _cameraPositionController,
-          onMapCreated: _onMapCreated,
+  Widget _buildIntegerField(TextEditingController contr, String? hint, Icon sufix) {
+    return TextField(
+      controller: contr,
+      autofocus: false,
+      keyboardType: TextInputType.number,
+      inputFormatters: <TextInputFormatter>[FilteringTextInputFormatter.digitsOnly],
+      style: const TextStyle(fontSize: 18.0),
+      decoration: InputDecoration(
+        suffixIcon: sufix,
+        filled: true,
+        fillColor: Colors.white,
+        hintText: hint,
+        hintStyle: TextStyle(
+            fontSize: 18.0,
+            color: Colors.grey[500],
+            fontWeight: FontWeight.normal),
+        contentPadding:
+            const EdgeInsets.only(left: 14.0, bottom: 8.0, top: 8.0),
+        focusedBorder: OutlineInputBorder(
+          borderSide: const BorderSide(color: Colors.white),
+          borderRadius: BorderRadius.circular(12),
+        ),
+        enabledBorder: UnderlineInputBorder(
+          borderSide: const BorderSide(color: Color.fromRGBO(158, 158, 158, 1)),
+          borderRadius: BorderRadius.circular(12),
         ),
       ),
     );
+  }
+
+  Widget _buildDoubleField(TextEditingController contr, String? hint, Icon sufix) {
+    return TextField(
+      controller: contr,
+      autofocus: false,
+      keyboardType: TextInputType.number,
+      inputFormatters: <TextInputFormatter>[FilteringTextInputFormatter.allow(RegExp(r'[0-9 .]'))],
+      style: const TextStyle(fontSize: 18.0),
+      decoration: InputDecoration(
+        suffixIcon: sufix,
+        filled: true,
+        fillColor: Colors.white,
+        hintText: hint,
+        hintStyle: TextStyle(
+            fontSize: 18.0,
+            color: Colors.grey[500],
+            fontWeight: FontWeight.normal),
+        contentPadding:
+            const EdgeInsets.only(left: 14.0, bottom: 8.0, top: 8.0),
+        focusedBorder: OutlineInputBorder(
+          borderSide: const BorderSide(color: Colors.white),
+          borderRadius: BorderRadius.circular(12),
+        ),
+        enabledBorder: UnderlineInputBorder(
+          borderSide: const BorderSide(color: Color.fromRGBO(158, 158, 158, 1)),
+          borderRadius: BorderRadius.circular(12),
+        ),
+      ),
+    );
+  }
+
+  Future<void> _cameraToPosition(LatLng position) async {
+    final GoogleMapController controller = await _mapController.future;
+    controller.animateCamera(CameraUpdate.newCameraPosition(CameraPosition(target: position, zoom: 14)));
   }
 
   Widget _buildCreateRouteButton() {
@@ -261,6 +344,48 @@ class _PlacesApiGoogleMapsState extends State<PlacesApiGoogleMaps> {
     _mapController.complete(controller);
   }
 
+  void _liveLocation() {
+    LocationSettings locationSettings = const LocationSettings(
+      accuracy: LocationAccuracy.high,
+      distanceFilter: 10,
+    );
+    Geolocator.getPositionStream(locationSettings: locationSettings).listen((Position position) {
+      setState(() {
+        currentUserPosition = positionToLatLng(position);
+        _cameraToPosition(currentUserPosition);
+      });
+    });
+  }
+  Future<void> getCurrentLatLng() async {
+    Position position = await getCurrentLocation();
+    currentUserPosition = positionToLatLng(position);
+    return;
+  }
+
+  LatLng positionToLatLng(Position position) {
+    return LatLng(position.latitude, position.longitude);
+  }
+
+  Future<Position> getCurrentLocation() async {
+    bool serviceEnabled = await Geolocator.isLocationServiceEnabled();
+    if (!serviceEnabled) {
+      _showError('Location services are disabled.');
+    }
+
+    LocationPermission permission = await Geolocator.checkPermission();
+    if (permission == LocationPermission.denied) {
+      permission = await Geolocator.requestPermission();
+      if (permission == LocationPermission.denied) {
+        _showError('Location permissions are denied');
+      }
+      if (permission == LocationPermission.deniedForever) {
+        _showError('Location permissions are permanently denied, we cannot request permissions.');
+      } 
+    }
+    Position position = await Geolocator.getCurrentPosition(desiredAccuracy: LocationAccuracy.best);
+    return position;
+  }
+
   Future<void> joinRouteAction () async {
     //Check for nulls
     String freeSpaces = _freeSpacesController.text; 
@@ -286,6 +411,7 @@ class _PlacesApiGoogleMapsState extends State<PlacesApiGoogleMaps> {
     var suggestions = await remoteService.makeSuggestionRemote(input, tokenForSession);
     setState(() {
       listForDepartures = suggestions;
+      suggestionDepartureSelected = false;
     });
   }
 
@@ -294,7 +420,32 @@ class _PlacesApiGoogleMapsState extends State<PlacesApiGoogleMaps> {
     var suggestions = await remoteService.makeSuggestionRemote(input, tokenForSession);
     setState(() {
       listForDestinations = suggestions;
+      suggestionDestinationSelected = false;
     });
+  }
+
+  void suggestionSelected() {
+    //Both suggestions selected
+    setState(() {
+        
+    });
+    if (suggestionDepartureSelected && suggestionDestinationSelected) {
+      getPolylinePoints().then((coordinates) => {
+        generatePolyLineFromPoints(coordinates),
+      });
+      _cameraToPosition(selectedDestinationLatLng);
+    }
+    //Only one suggestion selected
+    else if (suggestionDepartureSelected || suggestionDestinationSelected) {
+      //Selected departure
+      if (selectedDepartureAddress != ''){
+        _cameraToPosition(selectedDepartureLatLng);
+      }
+      //Selected destination
+      else if (selectedDestinationAddress != ''){
+        _cameraToPosition(selectedDestinationLatLng);
+      }
+    }
   }
 
   void onSuggestionDepartureSelected(String suggestion) {
@@ -445,10 +596,10 @@ class _PlacesApiGoogleMapsState extends State<PlacesApiGoogleMaps> {
         Expanded(child: _buildDateSelector()),
         const SizedBox(width: 16),
 
-        Expanded(child: _buildTextField(_priceController, 'Precio', const Icon(Icons.euro, size:16))),
+        Expanded(child: _buildDoubleField(_priceController, 'Precio', const Icon(Icons.euro, size:16))),
         const SizedBox(width: 16),
 
-        Expanded(child: _buildTextField(_freeSpacesController, 'Plazas libres', const Icon(Icons.person, size:18)))
+        Expanded(child: _buildIntegerField(_freeSpacesController, 'Plazas libres', const Icon(Icons.person, size:18)))
       ],
     );
   }
@@ -477,6 +628,44 @@ class _PlacesApiGoogleMapsState extends State<PlacesApiGoogleMaps> {
     setState(() {
       listForDepartures = [];
       listForDestinations = [];
+    });
+  }
+  
+  Future<List<LatLng>> getPolylinePoints() async {
+    List<LatLng> polylineCoordinates = [];
+    PolylinePoints polylinePoints = PolylinePoints();
+    try{
+      PolylineResult result = await polylinePoints.getRouteBetweenCoordinates(
+        GOOGLE_MAPS_API_KEY,
+        PointLatLng(selectedDepartureLatLng.latitude, selectedDepartureLatLng.longitude),
+        PointLatLng(selectedDestinationLatLng.latitude, selectedDestinationLatLng.longitude),
+        travelMode: TravelMode.driving,
+      );
+      if (result.points.isNotEmpty){
+        result.points.forEach((PointLatLng point){
+          polylineCoordinates.add(LatLng(point.latitude, point.longitude));
+        });
+      }
+      else{
+        _showError('No se ha podido encontrar una ruta entre los puntos seleccionados');
+      }
+    }
+    catch (e) {
+      _showError('Error: $e');
+    }
+    
+    return polylineCoordinates;
+  }
+  void generatePolyLineFromPoints(List<LatLng> polylineCoordinates) async {
+    PolylineId id = const PolylineId('poly');
+    Polyline polyline = Polyline(
+      polylineId: id,
+      color: Colors.blue,
+      points: polylineCoordinates,
+      width: 5,
+    );
+    setState(() {
+      polylines[id] = polyline;
     });
   }
 }
