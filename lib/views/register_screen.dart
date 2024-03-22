@@ -426,7 +426,7 @@ class _RegistrationScreenState extends State<RegisterScreen> {
       children: [
         //"Do you want to be a driver?" text
         const Text.rich(TextSpan(
-          text: 'Quieres ser conductor?',
+          text: '¿Quieres ser conductor?',
           style: TextStyle(fontSize: 18.0, color: Colors.black, fontWeight: FontWeight.bold),
           )
         ),

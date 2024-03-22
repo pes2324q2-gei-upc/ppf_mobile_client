@@ -69,7 +69,9 @@ class _RouteCreationScreenState extends State<RouteCreationScreen> {
       child: Scaffold(
         resizeToAvoidBottomInset: true,
         backgroundColor: Colors.grey[300],
-        appBar: AppBar(),
+        appBar: AppBar(
+          backgroundColor: const Color.fromRGBO(8, 8, 8, 0.4),
+        ),
         body: SingleChildScrollView(
             padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 12),
             child: Column(
