@@ -10,6 +10,8 @@ import 'package:uuid/uuid.dart';
 import 'package:flutter/material.dart';
 import 'package:ppf_mobile_client/RemoteService/Remote_service.dart';
 import 'package:flutter_polyline_points/flutter_polyline_points.dart';
+import 'package:ppf_mobile_client/models/Route.dart';
+
 
 class RouteCreationScreen extends StatefulWidget {
   const RouteCreationScreen({super.key});
@@ -20,6 +22,8 @@ class RouteCreationScreen extends StatefulWidget {
 
 class _RouteCreationScreenState extends State<RouteCreationScreen> {
   RemoteService remoteService = RemoteService();
+
+  late MapRoute route = MapRoute.empty();
 
   String tokenForSession = '';
   LatLng currentUserPosition = const LatLng(0.0, 0.0);
@@ -315,7 +319,7 @@ class _RouteCreationScreenState extends State<RouteCreationScreen> {
       child: SizedBox(
         width: 300,
         child: ElevatedButton(
-          onPressed: joinRouteAction,
+          onPressed: createRouteAction,
           style: ButtonStyle(
             backgroundColor:
                 MaterialStateProperty.all<Color>(Colors.green[500]!),
@@ -401,7 +405,7 @@ class _RouteCreationScreenState extends State<RouteCreationScreen> {
     return position;
   }
 
-  Future<void> joinRouteAction() async {
+  Future<void> createRouteAction() async {
     //Check for nulls
     String freeSpaces = _freeSpacesController.text;
     String price = _priceController.text;
@@ -414,7 +418,7 @@ class _RouteCreationScreenState extends State<RouteCreationScreen> {
         _selectedDate == null ||
         freeSpaces.isEmpty ||
         price.isEmpty) {
-      _showError('Porfavor, rellene todos los campos');
+      _showError('Porfavor, rellene todos los campos, y asegurese de que las direcciones son correctas');
     } else {
       var response = await remoteService.registerRoute(
           selectedDepartureAddress,

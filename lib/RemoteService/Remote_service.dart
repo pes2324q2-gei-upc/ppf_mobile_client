@@ -2,6 +2,7 @@ import 'dart:convert';
 import 'package:ppf_mobile_client/Models/Users.dart';
 import 'package:dio/dio.dart';
 import 'package:intl/intl.dart';
+import 'package:ppf_mobile_client/models/Route.dart';
 import '/config.dart' show GOOGLE_MAPS_API_KEY, userApi;
 import '/config.dart' show routeApi;
 
@@ -108,8 +109,6 @@ class RemoteService {
     
     //API call success
     try {
-      print('driver 1');
-      print('$userApi/drivers/');
       Dio dio = Dio();
       dio.options.baseUrl = userApi;
       Response response = await dio.post(
@@ -126,7 +125,6 @@ class RemoteService {
           "autonomy": int.parse(capacidad)
         },
       );
-      print('driver 2');
       //Return empty string if there was no error
       if (response.statusCode == 201) {
         return '';
@@ -137,7 +135,6 @@ class RemoteService {
 
       //Error handling
     } on DioException catch (e) {
-      print('driver 3');
       Response? response = e.response;      
       
       //Error code 400
