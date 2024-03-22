@@ -1,23 +1,20 @@
 import 'package:flutter/material.dart';
+import 'package:ppf_mobile_client/main.dart';
 import 'package:ppf_mobile_client/classes/language.dart';
 import 'package:ppf_mobile_client/classes/language_constants.dart';
 
-class MyApp extends StatelessWidget {
-  const MyApp({Key? key});
+class MainPage extends StatefulWidget {
+  const MainPage({Key? key}) : super(key: key);
 
   @override
-  Widget build(BuildContext context) {
-    return const MaterialApp(
-      home: MainPage(),
-    );
-  }
+  _MainPageState createState() => _MainPageState();
 }
 
-class MainPage extends StatelessWidget {
-  const MainPage({Key? key});
+class _MainPageState extends State<MainPage> {
+
 
  
- @override
+@override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
