@@ -5,7 +5,7 @@ import 'package:geocoding/geocoding.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:ppf_mobile_client/config.dart';
-import 'package:ppf_mobile_client/views/testing_menu.dart';
+import 'package:ppf_mobile_client/views/menu.dart';
 import 'package:uuid/uuid.dart';
 import 'package:flutter/material.dart';
 import 'package:ppf_mobile_client/RemoteService/Remote_service.dart';
@@ -77,7 +77,6 @@ class _RouteCreationScreenState extends State<RouteCreationScreen> {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.center,
               children: [
-                const SizedBox(height: 16.0),
                 Row(children: [
                   const Column(
                     children: [
@@ -427,10 +426,9 @@ class _RouteCreationScreenState extends State<RouteCreationScreen> {
           _selectedDate,
           freeSpaces,
           price);
-
       if (response == '') {
         Navigator.push(context,
-            MaterialPageRoute(builder: (context) => const TestingMenu()));
+            MaterialPageRoute(builder: (context) => const MainPage()));
       } else {
         _showError('Error al crear la ruta, porfavor, intentelo de nuevo mas tarde');
       }

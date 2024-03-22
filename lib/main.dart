@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:ppf_mobile_client/views/login_screen.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:ppf_mobile_client/classes/language_constants.dart';
-import 'package:ppf_mobile_client/views/testing_menu.dart';
 
 
 void main() {
@@ -58,7 +57,7 @@ class _MyAppState extends State<MyApp> {
       localizationsDelegates: AppLocalizations.localizationsDelegates,
       supportedLocales: AppLocalizations.supportedLocales,
       locale: Locale('en',''),
-      home: const TestingMenu());
+      home: const LogIn());
 
   }
 }

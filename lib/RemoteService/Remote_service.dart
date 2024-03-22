@@ -108,6 +108,8 @@ class RemoteService {
     
     //API call success
     try {
+      print('driver 1');
+      print('$userApi/drivers/');
       Dio dio = Dio();
       dio.options.baseUrl = userApi;
       Response response = await dio.post(
@@ -124,7 +126,7 @@ class RemoteService {
           "autonomy": int.parse(capacidad)
         },
       );
-
+      print('driver 2');
       //Return empty string if there was no error
       if (response.statusCode == 201) {
         return '';
@@ -135,6 +137,7 @@ class RemoteService {
 
       //Error handling
     } on DioException catch (e) {
+      print('driver 3');
       Response? response = e.response;      
       
       //Error code 400
