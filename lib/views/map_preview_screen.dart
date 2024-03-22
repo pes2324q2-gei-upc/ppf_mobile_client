@@ -2,6 +2,9 @@ import 'dart:async';
 import 'dart:math';
 import 'package:flutter/material.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
+import 'package:ppf_mobile_client/RemoteService/Remote_service.dart';
+import 'package:ppf_mobile_client/models/Route.dart';
+import 'package:flutter_polyline_points/flutter_polyline_points.dart';
 
 class MapPreview extends StatefulWidget {
   const MapPreview({super.key});
@@ -21,33 +24,34 @@ class MapPreviewState extends State<MapPreview> {
 
   final Set<Marker> _markers = {};
   late List<LatLng> _polylineCoordinates = [];
+  late MapRoute route = MapRoute.empty();
 
-  void _onMapCreated(GoogleMapController controller) {
+  void _onMapCreated(GoogleMapController controller) async {
     _controller.complete(controller);
-    setState(() {
-      _markers.add(
-        const Marker(
-          markerId: MarkerId('marker1'),
-          position: LatLng(41.38668599929463, 2.196905132696342),
-          infoWindow: InfoWindow(title: 'Marker 1'),
-        ),
-      );
-      _markers.add(
-        const Marker(
-          markerId: MarkerId('marker2'),
-          position: LatLng(42.37333679478278, 1.8870708333906143),
-          infoWindow: InfoWindow(title: 'Marker 2'),
-        ),
-      );
 
-      // Calculate and draw polyline between markers
-      _polylineCoordinates = _calculateRoute(_markers.toList());
+    route = await getRoute(1);
+    _markers.add(Marker(
+      markerId: MarkerId(route.originAlias),
+      position: LatLng(route.originLat, route.originLon),
+      infoWindow: InfoWindow(title: route.originAlias),
+    ));
+    _markers.add(Marker(
+      markerId: MarkerId(route.destinationAlias),
+      position: LatLng(route.destinationLat, route.destinationLon),
+      infoWindow: InfoWindow(title: route.destinationAlias),
+    ));
+    List<PointLatLng> list = PolylinePoints().decodePolyline(route.polyline);
 
-      // Adjust camera position to focus on markers
-      _fitMarkersToBounds();
-    });
+// Convert PointLatLng objects to LatLng objects
+    _polylineCoordinates =
+        list.map((point) => LatLng(point.latitude, point.longitude)).toList();
+
+    // Adjust camera position to focus on markers
+    _fitMarkersToBounds();
+    setState(() {});
   }
 
+  // ignore: unused_element
   List<LatLng> _calculateRoute(List<Marker> markers) {
     // Here you would normally use a routing service like Google Directions API
     // For simplicity, this example calculates a straight line between the markers
@@ -69,11 +73,11 @@ class MapPreviewState extends State<MapPreview> {
   }
 
   String getOrigin() {
-    return "Barcelona";
+    return route.originAlias;
   }
 
   String getDestination() {
-    return "Alp";
+    return route.destinationAlias;
   }
 
   String getDistanceToDeparture() {
@@ -98,25 +102,32 @@ class MapPreviewState extends State<MapPreview> {
   }
 
   String getDepartureTime() {
-    int hour = 7;
-    int min = 0;
+    int hour = route.departureTime.hour;
+    int min = route.departureTime.minute;
     return formatTime(hour, min);
   }
 
   String getArrivalTime() {
-    int hour = 14;
-    int min = 30;
-    return formatTime(hour, min);
+    // Calculate the arrival time by adding the route duration (in minutes) to the departure time
+    int departureHour = route.departureTime.hour;
+    int departureMinute = route.departureTime.minute;
+
+    int totalMinutes =
+        departureHour * 60 + departureMinute + route.duration.toInt();
+
+    // Calculate the arrival hour and minute
+    int arrivalHour = totalMinutes ~/ 60; // integer division
+    int arrivalMinute = totalMinutes % 60;
+
+    return formatTime(arrivalHour, arrivalMinute);
   }
 
   String getFreeSeats() {
-    int seats = 3;
-    return seats.toString();
+    return route.freeSeats.toString();
   }
 
   String getImport() {
-    double import = 5.25;
-    return import.toString();
+    return route.price.toString();
   }
 
   static const CameraPosition _kUPC = CameraPosition(
@@ -165,6 +176,12 @@ class MapPreviewState extends State<MapPreview> {
     _controller.future.then((controller) {
       controller.animateCamera(cameraUpdate);
     });
+  }
+
+  //get the route info to later get the markers and all:
+  Future<MapRoute> getRoute(int routeId) async {
+    RemoteService remoteService = RemoteService();
+    return await remoteService.getMapRoute(routeId);
   }
 
   @override

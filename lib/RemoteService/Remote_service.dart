@@ -3,6 +3,7 @@ import 'dart:convert';
 import 'package:ppf_mobile_client/Models/Users.dart';
 import 'package:dio/dio.dart';
 import 'package:intl/intl.dart';
+import 'package:ppf_mobile_client/models/Route.dart';
 import '/config.dart' show GOOGLE_MAPS_API_KEY, userApi;
 import '/config.dart' show routeApi;
 
@@ -14,26 +15,26 @@ class RemoteService {
       dio.options.baseUrl = userApi;
       Response response = await dio.get('/users/');
 
-
       if (response.statusCode == 200) {
         List<dynamic> jsonResponse = response.data;
-        List<User>? users = jsonResponse.map((data) => User.fromJson(data)).toList();
+        List<User>? users =
+            jsonResponse.map((data) => User.fromJson(data)).toList();
         return users;
       } else {
         return null;
       }
-    
+
       //Error handling
     } on DioException catch (e) {
-      Response? response = e.response;      
-      
+      Response? response = e.response;
+
       //Error code 400
-      if(response?.statusCode == 400) {
+      if (response?.statusCode == 400) {
         return null;
       }
-      
+
       //Other errors
-      else{
+      else {
         return null;
       }
     }
@@ -47,15 +48,14 @@ class RemoteService {
       String pwrd,
       String pwrd2,
       DateTime? birthDate) async {
-    
     //Parse date:
     String formattedDate = DateFormat('yyyy-MM-dd').format(birthDate!);
-    
+
     //API call success
     try {
       Dio dio = Dio();
       dio.options.baseUrl = userApi;
-      
+
       //API call
       Response response = await dio.post(
         '/users/',
@@ -73,22 +73,21 @@ class RemoteService {
       //Return empty string if there was no error
       if (response.statusCode == 201) {
         return '';
-      }
-      else {
+      } else {
         return 'Ha ocurrido un error inesperado. Porfavor, intentelo de nuevo más tarde';
       }
-      
+
       //Error handling
     } on DioException catch (e) {
-      Response? response = e.response;      
-      
+      Response? response = e.response;
+
       //Error code 400
-      if(response?.statusCode == 400) {
+      if (response?.statusCode == 400) {
         return '$response';
       }
-      
+
       //Other errors
-      else{
+      else {
         return 'Ha ocurrido un error inesperado. Porfavor, intentelo de nuevo más tarde';
       }
     }
@@ -104,10 +103,9 @@ class RemoteService {
       DateTime? birthDate,
       String DNI,
       String capacidad) async {
-    
     //To parse a date:
     String formattedDate = DateFormat('yyyy-MM-dd').format(birthDate!);
-    
+
     //API call success
     try {
       Dio dio = Dio();
@@ -133,100 +131,126 @@ class RemoteService {
       //Return empty string if there was no error
       if (response.statusCode == 201) {
         return '';
-      }
-      else {
+      } else {
         return 'Ha ocurrido un error inesperado. Porfavor, intentelo de nuevo más tarde';
       }
 
       //Error handling
     } on DioException catch (e) {
-      Response? response = e.response;      
-      
+      Response? response = e.response;
+
       //Error code 400
-      if(response?.statusCode == 400) {
+      if (response?.statusCode == 400) {
         return '$response';
       }
-      
+
       //Other errors
-      else{
+      else {
         return 'Ha ocurrido un error inesperado. Porfavor, intentelo de nuevo más tarde';
       }
     }
   }
 
-  Future<String> registerRoute(String departure, double departureLatitude, double departureLongitude, String destination, double destinationLatitude, double destinationLongitude, DateTime? selectedDate, String freeSpaces, String price) async {
-    
+  Future<String> registerRoute(
+      String departure,
+      double departureLatitude,
+      double departureLongitude,
+      String destination,
+      double destinationLatitude,
+      double destinationLongitude,
+      DateTime? selectedDate,
+      String freeSpaces,
+      String price) async {
+    String formattedDate =
+        DateFormat('yyyy-MM-ddThh:mm:ss').format(selectedDate!);
 
-    String formattedDate = DateFormat('yyyy-MM-ddThh:mm:ss').format(selectedDate!);
-    
     //API call success
     try {
       Dio dio = Dio();
       dio.options.baseUrl = routeApi;
-      Response response = await dio.post(
-        '/routes/',
-        data: {
-          "driver": "Yo",
-          "originLat": departureLatitude,
-          "originLon": departureLongitude,
-          "originAlias": departure,
-          "destinationLat": destinationLatitude,
-          "destinationLon": destinationLongitude,
-          "destinationAlias": destination,
-          "departureTime": formattedDate,
-          "freeSeats": int.parse(freeSpaces),
-          "price": double.parse(price)
-        }
-      );
-      
+      Response response = await dio.post('/routes/', data: {
+        "driver": "Yo",
+        "originLat": departureLatitude,
+        "originLon": departureLongitude,
+        "originAlias": departure,
+        "destinationLat": destinationLatitude,
+        "destinationLon": destinationLongitude,
+        "destinationAlias": destination,
+        "departureTime": formattedDate,
+        "freeSeats": int.parse(freeSpaces),
+        "price": double.parse(price)
+      });
+
       //Return empty string if there was no error
       if (response.statusCode == 201) {
         return '';
-      }
-      else {
+      } else {
         return 'Ha ocurrido un error inesperado. Porfavor, intentelo de nuevo más tarde';
       }
-      
+
       //Error handling
-   } on DioException catch (e) {
-      Response? response = e.response;      
-      
+    } on DioException catch (e) {
+      Response? response = e.response;
+
       //Error code 400
-      if(response?.statusCode == 404) {
+      if (response?.statusCode == 404) {
         return '$response';
       }
-      
+
       //Other errors
-      else{
+      else {
         return 'Ha ocurrido un error inesperado. Porfavor, intentelo de nuevo más tarde';
       }
     }
   }
 
-  Future<List<dynamic>> makeSuggestionRemote(String input, String tokenForSession) async
-  {
+  Future<List<dynamic>> makeSuggestionRemote(
+      String input, String tokenForSession) async {
     Dio dio = Dio();
     String googlePlacesApiKey = GOOGLE_MAPS_API_KEY;
-    String groundURL = 'https://maps.googleapis.com/maps/api/place/queryautocomplete/json';
+    String groundURL =
+        'https://maps.googleapis.com/maps/api/place/queryautocomplete/json';
 
     try {
-      var responseResult = await dio.get
-      (
-        groundURL,
-        queryParameters: 
-        {
-          'input': input,
-          'key': googlePlacesApiKey,
-          'sessiontoken': tokenForSession
-        }
-      );
+      var responseResult = await dio.get(groundURL, queryParameters: {
+        'input': input,
+        'key': googlePlacesApiKey,
+        'sessiontoken': tokenForSession
+      });
 
-      return jsonDecode(responseResult.toString()) ['predictions'];
-
-    }
-    on DioException catch (e) {
-      List<dynamic> emptyList= [e];
+      return jsonDecode(responseResult.toString())['predictions'];
+    } on DioException catch (e) {
+      List<dynamic> emptyList = [e];
       return emptyList;
+    }
+  }
+
+  Future<MapRoute> getMapRoute(int routeId) async {
+    try {
+      var id = routeId.toString();
+      Dio dio = Dio();
+      dio.options.baseUrl = routeApi;
+      var response = await dio.get('/routes/$id');
+
+      // Check if response is successful
+      if (response.statusCode == 200) {
+        // Parse JSON response
+        var json = response.data;
+
+        // Create MapRoute object from JSON using factory method
+        MapRoute mapRoute =
+            MapRoute.fromJson(json); //MapRoute.fromJson(responseData);
+
+        // Return the created MapRoute object
+        return mapRoute;
+      } else {
+        // Handle unsuccessful response
+        throw Exception('Failed to load route');
+      }
+    } on DioException catch (e) {
+      // Handle Dio errors
+      print(e.error);
+      throw Exception('Failed to load route');
     }
   }
 }
