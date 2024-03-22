@@ -39,6 +39,9 @@ dependencies:
     sdk: flutter
   intl: any
   shared_preferences: ^2.0.13
+  intl: ^0.17.0
+  email_validator: '^2.1.16'
+
 
 dev_dependencies:
   flutter_test:
