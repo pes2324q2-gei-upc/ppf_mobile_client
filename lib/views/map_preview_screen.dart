@@ -171,7 +171,7 @@ class MapPreviewState extends State<MapPreview> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        backgroundColor: Colors.grey[500],
+        backgroundColor: const Color.fromRGBO(8, 8, 8, 0.4),
       ),
       backgroundColor: Colors.grey[300],
       body: Column(

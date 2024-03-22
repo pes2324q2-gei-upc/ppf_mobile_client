@@ -1,12 +1,15 @@
 import 'package:flutter/material.dart';
-import 'package:ppf_mobile_client/main.dart';
+import 'package:flutter/widgets.dart';
 import 'package:ppf_mobile_client/classes/language.dart';
 import 'package:ppf_mobile_client/classes/language_constants.dart';
+import 'package:ppf_mobile_client/views/map_preview_screen.dart';
+import 'package:ppf_mobile_client/views/route_creation_screen.dart';
 
 class MainPage extends StatefulWidget {
-  const MainPage({Key? key}) : super(key: key);
+  const MainPage({super.key});
 
   @override
+  // ignore: library_private_types_in_public_api
   _MainPageState createState() => _MainPageState();
 }
 
@@ -18,10 +21,10 @@ class _MainPageState extends State<MainPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        backgroundColor: Color.fromRGBO(8, 8, 8, 0.4),
+        backgroundColor: const Color.fromRGBO(8, 8, 8, 0.4),
         elevation: 0,
         leading: IconButton(
-          icon: Icon(Icons.chat_bubble, color: Colors.white),
+          icon: const Icon(Icons.chat_bubble, color: Colors.white),
           onPressed: () {
             // Acción al presionar el botón de chat
           },
@@ -32,9 +35,9 @@ class _MainPageState extends State<MainPage> {
               onChanged: (Language? language) {
                 // Aquí puedes implementar la lógica para cambiar el idioma seleccionado
                 // Por ejemplo, puedes usar flutter_localizations para cambiar el idioma de la aplicación
-                print("Idioma cambiado a: ${language!.name}");
+                //print("Idioma cambiado a: ${language!.name}");
               },
-              icon: Icon(Icons.language, color: Colors.white),
+              icon: const Icon(Icons.language, color: Colors.white),
               items: Language.languageList()
                   .map<DropdownMenuItem<Language>>(
                     (e) => DropdownMenuItem<Language>(
@@ -71,10 +74,10 @@ class _MainPageState extends State<MainPage> {
               itemCount: 5, // Número de botones de ejemplo
               itemBuilder: (context, index) {
                 return Padding(
-                  padding: EdgeInsets.all(8.0),
+                  padding: const EdgeInsets.all(8.0),
                   child: ElevatedButton(
                     onPressed: () {
-                      // Acción al presionar el botón
+                      //Ir a la ruta que has clicado
                     },
                     style: ButtonStyle(
                       backgroundColor:
@@ -95,7 +98,7 @@ class _MainPageState extends State<MainPage> {
                               child: Row(
                                 children: [
                                   const Icon(Icons.person, color: Colors.white),
-                                  SizedBox(width: 5),
+                                  const SizedBox(width: 5),
                                   Text(
                                     translation(context).nombre,
                                     style: const TextStyle(
@@ -117,13 +120,13 @@ class _MainPageState extends State<MainPage> {
                                 ),
                                 child: Text(
                                   translation(context).precioPorPersona,
-                                  style: TextStyle(color: Colors.black),
+                                  style: const TextStyle(color: Colors.black),
                                 ),
                               ),
                             ),
                           ],
                         ),
-                        SizedBox(height: 10),
+                        const SizedBox(height: 10),
                         Row(
                           mainAxisAlignment: MainAxisAlignment.center,
                           children: [
@@ -147,7 +150,7 @@ class _MainPageState extends State<MainPage> {
                                         ),
                                       ),
                                     ),
-                                    SizedBox(width: 10),
+                                    const SizedBox(width: 10),
                                     const Text(
                                       '00:00',
                                       style: TextStyle(
@@ -165,7 +168,7 @@ class _MainPageState extends State<MainPage> {
                                 Row(
                                   children: [
                                     Container(
-                                      padding: EdgeInsets.all(5),
+                                      padding: const EdgeInsets.all(5),
                                       decoration: BoxDecoration(
                                         color: Colors.white,
                                         borderRadius:
@@ -179,7 +182,7 @@ class _MainPageState extends State<MainPage> {
                                         ),
                                       ),
                                     ),
-                                    SizedBox(width: 10),
+                                    const SizedBox(width: 10),
                                     const Text(
                                       '00:00',
                                       style: TextStyle(
@@ -193,7 +196,7 @@ class _MainPageState extends State<MainPage> {
                             ),
                           ],
                         ),
-                        SizedBox(height: 10),
+                        const SizedBox(height: 10),
                         Align(
                           alignment: Alignment.bottomRight,
                           child: Padding(
@@ -221,22 +224,39 @@ class _MainPageState extends State<MainPage> {
               },
             ),
           ),
-          Container(
-            margin: EdgeInsets.all(20),
-            decoration: BoxDecoration(
-              color: Color(0xFF1A5F1F),
-              borderRadius: BorderRadius.circular(20),
-            ),
-            child: IconButton(
-              onPressed: () {
-                // Acción al presionar el botón de adición
-              },
-              icon: const Icon(
-                Icons.add,
-                color: Colors.white,
+          //Añadido boton de navegación extra temporal
+          Column(
+            children: [
+              Container(
+                margin: const EdgeInsets.all(20),
+                decoration: BoxDecoration(
+                  color: const Color(0xFF1A5F1F),
+                  borderRadius: BorderRadius.circular(20),
+                ),
+                child: IconButton(
+                  onPressed: () {
+                    Navigator.push(context,MaterialPageRoute(builder: (context) => const RouteCreationScreen()));
+                  },
+                  icon: const Icon(
+                    Icons.add,
+                    color: Colors.white,
+                  ),
+                ),
               ),
-            ),
-          ),
+              ElevatedButton(
+                onPressed: () {
+                  // Navegar a la pantalla de registro al hacer clic en el botón
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => const MapPreview(),
+                    ),
+                  );
+                },
+                child: const Text('Ir a preview route (botón temporal)'),
+              ),
+            ],
+          )
         ],
       ),
     );

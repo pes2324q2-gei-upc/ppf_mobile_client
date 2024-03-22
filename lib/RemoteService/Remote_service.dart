@@ -2,6 +2,7 @@ import 'dart:convert';
 import 'package:ppf_mobile_client/Models/Users.dart';
 import 'package:dio/dio.dart';
 import 'package:intl/intl.dart';
+import 'package:ppf_mobile_client/models/Route.dart';
 import '/config.dart' show GOOGLE_MAPS_API_KEY, userApi;
 import '/config.dart' show routeApi;
 
@@ -124,7 +125,6 @@ class RemoteService {
           "autonomy": int.parse(capacidad)
         },
       );
-
       //Return empty string if there was no error
       if (response.statusCode == 201) {
         return '';
