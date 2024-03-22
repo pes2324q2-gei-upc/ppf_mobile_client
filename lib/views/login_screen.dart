@@ -10,6 +10,7 @@ class LogIn extends StatefulWidget  {
 
   @override
   State<LogIn> createState() => _LogInState();
+
 }
 
 class _LogInState extends State<LogIn> {
@@ -191,8 +192,9 @@ class _LogInButtonState extends State<LogInButton> {
                   Navigator.push(
                     // ignore: use_build_context_synchronously
                     context,
-                    //Navigate to home page view
-                    MaterialPageRoute(builder: (context) => const Placeholder()),
+                    MaterialPageRoute(
+                      builder: (context) => const RegisterScreen(),
+                    ),
                   );
                 }
                 else {
