@@ -161,7 +161,6 @@ class RemoteService {
       Response response = await dio.post(
         '/routes/',
         data: {
-          "driver": "",
           "originAlias": departure,
           "originLat": departureLatitude,
           "originLon": departureLongitude,
