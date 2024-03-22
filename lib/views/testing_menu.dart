@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:ppf_mobile_client/views/map_preview_screen.dart';
 import 'package:ppf_mobile_client/views/register_screen.dart';
+import 'package:ppf_mobile_client/views/route_creation_screen.dart';
 
 class TestingMenu extends StatefulWidget {
   const TestingMenu({super.key});
@@ -42,6 +43,17 @@ class _TestingMenuState extends State<TestingMenu> {
                   );
                 },
                 child: const Text('Ir a la pantalla de preview de mapas'),
+              ),
+              ElevatedButton(
+                onPressed: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => const RouteCreationScreen(),
+                    ),
+                  );
+                },
+                child: const Text('Ir a la pantalla de creación de rutas'),
               ),
             ],
           ),

@@ -167,7 +167,7 @@ class _RegistrationScreenState extends State<RegisterScreen> {
   Widget _buildNumberField(TextEditingController contr, String? hint) {
     return TextField(
       keyboardType: TextInputType.number,
-      inputFormatters: <TextInputFormatter>[FilteringTextInputFormatter.digitsOnly],
+      inputFormatters: <TextInputFormatter>[FilteringTextInputFormatter.allow(RegExp(r'[0-9 .]'))],
       controller: contr,
       autofocus: false,
       style: const TextStyle(fontSize: 18.0),
@@ -393,7 +393,7 @@ class _RegistrationScreenState extends State<RegisterScreen> {
               bottom: 0,
               right: 0,
               child: Padding(
-                padding: EdgeInsets.all(0),
+                padding: const EdgeInsets.all(0),
                 child: Icon(
                   size: 45,
                   Icons.circle,
@@ -426,7 +426,7 @@ class _RegistrationScreenState extends State<RegisterScreen> {
       children: [
         //"Do you want to be a driver?" text
         const Text.rich(TextSpan(
-          text: 'Quieres ser conductor?',
+          text: '¿Quieres ser conductor?',
           style: TextStyle(fontSize: 18.0, color: Colors.black, fontWeight: FontWeight.bold),
           )
         ),

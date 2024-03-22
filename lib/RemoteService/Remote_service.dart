@@ -1,12 +1,12 @@
+import 'dart:convert';
 import 'package:ppf_mobile_client/Models/Users.dart';
 import 'package:dio/dio.dart';
 import 'package:intl/intl.dart';
-import '/config.dart' show userApi;
+import '/config.dart' show GOOGLE_MAPS_API_KEY, userApi;
 import '/config.dart' show routeApi;
 
 class RemoteService {
   Future<List<User>?> getUsers() async {
-    print(userApi);
     try {
       Dio dio = Dio();
       dio.options.baseUrl = userApi;
@@ -100,7 +100,7 @@ class RemoteService {
       String pwrd,
       String pwrd2,
       DateTime? birthDate,
-      String DNI,
+      String dni,
       String capacidad) async {
     
     //To parse a date:
@@ -110,9 +110,6 @@ class RemoteService {
     try {
       Dio dio = Dio();
       dio.options.baseUrl = userApi;
-
-      print('accessing: $userApi/drivers/');
-
       Response response = await dio.post(
         '/drivers/',
         data: {
@@ -123,7 +120,7 @@ class RemoteService {
           "birth_date": formattedDate, //formattedDate
           "password": pwrd,
           "password2": pwrd2,
-          "dni": DNI,
+          "dni": dni,
           "autonomy": int.parse(capacidad)
         },
       );
@@ -152,7 +149,11 @@ class RemoteService {
     }
   }
 
-  Future<String> registerRoute(String routeName) async {
+  Future<String> registerRoute(String departure, double departureLatitude, double departureLongitude, String destination, double destinationLatitude, double destinationLongitude, DateTime? selectedDate, String freeSpaces, String price) async {
+    
+
+    String formattedDate = DateFormat('yyyy-MM-ddThh:mm:ss').format(selectedDate!);
+    
     //API call success
     try {
       Dio dio = Dio();
@@ -160,10 +161,18 @@ class RemoteService {
       Response response = await dio.post(
         '/routes/',
         data: {
-          "routename": routeName
+          "originAlias": departure,
+          "originLat": departureLatitude,
+          "originLon": departureLongitude,
+          "destinationAlias": destination,
+          "destinationLat": destinationLatitude,
+          "destinationLon": destinationLongitude,
+          "departureTime": formattedDate,
+          "freeSeats": int.parse(freeSpaces),
+          "price": double.parse(price)
         }
       );
-
+      
       //Return empty string if there was no error
       if (response.statusCode == 201) {
         return '';
@@ -173,11 +182,11 @@ class RemoteService {
       }
       
       //Error handling
-    } on DioException catch (e) {
+   } on DioException catch (e) {
       Response? response = e.response;      
       
-      //Code 400 error
-      if(response?.statusCode == 400) {
+      //Error code 400
+      if(response?.statusCode == 404) {
         return '$response';
       }
       
@@ -185,6 +194,33 @@ class RemoteService {
       else{
         return 'Ha ocurrido un error inesperado. Porfavor, intentelo de nuevo más tarde';
       }
+    }
+  }
+
+  Future<List<dynamic>> makeSuggestionRemote(String input, String tokenForSession) async
+  {
+    Dio dio = Dio();
+    String googlePlacesApiKey = GOOGLE_MAPS_API_KEY;
+    String groundURL = 'https://maps.googleapis.com/maps/api/place/queryautocomplete/json';
+
+    try {
+      var responseResult = await dio.get
+      (
+        groundURL,
+        queryParameters: 
+        {
+          'input': input,
+          'key': googlePlacesApiKey,
+          'sessiontoken': tokenForSession
+        }
+      );
+
+      return jsonDecode(responseResult.toString()) ['predictions'];
+
+    }
+    on DioException catch (e) {
+      List<dynamic> emptyList= [e];
+      return emptyList;
     }
   }
 }
