@@ -254,4 +254,32 @@ class RemoteService {
       }
     }
   }
+  Future<MapRoute> getMapRoute(int routeId) async {
+    try {
+      var id = routeId.toString();
+      Dio dio = Dio();
+      dio.options.baseUrl = routeApi;
+      var response = await dio.get('/routes/$id');
+
+      // Check if response is successful
+      if (response.statusCode == 200) {
+        // Parse JSON response
+        var json = response.data;
+
+        // Create MapRoute object from JSON using factory method
+        MapRoute mapRoute =
+            MapRoute.fromJson(json); //MapRoute.fromJson(responseData);
+
+        // Return the created MapRoute object
+        return mapRoute;
+      } else {
+        // Handle unsuccessful response
+        throw Exception('Failed to load route');
+      }
+    } on DioException catch (e) {
+      // Handle Dio errors
+      print(e.error);
+      throw Exception('Failed to load route');
+    }
+  }
 }

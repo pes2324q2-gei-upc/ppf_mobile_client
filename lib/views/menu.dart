@@ -35,7 +35,7 @@ class _MainPageState extends State<MainPage> {
               onChanged: (Language? language) {
                 // Aquí puedes implementar la lógica para cambiar el idioma seleccionado
                 // Por ejemplo, puedes usar flutter_localizations para cambiar el idioma de la aplicación
-                //print("Idioma cambiado a: ${language!.name}");
+                print("Idioma cambiado a: ${language!.name}");
               },
               icon: const Icon(Icons.language, color: Colors.white),
               items: Language.languageList()

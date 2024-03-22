@@ -194,7 +194,7 @@ class _LogInButtonState extends State<LogInButton> {
                     // ignore: use_build_context_synchronously
                     context,
                     MaterialPageRoute(
-                      builder: (context) => const RegisterScreen(),
+                      builder: (context) => const MainPage(),
                     ),
                   );
                 }
